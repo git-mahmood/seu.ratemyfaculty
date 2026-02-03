@@ -1,0 +1,160 @@
+You are rebuilding an existing full-stack university platform from scratch.
+Make the app STABLE, SAFE, and BUG-FREE.
+Do NOT rush. Do NOT assume. Do NOT omit imports.
+
+=====================
+GLOBAL RULES (VERY IMPORTANT)
+=====================
+1) Make SMALL, DIRECT, COMPLETE implementations only
+2) Every JSX icon MUST be explicitly imported (lucide-react only)
+3) Do NOT leave unused JSX, variables, or partial code
+4) Do NOT generate code that references undefined components, hooks, or icons
+5) All backend routes MUST return proper error responses
+6) No silent failures — always handle try/catch
+7) No UI redesign
+8) No breaking existing functionality
+9) App must work both logged-in and logged-out
+
+=====================
+TECH STACK (FIXED)
+=====================
+Frontend:
+- React + TypeScript
+- Vite
+- Tailwind (already configured)
+- lucide-react for icons ONLY
+
+Backend:
+- Node + Express
+- Database already connected (do NOT reset)
+- Auth already implemented (do NOT modify)
+
+=====================
+ROLES
+=====================
+Admin / Moderator
+- Can add/edit/delete teachers
+- Can see reviewer emails
+- Can delete reviews
+- Can upload PYQs
+
+Student (Logged in)
+- Can submit ONE review per teacher
+- Can edit own review
+- Reviews are anonymous publicly
+
+Guest (Logged out)
+- Can view teachers, reviews, and PYQs
+- Cannot post
+
+=====================
+PART 1 — TEACHER SYSTEM
+=====================
+
+Teacher model fields:
+- fullName
+- department
+- university
+- photoUrl
+- coursesTaught (array of strings)
+
+Admin/Moderator features:
+- Create teacher
+- Edit teacher
+- Edit coursesTaught anytime
+- CoursesTaught input:
+  - Text input
+  - Add button
+  - Display as removable badges
+  - Fully controlled React state
+  - NO undefined icons
+
+STRICT RULES:
+- Import all icons explicitly:
+  import { Plus, X } from "lucide-react"
+- Do NOT reference icons without import
+- Do NOT store courses as comma-separated string
+- coursesTaught must be string[]
+
+=====================
+PART 2 — STUDENT REVIEW SYSTEM
+=====================
+
+Do NOT remove the review system.
+
+Replace rating fields ONLY with:
+- personality: Friendly | Strict | Neutral
+- bestFor: Weak | Average | Strong
+- markingStyle: Open-minded | Average | Strict
+- questionDifficulty: Easy | Medium | Hard
+
+Rules:
+- One student → one review per teacher (enforced backend + frontend)
+- Students can edit their own review
+- Reviews are anonymous publicly
+- Admin can see reviewer email
+- Admin can delete reviews
+
+Backend:
+- Validate duplicate reviews
+- Return clear error messages
+- Never silently fail
+
+=====================
+PART 3 — REVIEW COUNT (CRITICAL)
+=====================
+
+Teacher cards MUST show correct review count.
+
+Rules:
+- Review count MUST be derived from actual reviews
+- No hardcoded values
+- No stale state
+- After add/edit/delete review:
+  - Re-fetch OR update state correctly
+- Teacher card and teacher profile page must match
+
+=====================
+PART 4 — PYQ SYSTEM (STABLE)
+=====================
+
+Admin/Moderator only:
+- Upload PYQ
+- Save metadata properly
+
+Rules:
+- Backend route must exist and be tested
+- Handle multipart/form-data safely
+- Return success or failure explicitly
+- Frontend must display backend error messages
+- No "Failed to upload" without real reason
+
+=====================
+PART 5 — ERROR HANDLING (MANDATORY)
+=====================
+
+Frontend:
+- Show user-friendly error messages
+- Do NOT crash app
+- No undefined variables
+
+Backend:
+- Wrap every controller in try/catch
+- Always return JSON response
+- Log errors safely
+
+=====================
+FINAL CHECKLIST (DO NOT SKIP)
+=====================
+- App runs without console errors
+- No "is not defined" runtime errors
+- All icons render correctly
+- Courses Taught add/remove works
+- Reviews save, edit, count correctly
+- PYQ upload works reliably
+- Existing data is preserved
+
+If ANY feature cannot be safely implemented,
+STOP and explain the reason instead of guessing.
+
+Build the app completely and safely.
