@@ -108,6 +108,15 @@ export const api = {
         404: errorSchemas.notFound,
       },
     },
+    delete: {
+      method: 'DELETE' as const,
+      path: '/api/teachers/:id',
+      responses: {
+        204: z.void(),
+        403: errorSchemas.forbidden,
+        404: errorSchemas.notFound,
+      },
+    },
   },
   reviews: {
     list: {

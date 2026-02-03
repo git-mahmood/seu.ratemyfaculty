@@ -91,6 +91,18 @@ export async function registerRoutes(
     }
   });
 
+  app.delete(api.teachers.delete.path, async (req, res) => {
+    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
+      return res.status(403).json({ message: "Forbidden: Admin only" });
+    }
+    const id = Number(req.params.id);
+    const success = await storage.deleteTeacher(id);
+    if (!success) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+    res.status(204).send();
+  });
+
   // === REVIEWS ===
 
   app.get(api.reviews.list.path, async (req, res) => {

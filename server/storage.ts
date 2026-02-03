@@ -19,6 +19,7 @@ export interface IStorage {
   getTeacher(id: number): Promise<TeacherWithReviewCount | undefined>;
   createTeacher(teacher: InsertTeacher): Promise<Teacher>;
   updateTeacher(id: number, teacher: Partial<InsertTeacher>): Promise<Teacher | undefined>;
+  deleteTeacher(id: number): Promise<boolean>;
 
   // Reviews
   getReviewsByTeacherId(teacherId: number): Promise<(Review & { studentUsername: string })[]>;
@@ -108,6 +109,11 @@ export class DatabaseStorage implements IStorage {
       .where(eq(teachers.id, id))
       .returning();
     return updated;
+  }
+
+  async deleteTeacher(id: number): Promise<boolean> {
+    const [deleted] = await db.delete(teachers).where(eq(teachers.id, id)).returning();
+    return !!deleted;
   }
 
   // Reviews
