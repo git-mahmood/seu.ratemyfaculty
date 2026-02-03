@@ -1,16 +1,224 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { api, errorSchemas } from "@shared/routes";
+import { setupAuth } from "./auth";
+import { z } from "zod";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import express from "express";
+
+// Ensure uploads directory exists
+const UPLOADS_DIR = path.join(process.cwd(), "client/public/uploads");
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
+
+// Multer setup
+const storageConfig = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOADS_DIR);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage: storageConfig });
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  // Auth setup
+  setupAuth(app);
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  // Serve uploads statically (though client/public is already served by Vite, 
+  // we might need this if we were serving strictly from backend, but Vite handles it in dev.
+  // In prod, serveStatic handles it. We just need to make sure the path is correct).
+  // The files will be at /uploads/filename.ext
+  
+  // === TEACHERS ===
+
+  app.get(api.teachers.list.path, async (req, res) => {
+    const teachers = await storage.getTeachers();
+    res.json(teachers);
+  });
+
+  app.get(api.teachers.get.path, async (req, res) => {
+    const teacher = await storage.getTeacher(Number(req.params.id));
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+    res.json(teacher);
+  });
+
+  app.post(api.teachers.create.path, async (req, res) => {
+    if (!req.isAuthenticated() || (req.user as any).role !== "admin") {
+      return res.status(403).json({ message: "Forbidden: Admin only" });
+    }
+    try {
+      const input = api.teachers.create.input.parse(req.body);
+      const teacher = await storage.createTeacher(input);
+      res.status(201).json(teacher);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({ message: err.errors[0].message, field: err.errors[0].path.join('.') });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+      }
+    }
+  });
+
+  app.put(api.teachers.update.path, async (req, res) => {
+    if (!req.isAuthenticated() || (req.user as any).role !== "admin") {
+      return res.status(403).json({ message: "Forbidden: Admin only" });
+    }
+    try {
+      const input = api.teachers.update.input.parse(req.body);
+      const updated = await storage.updateTeacher(Number(req.params.id), input);
+      if (!updated) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+      res.json(updated);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({ message: err.errors[0].message, field: err.errors[0].path.join('.') });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+      }
+    }
+  });
+
+  // === REVIEWS ===
+
+  app.get(api.reviews.list.path, async (req, res) => {
+    const reviews = await storage.getReviewsByTeacherId(Number(req.params.teacherId));
+    
+    // Filter sensitive info based on role
+    const isAdmin = req.isAuthenticated() && (req.user as any).role === "admin";
+    
+    const sanitized = reviews.map(r => ({
+      ...r,
+      studentUsername: isAdmin ? r.studentUsername : "Anonymous Student",
+      studentEmail: isAdmin ? r.studentEmail : undefined
+    }));
+
+    res.json(sanitized);
+  });
+
+  app.post(api.reviews.create.path, async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    try {
+      const input = api.reviews.create.input.parse(req.body);
+      const studentId = (req.user as any).id;
+      
+      // Check if already reviewed
+      const existing = await storage.getReviewByStudentAndTeacher(studentId, input.teacherId);
+      if (existing) {
+        return res.status(409).json({ message: "You have already reviewed this teacher" });
+      }
+
+      const review = await storage.createReview({ ...input, studentId });
+      res.status(201).json(review);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({ message: err.errors[0].message, field: err.errors[0].path.join('.') });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+      }
+    }
+  });
+
+  app.put(api.reviews.update.path, async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    try {
+      const reviewId = Number(req.params.id);
+      const existing = await storage.getReview(reviewId);
+      if (!existing) {
+        return res.status(404).json({ message: "Review not found" });
+      }
+
+      // Check ownership
+      if (existing.studentId !== (req.user as any).id) {
+        return res.status(403).json({ message: "You can only edit your own reviews" });
+      }
+
+      const input = api.reviews.update.input.parse(req.body);
+      const updated = await storage.updateReview(reviewId, input);
+      res.json(updated);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({ message: err.errors[0].message, field: err.errors[0].path.join('.') });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+      }
+    }
+  });
+
+  app.delete(api.reviews.delete.path, async (req, res) => {
+    if (!req.isAuthenticated() || (req.user as any).role !== "admin") {
+      return res.status(403).json({ message: "Forbidden: Admin only" });
+    }
+    const reviewId = Number(req.params.id);
+    const existing = await storage.getReview(reviewId);
+    if (!existing) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+    await storage.deleteReview(reviewId);
+    res.status(204).send();
+  });
+
+  // === PYQS ===
+
+  app.get(api.pyqs.list.path, async (req, res) => {
+    const pyqs = await storage.getPyqsByTeacherId(Number(req.params.teacherId));
+    res.json(pyqs);
+  });
+
+  app.post(api.pyqs.create.path, upload.single('file'), async (req, res) => {
+    if (!req.isAuthenticated() || (req.user as any).role !== "admin") {
+      return res.status(403).json({ message: "Forbidden: Admin only" });
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    try {
+      // Manual parsing since it's FormData
+      const teacherId = Number(req.body.teacherId);
+      const subject = req.body.subject;
+      const year = Number(req.body.year);
+      const uploadedBy = (req.user as any).id;
+      const fileUrl = `/uploads/${req.file.filename}`;
+
+      if (!teacherId || !subject || !year) {
+         return res.status(400).json({ message: "Missing fields" });
+      }
+
+      const pyq = await storage.createPyq({
+        teacherId,
+        subject,
+        year,
+        fileUrl,
+        uploadedBy
+      });
+      
+      res.status(201).json(pyq);
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Seed Data
+  if (process.env.NODE_ENV !== "production") {
+    // Basic seed if needed
+  }
 
   return httpServer;
 }

@@ -1,0 +1,196 @@
+import { useRoute } from "wouter";
+import { useTeacher } from "@/hooks/use-teachers";
+import { useReviews } from "@/hooks/use-reviews";
+import { Navbar } from "@/components/Navbar";
+import { Badge } from "@/components/ui/badge";
+import { ReviewForm } from "@/components/ReviewForm";
+import { PyqList } from "@/components/PyqList";
+import { Skeleton } from "@/components/ui/skeleton";
+import { 
+  Building2, 
+  MapPin, 
+  BookOpen, 
+  User, 
+  Smile, 
+  Frown, 
+  Meh,
+  GraduationCap
+} from "lucide-react";
+
+export default function TeacherProfile() {
+  const [, params] = useRoute("/teacher/:id");
+  const teacherId = parseInt(params?.id || "0");
+  
+  const { data: teacher, isLoading: teacherLoading, error: teacherError } = useTeacher(teacherId);
+  const { data: reviews, isLoading: reviewsLoading } = useReviews(teacherId);
+
+  if (teacherLoading) return <ProfileSkeleton />;
+  if (teacherError || !teacher) return <div className="text-center py-20">Teacher not found</div>;
+
+  return (
+    <div className="min-h-screen bg-background pb-20">
+      <Navbar />
+      
+      {/* Header Banner */}
+      <div className="bg-primary/5 border-b">
+        <div className="container mx-auto px-4 py-12 md:py-16">
+          <div className="flex flex-col md:flex-row gap-8 items-start">
+            <div className="h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden shadow-xl border-4 border-background shrink-0">
+              <img 
+                src={teacher.photoUrl} 
+                alt={teacher.fullName} 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
+            <div className="space-y-4 flex-1">
+              <div>
+                <h1 className="text-4xl font-display font-bold text-foreground mb-2">
+                  {teacher.fullName}
+                </h1>
+                <div className="flex flex-wrap gap-4 text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" />
+                    {teacher.department}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    {teacher.university}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {teacher.coursesTaught.map((course, i) => (
+                  <Badge key={i} variant="outline" className="bg-background">
+                    <BookOpen className="h-3 w-3 mr-1" />
+                    {course}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="shrink-0">
+              <ReviewForm teacherId={teacher.id} teacherName={teacher.fullName} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
+        {/* Main Column: Reviews */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold">Student Reviews</h2>
+            <Badge variant="secondary" className="px-3 py-1 text-sm">
+              {teacher.reviewCount} Total
+            </Badge>
+          </div>
+
+          {reviewsLoading ? (
+            <div className="space-y-4">
+              {[1,2,3].map(i => <Skeleton key={i} className="h-40 w-full rounded-xl" />)}
+            </div>
+          ) : reviews?.length === 0 ? (
+            <div className="text-center py-12 border-2 border-dashed rounded-xl bg-muted/30">
+              <p className="text-muted-foreground mb-4">No reviews yet. Be the first!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {reviews?.map((review) => (
+                <div key={review.id} className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                        <User className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">Anonymous Student</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      {getPersonalityIcon(review.personality)}
+                    </div>
+                  </div>
+
+                  <p className="text-foreground/90 leading-relaxed mb-6">
+                    "{review.comment}"
+                  </p>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
+                    <Metric label="Personality" value={review.personality} />
+                    <Metric label="Best For" value={review.bestFor} />
+                    <Metric label="Marking" value={review.markingStyle} />
+                    <Metric label="Difficulty" value={review.questionDifficulty} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar: PYQs */}
+        <div className="space-y-6">
+          <PyqList teacherId={teacher.id} />
+          
+          {/* Ad Placeholder or additional info could go here */}
+          <div className="bg-primary/5 rounded-xl p-6 border border-primary/10">
+            <div className="flex items-center gap-3 mb-2">
+              <GraduationCap className="h-6 w-6 text-primary" />
+              <h3 className="font-bold text-primary">Pro Tip</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Always check the syllabus along with past year questions to ensure you're studying relevant topics.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Metric({ label, value }: { label: string, value: string }) {
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">{label}</p>
+      <p className="font-semibold text-sm">{value}</p>
+    </div>
+  );
+}
+
+function getPersonalityIcon(type: string) {
+  switch (type) {
+    case 'Friendly': return <Smile className="h-5 w-5 text-green-500" />;
+    case 'Strict': return <Frown className="h-5 w-5 text-red-500" />;
+    default: return <Meh className="h-5 w-5 text-yellow-500" />;
+  }
+}
+
+function ProfileSkeleton() {
+  return (
+    <div className="min-h-screen">
+      <Navbar />
+      <div className="bg-muted/30 border-b">
+        <div className="container mx-auto px-4 py-12">
+          <div className="flex gap-8">
+            <Skeleton className="h-40 w-40 rounded-2xl" />
+            <div className="space-y-4 flex-1">
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-6 w-1/2" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-4">
+          <Skeleton className="h-40 w-full" />
+          <Skeleton className="h-40 w-full" />
+        </div>
+        <Skeleton className="h-60 w-full" />
+      </div>
+    </div>
+  );
+}
