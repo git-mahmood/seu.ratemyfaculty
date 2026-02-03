@@ -55,7 +55,7 @@ export async function registerRoutes(
   });
 
   app.post(api.teachers.create.path, async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).role !== "admin") {
+    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
       return res.status(403).json({ message: "Forbidden: Admin only" });
     }
     try {
@@ -72,7 +72,7 @@ export async function registerRoutes(
   });
 
   app.put(api.teachers.update.path, async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).role !== "admin") {
+    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
       return res.status(403).json({ message: "Forbidden: Admin only" });
     }
     try {
@@ -97,7 +97,7 @@ export async function registerRoutes(
     const reviews = await storage.getReviewsByTeacherId(Number(req.params.teacherId));
     
     // Filter sensitive info based on role
-    const isAdmin = req.isAuthenticated() && (req.user as any).role === "admin";
+    const isAdmin = req.isAuthenticated() && (req.user as any).email === "2025100000379@seu.edu.bd";
     
     const sanitized = reviews.map(r => ({
       ...r,
@@ -162,7 +162,7 @@ export async function registerRoutes(
   });
 
   app.delete(api.reviews.delete.path, async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).role !== "admin") {
+    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
       return res.status(403).json({ message: "Forbidden: Admin only" });
     }
     const reviewId = Number(req.params.id);
@@ -182,7 +182,7 @@ export async function registerRoutes(
   });
 
   app.post(api.pyqs.create.path, upload.single('file'), async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).role !== "admin") {
+    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
       return res.status(403).json({ message: "Forbidden: Admin only" });
     }
     if (!req.file) {

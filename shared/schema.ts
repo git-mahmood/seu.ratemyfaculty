@@ -9,7 +9,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  email: text("email"), // Admin needs to see this
+  email: text("email").notNull().unique(),
   role: text("role", { enum: ["admin", "student"] }).default("student").notNull(),
 });
 

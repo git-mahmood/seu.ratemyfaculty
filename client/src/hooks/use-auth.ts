@@ -27,14 +27,14 @@ export function useAuth() {
       });
 
       if (!res.ok) {
-        if (res.status === 401) throw new Error("Invalid username or password");
+        if (res.status === 401) throw new Error("Invalid email or password");
         throw new Error("Login failed");
       }
       return api.auth.login.responses[200].parse(await res.json());
     },
     onSuccess: (data) => {
       queryClient.setQueryData([api.auth.me.path], data);
-      toast({ title: "Welcome back!", description: `Logged in as ${data.username}` });
+      toast({ title: "Welcome back!", description: `Logged in as ${data.email}` });
     },
     onError: (error) => {
       toast({

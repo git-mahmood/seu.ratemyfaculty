@@ -35,7 +35,7 @@ export const api = {
       method: 'POST' as const,
       path: '/api/login',
       input: z.object({
-        username: z.string(),
+        email: z.string().email(),
         password: z.string(),
       }),
       responses: {
@@ -46,7 +46,9 @@ export const api = {
     register: {
       method: 'POST' as const,
       path: '/api/register',
-      input: insertUserSchema,
+      input: insertUserSchema.extend({
+        email: z.string().email(),
+      }),
       responses: {
         201: z.custom<typeof users.$inferSelect>(),
         400: errorSchemas.validation,

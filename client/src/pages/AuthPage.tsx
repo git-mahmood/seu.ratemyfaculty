@@ -61,22 +61,24 @@ export default function AuthPage() {
 }
 
 function LoginForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean }) {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ username, password });
+    onSubmit({ email, password });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="username">Username</Label>
+        <Label htmlFor="email">Email</Label>
         <Input 
-          id="username" 
-          value={username} 
-          onChange={e => setUsername(e.target.value)} 
+          id="email" 
+          type="email"
+          placeholder="your@email.com"
+          value={email} 
+          onChange={e => setEmail(e.target.value)} 
           required 
         />
       </div>
@@ -99,12 +101,12 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean 
 
 function RegisterForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean }) {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"student" | "admin">("student");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ username, password, role });
+    onSubmit({ username, email, password });
   };
 
   return (
@@ -113,9 +115,21 @@ function RegisterForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boole
         <Label htmlFor="reg-username">Username</Label>
         <Input 
           id="reg-username" 
+          placeholder="Choose a username"
           value={username} 
           onChange={e => setUsername(e.target.value)} 
           minLength={3}
+          required 
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="reg-email">Email</Label>
+        <Input 
+          id="reg-email" 
+          type="email"
+          placeholder="your@email.com"
+          value={email} 
+          onChange={e => setEmail(e.target.value)} 
           required 
         />
       </div>
