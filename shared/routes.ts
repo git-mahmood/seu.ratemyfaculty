@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { insertTeacherSchema, insertReviewSchema, insertPyqSchema, insertUserSchema, teachers, reviews, pyqs, users } from './schema';
 
+export type { InsertUser, InsertTeacher, InsertReview, InsertPyq } from './schema';
+
 // ============================================
 // SHARED ERROR SCHEMAS
 // ============================================

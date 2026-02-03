@@ -45,6 +45,11 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
   async createUser(insertUser: InsertUser): Promise<User> {
     const isAdmin = insertUser.email === "2025100000379@seu.edu.bd";
     const [user] = await db.insert(users).values({
