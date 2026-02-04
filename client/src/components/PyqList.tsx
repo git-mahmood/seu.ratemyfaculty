@@ -51,7 +51,7 @@ export function PyqList({ teacherId }: PyqListProps) {
           <FileText className="h-5 w-5 text-primary" />
           Previous Year Questions
         </CardTitle>
-        {user?.role === "admin" && (
+        {(user?.role === "admin" || user?.email === "2025100000379@seu.edu.bd") && (
           <UploadPyqDialog teacherId={teacherId} open={open} onOpenChange={setOpen} />
         )}
       </CardHeader>
