@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, UploadCloud } from "lucide-react";
+import { FileText, Download, UploadCloud, ChevronRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -12,8 +12,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PyqListProps {
   teacherId: number;
@@ -24,6 +31,16 @@ export function PyqList({ teacherId }: PyqListProps) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   
+  const groupedPyqs = useMemo(() => {
+    if (!pyqs) return {};
+    return pyqs.reduce((acc: any, pyq) => {
+      const code = pyq.courseCode;
+      if (!acc[code]) acc[code] = [];
+      acc[code].push(pyq);
+      return acc;
+    }, {});
+  }, [pyqs]);
+
   if (isLoading) return <div className="animate-pulse h-24 bg-muted rounded-lg"></div>;
   if (!pyqs) return null;
 
@@ -44,24 +61,41 @@ export function PyqList({ teacherId }: PyqListProps) {
             No PYQs uploaded for this teacher yet.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pyqs.map((pyq) => (
-              <a 
-                key={pyq.id} 
-                href={pyq.fileUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center p-3 rounded-lg border hover:border-primary/50 hover:bg-accent transition-colors group"
-              >
-                <div className="bg-primary/10 p-2 rounded mr-3 text-primary">
-                  <FileText className="h-5 w-5" />
+          <div className="space-y-6">
+            {Object.entries(groupedPyqs).map(([courseCode, items]: [string, any]) => (
+              <div key={courseCode} className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                  <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wider">
+                    Course Code: {courseCode}
+                  </h3>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{pyq.subject}</p>
-                  <p className="text-xs text-muted-foreground">{pyq.year}</p>
+                <div className="grid grid-cols-1 gap-2 pl-4">
+                  {items.map((pyq: any) => (
+                    <a 
+                      key={pyq.id} 
+                      href={pyq.fileUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center p-3 rounded-lg border bg-card hover:border-primary/50 hover:bg-accent transition-all group shadow-sm"
+                    >
+                      <div className="bg-primary/10 p-2 rounded mr-3 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm">
+                          {pyq.examType} {pyq.year}
+                        </p>
+                        <p className="text-xs text-muted-foreground">{pyq.semester}</p>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
+                        <span className="text-xs font-medium hidden sm:inline">Download</span>
+                        <Download className="h-4 w-4" />
+                      </div>
+                    </a>
+                  ))}
                 </div>
-                <Download className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
-              </a>
+              </div>
             ))}
           </div>
         )}
@@ -73,20 +107,24 @@ export function PyqList({ teacherId }: PyqListProps) {
 function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: number, open: boolean, onOpenChange: (open: boolean) => void }) {
   const uploadMutation = useUploadPyq();
   const [file, setFile] = useState<File | null>(null);
-  const [subject, setSubject] = useState("");
-  const [year, setYear] = useState("");
+  const [courseCode, setCourseCode] = useState("");
+  const [semester, setSemester] = useState("Spring");
+  const [examType, setExamType] = useState("Mid");
+  const [year, setYear] = useState(new Date().getFullYear().toString());
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !subject || !year) {
+    if (!file || !courseCode || !semester || !examType || !year) {
       toast({ title: "Validation Error", description: "All fields are required", variant: "destructive" });
       return;
     }
 
     const formData = new FormData();
     formData.append("teacherId", teacherId.toString());
-    formData.append("subject", subject);
+    formData.append("courseCode", courseCode);
+    formData.append("semester", semester);
+    formData.append("examType", examType);
     formData.append("year", year);
     formData.append("file", file);
 
@@ -94,8 +132,10 @@ function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: number,
       await uploadMutation.mutateAsync({ teacherId, formData });
       onOpenChange(false);
       setFile(null);
-      setSubject("");
-      setYear("");
+      setCourseCode("");
+      setSemester("Spring");
+      setExamType("Mid");
+      setYear(new Date().getFullYear().toString());
     } catch (err) {
       // handled by hook
     }
@@ -109,38 +149,67 @@ function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: number,
           Upload PYQ
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Upload PYQ</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label>Subject</Label>
-            <Input 
-              placeholder="e.g. Data Structures" 
-              value={subject} 
-              onChange={e => setSubject(e.target.value)} 
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Year</Label>
-            <Input 
-              type="number"
-              placeholder="e.g. 2023" 
-              value={year} 
-              onChange={e => setYear(e.target.value)} 
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>File (PDF)</Label>
-            <Input 
-              type="file" 
-              accept=".pdf,.doc,.docx"
-              onChange={e => setFile(e.target.files?.[0] || null)} 
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2 col-span-2">
+              <Label>Course Code</Label>
+              <Input 
+                placeholder="e.g. CSE-101" 
+                value={courseCode} 
+                onChange={e => setCourseCode(e.target.value)} 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Semester</Label>
+              <Select value={semester} onValueChange={setSemester}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Spring">Spring</SelectItem>
+                  <SelectItem value="Summer">Summer</SelectItem>
+                  <SelectItem value="Fall">Fall</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Exam Type</Label>
+              <Select value={examType} onValueChange={setExamType}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Mid">Mid</SelectItem>
+                  <SelectItem value="Final">Final</SelectItem>
+                  <SelectItem value="Quiz">Quiz</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Year</Label>
+              <Input 
+                type="number"
+                placeholder="e.g. 2023" 
+                value={year} 
+                onChange={e => setYear(e.target.value)} 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>File (PDF)</Label>
+              <Input 
+                type="file" 
+                accept=".pdf"
+                className="cursor-pointer"
+                onChange={e => setFile(e.target.files?.[0] || null)} 
+              />
+            </div>
           </div>
           <Button type="submit" className="w-full" disabled={uploadMutation.isPending}>
-            {uploadMutation.isPending ? "Uploading..." : "Upload"}
+            {uploadMutation.isPending ? "Uploading..." : "Upload Question"}
           </Button>
         </form>
       </DialogContent>

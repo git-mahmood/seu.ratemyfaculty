@@ -39,7 +39,9 @@ export const reviews = pgTable("reviews", {
 export const pyqs = pgTable("pyqs", {
   id: serial("id").primaryKey(),
   teacherId: integer("teacher_id").notNull(), // Foreign key to teachers
-  subject: text("subject").notNull(),
+  courseCode: text("course_code").notNull(),
+  semester: text("semester", { enum: ["Spring", "Summer", "Fall"] }).notNull(),
+  examType: text("exam_type", { enum: ["Mid", "Final", "Quiz"] }).notNull(),
   year: integer("year").notNull(),
   fileUrl: text("file_url").notNull(),
   uploadedBy: integer("uploaded_by").notNull(), // Admin user ID

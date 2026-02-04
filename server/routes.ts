@@ -214,18 +214,22 @@ export async function registerRoutes(
     try {
       // Manual parsing since it's FormData
       const teacherId = Number(req.body.teacherId);
-      const subject = req.body.subject;
+      const courseCode = req.body.courseCode;
+      const semester = req.body.semester;
+      const examType = req.body.examType;
       const year = Number(req.body.year);
       const uploadedBy = (req.user as any).id;
       const fileUrl = `/uploads/${req.file.filename}`;
 
-      if (!teacherId || !subject || !year) {
+      if (!teacherId || !courseCode || !year || !semester || !examType) {
          return res.status(400).json({ message: "Missing fields" });
       }
 
       const pyq = await storage.createPyq({
         teacherId,
-        subject,
+        courseCode,
+        semester,
+        examType,
         year,
         fileUrl,
         uploadedBy
