@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertReviewSchema } from "@shared/schema";
-import { type InsertReview } from "@shared/routes";
+import { type InsertReview, api, buildUrl } from "@shared/routes";
 import { useCreateReview } from "@/hooks/use-reviews";
 import {
   Dialog,
@@ -32,24 +32,50 @@ import { useState } from "react";
 import { MessageSquarePlus } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface ReviewFormProps {
   teacherId: number;
   teacherName: string;
+  coursesTaught: string[];
+  review?: any; // For edit mode
+  trigger?: React.ReactNode;
 }
 
-export function ReviewForm({ teacherId, teacherName }: ReviewFormProps) {
+export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trigger }: ReviewFormProps) {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const createMutation = useCreateReview();
+  const updateMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await fetch(buildUrl(api.reviews.update.path, { id: review.id }), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Failed to update review");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.reviews.list.path, teacherId] });
+      toast({ title: "Review updated" });
+      setOpen(false);
+    },
+  });
+
+  const isEditing = !!review;
 
   const form = useForm<Omit<InsertReview, "studentId">>({
     resolver: zodResolver(insertReviewSchema.omit({ studentId: true })),
-    defaultValues: {
+    defaultValues: review || {
       teacherId,
       personality: "Neutral",
       bestFor: "Average",
+      courseTaken: "",
       markingStyle: "Average",
       questionDifficulty: "Medium",
       comment: "",
@@ -58,8 +84,12 @@ export function ReviewForm({ teacherId, teacherName }: ReviewFormProps) {
 
   const onSubmit = async (data: Omit<InsertReview, "studentId">) => {
     try {
-      await createMutation.mutateAsync(data);
-      setOpen(false);
+      if (isEditing) {
+        await updateMutation.mutateAsync(data);
+      } else {
+        await createMutation.mutateAsync(data);
+        setOpen(false);
+      }
       form.reset();
     } catch (error) {
       // Error handled by hook
@@ -77,14 +107,16 @@ export function ReviewForm({ teacherId, teacherName }: ReviewFormProps) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button size="lg" className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
-          <MessageSquarePlus className="mr-2 h-5 w-5" />
-          Write a Review
-        </Button>
+        {trigger || (
+          <Button size="lg" className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
+            <MessageSquarePlus className="mr-2 h-5 w-5" />
+            Write a Review
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Review {teacherName}</DialogTitle>
+          <DialogTitle>{isEditing ? "Edit Review" : `Review ${teacherName}`}</DialogTitle>
           <DialogDescription>
             Share your experience. Reviews are anonymous to the public.
           </DialogDescription>
@@ -92,6 +124,29 @@ export function ReviewForm({ teacherId, teacherName }: ReviewFormProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="courseTaken"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Course Taken</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select course" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {coursesTaught.map((course) => (
+                          <SelectItem key={course} value={course}>{course}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="personality"
@@ -166,17 +221,17 @@ export function ReviewForm({ teacherId, teacherName }: ReviewFormProps) {
                 name="bestFor"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Teaching Quality</FormLabel>
+                    <FormLabel>Best For</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select quality" />
+                          <SelectValue placeholder="Select level" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Strong">Strong</SelectItem>
-                        <SelectItem value="Average">Average</SelectItem>
-                        <SelectItem value="Weak">Weak</SelectItem>
+                        <SelectItem value="Strong">Strong Students</SelectItem>
+                        <SelectItem value="Average">Average Students</SelectItem>
+                        <SelectItem value="Weak">Weak Students</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -208,8 +263,8 @@ export function ReviewForm({ teacherId, teacherName }: ReviewFormProps) {
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={createMutation.isPending}>
-                {createMutation.isPending ? "Submitting..." : "Submit Review"}
+              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+                {createMutation.isPending || updateMutation.isPending ? "Submitting..." : (isEditing ? "Update Review" : "Submit Review")}
               </Button>
             </div>
           </form>

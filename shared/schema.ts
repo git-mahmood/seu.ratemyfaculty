@@ -28,6 +28,7 @@ export const reviews = pgTable("reviews", {
   studentId: integer("student_id").notNull(), // Foreign key to users
   personality: text("personality", { enum: ["Friendly", "Strict", "Neutral"] }).notNull(),
   bestFor: text("best_for", { enum: ["Weak", "Average", "Strong"] }).notNull(),
+  courseTaken: text("course_taken").notNull(),
   markingStyle: text("marking_style", { enum: ["Open-minded", "Average", "Strict"] }).notNull(),
   questionDifficulty: text("question_difficulty", { enum: ["Easy", "Medium", "Hard"] }).notNull(),
   comment: text("comment"),

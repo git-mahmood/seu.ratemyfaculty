@@ -27,7 +27,7 @@ export interface IStorage {
   getReviewByStudentAndTeacher(studentId: number, teacherId: number): Promise<Review | undefined>;
   createReview(review: InsertReview): Promise<Review>;
   updateReview(id: number, review: Partial<InsertReview>): Promise<Review | undefined>;
-  deleteReview(id: number): Promise<void>;
+  deleteReview(id: number): Promise<boolean>;
 
   // PYQs
   getPyqsByTeacherId(teacherId: number): Promise<Pyq[]>;
@@ -166,8 +166,9 @@ export class DatabaseStorage implements IStorage {
     return updated;
   }
 
-  async deleteReview(id: number): Promise<void> {
-    await db.delete(reviews).where(eq(reviews.id, id));
+  async deleteReview(id: number): Promise<boolean> {
+    const [deleted] = await db.delete(reviews).where(eq(reviews.id, id)).returning();
+    return !!deleted;
   }
 
   // PYQs

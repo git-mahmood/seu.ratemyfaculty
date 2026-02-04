@@ -14,15 +14,38 @@ import {
   Smile, 
   Frown, 
   Meh,
-  GraduationCap
+  GraduationCap,
+  Pencil,
+  Trash2
 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api, buildUrl } from "@shared/routes";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 export default function TeacherProfile() {
   const [, params] = useRoute("/teacher/:id");
   const teacherId = parseInt(params?.id || "0");
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
   
   const { data: teacher, isLoading: teacherLoading, error: teacherError } = useTeacher(teacherId);
   const { data: reviews, isLoading: reviewsLoading } = useReviews(teacherId);
+
+  const deleteReviewMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(buildUrl(api.reviews.delete.path, { id }), {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete review");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.reviews.list.path, teacherId] });
+      toast({ title: "Review deleted" });
+    },
+  });
 
   if (teacherLoading) return <ProfileSkeleton />;
   if (teacherError || !teacher) return <div className="text-center py-20">Teacher not found</div>;
@@ -71,7 +94,11 @@ export default function TeacherProfile() {
             </div>
 
             <div className="shrink-0">
-              <ReviewForm teacherId={teacher.id} teacherName={teacher.fullName} />
+              <ReviewForm 
+                teacherId={teacher.id} 
+                teacherName={teacher.fullName} 
+                coursesTaught={teacher.coursesTaught}
+              />
             </div>
           </div>
         </div>
@@ -97,37 +124,72 @@ export default function TeacherProfile() {
             </div>
           ) : (
             <div className="space-y-4">
-              {reviews?.map((review) => (
-                <div key={review.id} className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                        <User className="h-5 w-5" />
+              {reviews?.map((review) => {
+                const isAdmin = user?.email === "2025100000379@seu.edu.bd";
+                const isOwner = user?.id === review.studentId;
+                
+                return (
+                  <div key={review.id} className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                          <User className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">
+                            {isAdmin ? review.studentUsername : "Anonymous Student"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(review.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-sm">Anonymous Student</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(review.createdAt).toLocaleDateString()}
-                        </p>
+                      <div className="flex items-center gap-2">
+                        {isOwner && (
+                          <ReviewForm 
+                            teacherId={teacher.id}
+                            teacherName={teacher.fullName}
+                            coursesTaught={teacher.coursesTaught}
+                            review={review}
+                            trigger={
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                            }
+                          />
+                        )}
+                        {(isOwner || isAdmin) && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8 text-destructive"
+                            onClick={() => {
+                              if (confirm("Are you sure you want to delete this review?")) {
+                                deleteReviewMutation.mutate(review.id);
+                              }
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {getPersonalityIcon(review.personality)}
                       </div>
                     </div>
-                    <div className="flex gap-1">
-                      {getPersonalityIcon(review.personality)}
+
+                    <p className="text-foreground/90 leading-relaxed mb-6">
+                      "{review.comment}"
+                    </p>
+
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-4 border-t">
+                      <Metric label="Course" value={review.courseTaken} />
+                      <Metric label="Personality" value={review.personality} />
+                      <Metric label="Best For" value={review.bestFor} />
+                      <Metric label="Marking" value={review.markingStyle} />
+                      <Metric label="Difficulty" value={review.questionDifficulty} />
                     </div>
                   </div>
-
-                  <p className="text-foreground/90 leading-relaxed mb-6">
-                    "{review.comment}"
-                  </p>
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
-                    <Metric label="Personality" value={review.personality} />
-                    <Metric label="Best For" value={review.bestFor} />
-                    <Metric label="Marking" value={review.markingStyle} />
-                    <Metric label="Difficulty" value={review.questionDifficulty} />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

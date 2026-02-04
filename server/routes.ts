@@ -156,7 +156,9 @@ export async function registerRoutes(
         return res.status(404).json({ message: "Review not found" });
       }
 
-      // Check ownership
+      const isAdmin = (req.user as any).email === "2025100000379@seu.edu.bd";
+      
+      // Admin can only edit their own reviews. Students can only edit their own reviews.
       if (existing.studentId !== (req.user as any).id) {
         return res.status(403).json({ message: "You can only edit your own reviews" });
       }
@@ -174,14 +176,22 @@ export async function registerRoutes(
   });
 
   app.delete(api.reviews.delete.path, async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
-      return res.status(403).json({ message: "Forbidden: Admin only" });
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
     const reviewId = Number(req.params.id);
     const existing = await storage.getReview(reviewId);
     if (!existing) {
       return res.status(404).json({ message: "Review not found" });
     }
+
+    const isAdmin = (req.user as any).email === "2025100000379@seu.edu.bd";
+    const isOwner = existing.studentId === (req.user as any).id;
+
+    if (!isAdmin && !isOwner) {
+      return res.status(403).json({ message: "Forbidden: You cannot delete this review" });
+    }
+
     await storage.deleteReview(reviewId);
     res.status(204).send();
   });
