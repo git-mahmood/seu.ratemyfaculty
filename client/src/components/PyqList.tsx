@@ -26,7 +26,7 @@ interface PyqListProps {
   teacherId: number;
 }
 
-export function PyqList({ teacherId }: PyqListProps) {
+export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, hideUpload?: boolean }) {
   const { data: pyqs, isLoading } = usePyqs(teacherId);
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
@@ -51,7 +51,7 @@ export function PyqList({ teacherId }: PyqListProps) {
           <FileText className="h-5 w-5 text-primary" />
           Previous Year Questions
         </CardTitle>
-        {!!user && (user.role === "admin" || user.email === "2025100000379@seu.edu.bd") && (
+        {!hideUpload && !!user && (user.role === "admin" || user.email === "2025100000379@seu.edu.bd") && (
           <UploadPyqDialog teacherId={teacherId} open={open} onOpenChange={setOpen} />
         )}
       </CardHeader>
@@ -104,7 +104,7 @@ export function PyqList({ teacherId }: PyqListProps) {
   );
 }
 
-function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: number, open: boolean, onOpenChange: (open: boolean) => void }) {
+export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: number, open: boolean, onOpenChange: (open: boolean) => void }) {
   const uploadMutation = useUploadPyq();
   const [file, setFile] = useState<File | null>(null);
   const [courseCode, setCourseCode] = useState("");

@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { useRoute } from "wouter";
 import { useTeacher } from "@/hooks/use-teachers";
 import { useReviews } from "@/hooks/use-reviews";
 import { Navbar } from "@/components/Navbar";
 import { Badge } from "@/components/ui/badge";
 import { ReviewForm } from "@/components/ReviewForm";
-import { PyqList } from "@/components/PyqList";
+import { PyqList, UploadPyqDialog } from "@/components/PyqList";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Building2, 
@@ -30,6 +31,7 @@ export default function TeacherProfile() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [pyqDialogOpen, setPyqDialogOpen] = useState(false);
   
   const { data: teacher, isLoading: teacherLoading, error: teacherError } = useTeacher(teacherId);
   const { data: reviews, isLoading: reviewsLoading } = useReviews(teacherId);
@@ -93,12 +95,19 @@ export default function TeacherProfile() {
               </div>
             </div>
 
-            <div className="shrink-0">
+            <div className="shrink-0 flex items-center gap-3">
               <ReviewForm 
-                teacherId={teacher.id} 
+                teacherId={teacherId} 
                 teacherName={teacher.fullName} 
                 coursesTaught={teacher.coursesTaught}
               />
+              {!!user && (user.role === "admin" || user.email === "2025100000379@seu.edu.bd") && (
+                <UploadPyqDialog 
+                  teacherId={teacherId} 
+                  open={pyqDialogOpen} 
+                  onOpenChange={setPyqDialogOpen} 
+                />
+              )}
             </div>
           </div>
         </div>
