@@ -236,15 +236,17 @@ export async function registerRoutes(
     try {
       // Manual parsing since it's FormData
       const teacherId = Number(req.body.teacherId);
-      const courseCode = req.body.courseCode;
-      const semester = req.body.semester;
-      const examType = req.body.examType;
+      const courseCode = String(req.body.courseCode);
+      const semester = String(req.body.semester);
+      const examType = String(req.body.examType);
       const year = Number(req.body.year);
       const uploadedBy = (req.user as any).id;
       const fileUrl = `/uploads/${req.file.filename}`;
 
+      console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
+
       if (!teacherId || !courseCode || !year || !semester || !examType) {
-         return res.status(400).json({ message: "Missing fields" });
+         return res.status(400).json({ message: "Missing required fields in request body" });
       }
 
       const pyq = await storage.createPyq({
@@ -259,8 +261,8 @@ export async function registerRoutes(
       
       res.status(201).json(pyq);
     } catch (err) {
-      console.error("PYQ Upload Error:", err);
-      res.status(500).json({ message: err instanceof Error ? err.message : "Internal server error" });
+      console.error("PYQ Upload Database Error:", err);
+      res.status(500).json({ message: err instanceof Error ? err.message : "Internal server error during database save" });
     }
   });
 
