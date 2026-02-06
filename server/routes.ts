@@ -65,8 +65,11 @@ export async function registerRoutes(
   });
 
   app.post(api.teachers.create.path, async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
-      return res.status(403).json({ message: "Forbidden: Admin only" });
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    const user = req.user as any;
+    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    if (!isAdmin && user.role !== "moderator") {
+      return res.status(403).json({ message: "Forbidden: Admin or Moderator only" });
     }
     try {
       const input = api.teachers.create.input.parse(req.body);
@@ -82,8 +85,11 @@ export async function registerRoutes(
   });
 
   app.put(api.teachers.update.path, async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
-      return res.status(403).json({ message: "Forbidden: Admin only" });
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    const user = req.user as any;
+    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    if (!isAdmin && user.role !== "moderator") {
+      return res.status(403).json({ message: "Forbidden: Admin or Moderator only" });
     }
     try {
       const input = api.teachers.update.input.parse(req.body);
@@ -102,7 +108,10 @@ export async function registerRoutes(
   });
 
   app.delete(api.teachers.delete.path, async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    const user = req.user as any;
+    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    if (!isAdmin) {
       return res.status(403).json({ message: "Forbidden: Admin only" });
     }
     const id = Number(req.params.id);
@@ -111,6 +120,22 @@ export async function registerRoutes(
       return res.status(404).json({ message: "Teacher not found" });
     }
     res.status(204).send();
+  });
+
+  // User Roles Management (Admin Only)
+  app.patch("/api/admin/users/role", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).send("Unauthorized");
+    const user = req.user as any;
+    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    if (!isAdmin) return res.status(403).send("Forbidden: Admin only");
+
+    const { email, role } = req.body;
+    if (!email || !role) return res.status(400).send("Missing email or role");
+
+    const updated = await storage.updateUserRole(email, role);
+    if (!updated) return res.status(404).send("User not found");
+
+    res.json(updated);
   });
 
   // === REVIEWS ===

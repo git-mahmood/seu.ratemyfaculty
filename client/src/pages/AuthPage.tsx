@@ -100,28 +100,16 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean 
 }
 
 function RegisterForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean }) {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ username, email, password });
+    onSubmit({ email, password });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="reg-username">Username</Label>
-        <Input 
-          id="reg-username" 
-          placeholder="Choose a username"
-          value={username} 
-          onChange={e => setUsername(e.target.value)} 
-          minLength={3}
-          required 
-        />
-      </div>
       <div className="space-y-2">
         <Label htmlFor="reg-email">Email</Label>
         <Input 
@@ -144,26 +132,6 @@ function RegisterForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boole
           required 
         />
       </div>
-      {/* 
-        Ideally admin role is protected or invited, but for this demo 
-        we'll allow selecting it or default to student. 
-        Hidden for now to force student, unless you uncomment.
-      */}
-      {/* 
-      <div className="space-y-2">
-        <Label>Role</Label>
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="role" checked={role === 'student'} onChange={() => setRole('student')} />
-            Student
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="role" checked={role === 'admin'} onChange={() => setRole('admin')} />
-            Admin (Demo)
-          </label>
-        </div>
-      </div> 
-      */}
       
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Creating account..." : "Create Account"}

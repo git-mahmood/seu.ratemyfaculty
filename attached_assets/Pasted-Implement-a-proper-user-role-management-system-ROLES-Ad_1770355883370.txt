@@ -1,0 +1,83 @@
+Implement a proper user role management system.
+
+ROLES
+- Admin
+- Moderator
+- Student (default)
+
+AUTHENTICATION
+- Login & register using EMAIL + PASSWORD only
+- No username field anywhere
+- Every newly registered user is assigned role = "Student" by default
+
+FIXED ADMIN
+- The following email must ALWAYS have Admin role:
+  2025100000379@seu.edu.bd
+- This admin role must be enforced server-side
+
+DATABASE
+- Store ONE role per user in the users table (linked by email)
+- Default role = "Student"
+- Prevent duplicate role records
+- Handle missing role safely
+
+ADMIN-ONLY: USER ROLES PANEL
+- Create an Admin-only dashboard section named "User Roles"
+- Visible ONLY to Admin
+- Panel includes:
+  1) User email (text input)
+  2) Role dropdown: Admin | Moderator | Student
+  3) Save button
+
+ON SAVE
+- Verify user email exists
+- If not found → show error
+- If found → update role
+- Show success message
+- Do NOT create users here
+
+PERMISSIONS (SERVER-SIDE ENFORCED)
+
+Admin can:
+- Access User Roles panel
+- Assign/update roles
+- Add / edit / delete faculty
+- Upload & delete PYQs
+- Delete ANY review
+- Edit ONLY their own reviews
+
+Moderator can:
+- Add / edit faculty
+- Upload & delete PYQs
+- Delete inappropriate reviews
+- Edit ONLY their own reviews
+
+Student can:
+- View faculty profiles
+- Submit reviews
+- Edit & delete ONLY their own reviews
+- View PYQs
+
+RESTRICTIONS
+- Students and Moderators cannot access role assignment panel
+- Moderators cannot change roles
+- Users cannot edit others’ reviews
+
+SECURITY RULES
+- Enforce permissions in backend APIs
+- Frontend may hide UI, but backend must block access
+- Do NOT rely on client-side checks
+
+DO NOT
+- Use usernames
+- Remove existing authentication
+- Change UI styling
+- Hardcode roles except fixed Admin email
+- Delete existing users or data
+
+VERIFY
+- New users → Student role
+- Admin email always Admin
+- Moderator permissions work correctly
+- Role changes persist after refresh
+- Unauthorized actions are rejected

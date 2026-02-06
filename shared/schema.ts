@@ -7,10 +7,9 @@ import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
   password: text("password").notNull(),
   email: text("email").notNull().unique(),
-  role: text("role", { enum: ["admin", "student"] }).default("student").notNull(),
+  role: text("role", { enum: ["admin", "moderator", "student"] }).default("student").notNull(),
 });
 
 export const teachers = pgTable("teachers", {

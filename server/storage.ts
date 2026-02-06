@@ -55,9 +55,21 @@ export class DatabaseStorage implements IStorage {
     const isAdmin = insertUser.email === "2025100000379@seu.edu.bd";
     const [user] = await db.insert(users).values({
       ...insertUser,
-      role: isAdmin ? "admin" : (insertUser.role || "student")
+      role: isAdmin ? "admin" : "student"
     }).returning();
     return user;
+  }
+
+  async updateUserRole(email: string, role: "admin" | "moderator" | "student"): Promise<User | undefined> {
+    // Prevent changing role of the fixed admin
+    if (email === "2025100000379@seu.edu.bd") return undefined;
+
+    const [updated] = await db
+      .update(users)
+      .set({ role })
+      .where(eq(users.email, email))
+      .returning();
+    return updated;
   }
 
   // Teachers
