@@ -12,7 +12,7 @@ interface TeacherCardProps {
 export function TeacherCard({ teacher }: TeacherCardProps) {
   return (
     <Card className="h-full flex flex-col hover:shadow-lg transition-all duration-300 group border-border/50">
-      <div className="relative h-48 w-full overflow-hidden rounded-t-xl bg-muted">
+      <div className="relative aspect-square w-full overflow-hidden rounded-t-xl bg-muted">
         <img
           src={teacher.photoUrl || "https://images.unsplash.com/photo-1544531320-9854b5098cf4?w=800&auto=format&fit=crop&q=60"} 
           /* academic placeholder image */

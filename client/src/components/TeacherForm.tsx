@@ -127,9 +127,23 @@ export function TeacherForm({ teacher, trigger }: TeacherFormProps) {
               name="photoUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Photo URL</FormLabel>
+                  <FormLabel>Photo URL (Square photo recommended)</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://..." {...field} />
+                    <div className="space-y-4">
+                      <Input placeholder="https://..." {...field} />
+                      {field.value && (
+                        <div className="flex justify-center">
+                          <div className="h-32 w-32 rounded-xl overflow-hidden border bg-muted">
+                            <img 
+                              src={field.value} 
+                              alt="Preview" 
+                              className="h-full w-full object-cover"
+                              onError={(e) => (e.currentTarget.src = "")}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

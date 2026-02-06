@@ -60,7 +60,7 @@ export default function TeacherProfile() {
       <div className="bg-primary/5 border-b">
         <div className="container mx-auto px-4 py-12 md:py-16">
           <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden shadow-xl border-4 border-background shrink-0">
+            <div className="h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden shadow-xl border-4 border-background shrink-0 aspect-square">
               <img 
                 src={teacher.photoUrl} 
                 alt={teacher.fullName} 
