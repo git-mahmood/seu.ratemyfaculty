@@ -101,7 +101,7 @@ export default function TeacherProfile() {
                 teacherName={teacher.fullName} 
                 coursesTaught={teacher.coursesTaught}
               />
-              {!!user && (user.role === "admin" || user.email === "2025100000379@seu.edu.bd") && (
+              {!!user && (user.role === "admin" || user.role === "moderator" || user.email === "2025100000379@seu.edu.bd") && (
                 <UploadPyqDialog 
                   teacherId={teacherId} 
                   open={pyqDialogOpen} 

@@ -251,8 +251,11 @@ export async function registerRoutes(
       next();
     });
   }, async (req, res) => {
-    if (!req.isAuthenticated() || (req.user as any).email !== "2025100000379@seu.edu.bd") {
-      return res.status(403).json({ message: "Forbidden: Admin only" });
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    const user = req.user as any;
+    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    if (!isAdmin && user.role !== "moderator") {
+      return res.status(403).json({ message: "Forbidden: Admin or Moderator only" });
     }
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
