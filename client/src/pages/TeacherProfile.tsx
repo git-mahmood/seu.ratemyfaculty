@@ -57,10 +57,10 @@ export default function TeacherProfile() {
       <Navbar />
       
       {/* Header Banner */}
-      <div className="bg-primary/5 border-b">
-        <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden shadow-xl border-4 border-background shrink-0 aspect-square">
+      <div className="bg-primary/10 border-b relative">
+        <div className="container mx-auto px-4 py-8 md:py-10">
+          <div className="flex flex-col md:flex-row gap-6 items-start relative z-10">
+            <div className="h-28 w-28 md:h-32 md:w-32 rounded-2xl overflow-hidden shadow-xl border-4 border-background shrink-0 aspect-square">
               <img 
                 src={teacher.photoUrl} 
                 alt={teacher.fullName} 
@@ -68,12 +68,12 @@ export default function TeacherProfile() {
               />
             </div>
             
-            <div className="space-y-4 flex-1">
+            <div className="space-y-3 flex-1">
               <div>
-                <h1 className="text-4xl font-display font-bold text-foreground mb-2">
+                <h1 className="text-3xl font-display font-bold text-white mb-2 drop-shadow-md">
                   {teacher.fullName}
                 </h1>
-                <div className="flex flex-wrap gap-4 text-muted-foreground">
+                <div className="flex flex-wrap gap-4 text-white/80">
                   <div className="flex items-center gap-2">
                     <Building2 className="h-4 w-4" />
                     {teacher.department}
@@ -87,7 +87,7 @@ export default function TeacherProfile() {
 
               <div className="flex flex-wrap gap-2">
                 {teacher.coursesTaught.map((course, i) => (
-                  <Badge key={i} variant="outline" className="bg-background">
+                  <Badge key={i} variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 transition-colors">
                     <BookOpen className="h-3 w-3 mr-1" />
                     {course}
                   </Badge>
@@ -111,6 +111,8 @@ export default function TeacherProfile() {
             </div>
           </div>
         </div>
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-black/40 z-0" />
       </div>
 
       <div className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
