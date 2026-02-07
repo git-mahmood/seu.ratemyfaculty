@@ -41,7 +41,7 @@ export function Navbar() {
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                   <Avatar className="h-9 w-9 border-2 border-primary/10">
                     <AvatarFallback className="bg-primary/5 text-primary font-bold">
-                      {user.username.slice(0, 2).toUpperCase()}
+                      {user.email.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -49,12 +49,9 @@ export function Navbar() {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user.username}</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user.email}
-                    </p>
+                    <p className="text-sm font-medium leading-none">{user.email}</p>
                     <p className="text-xs leading-none text-muted-foreground capitalize">
-                      {user.email === "2025100000379@seu.edu.bd" ? "Admin" : "Student"} Account
+                      {user.role} Account
                     </p>
                   </div>
                 </DropdownMenuLabel>
