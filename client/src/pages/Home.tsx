@@ -42,9 +42,9 @@ export default function Home() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-96 rounded-xl bg-muted animate-pulse" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="aspect-[4/5] rounded-xl bg-muted animate-pulse" />
             ))}
           </div>
         ) : error ? (
@@ -58,7 +58,7 @@ export default function Home() {
             <p>Try adjusting your search query.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredTeachers?.map((teacher) => (
               <TeacherCard key={teacher.id} teacher={teacher} />
             ))}
