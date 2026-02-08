@@ -58,9 +58,9 @@ export default function TeacherProfile() {
       
       {/* Header Banner */}
       <div className="bg-primary/10 border-b relative">
-        <div className="container mx-auto px-4 py-8 md:py-10">
-          <div className="flex flex-col md:flex-row gap-6 items-start relative z-10">
-            <div className="h-28 w-28 md:h-32 md:w-32 rounded-2xl overflow-hidden shadow-xl border-4 border-background shrink-0 aspect-square">
+        <div className="container mx-auto px-4 py-4 md:py-6">
+          <div className="flex flex-col md:flex-row gap-4 items-start relative z-10">
+            <div className="h-20 w-20 md:h-24 md:w-24 rounded-xl overflow-hidden shadow-lg border-2 border-background shrink-0 aspect-square">
               <img 
                 src={teacher.photoUrl} 
                 alt={teacher.fullName} 
@@ -68,12 +68,12 @@ export default function TeacherProfile() {
               />
             </div>
             
-            <div className="space-y-3 flex-1">
+            <div className="space-y-2 flex-1">
               <div>
-                <h1 className="text-3xl font-display font-bold text-white mb-2 drop-shadow-md">
+                <h1 className="text-2xl font-display font-bold text-white mb-1 drop-shadow-md">
                   {teacher.fullName}
                 </h1>
-                <div className="flex flex-wrap gap-4 text-white/80">
+                <div className="flex flex-wrap gap-3 text-white/80 text-sm">
                   <div className="flex items-center gap-2">
                     <Building2 className="h-4 w-4" />
                     {teacher.department}
