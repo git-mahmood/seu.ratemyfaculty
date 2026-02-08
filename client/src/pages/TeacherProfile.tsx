@@ -58,9 +58,9 @@ export default function TeacherProfile() {
       
       {/* Header Banner */}
       <div className="bg-primary/10 border-b relative">
-        <div className="container mx-auto px-4 py-4 md:py-6">
-          <div className="flex flex-col md:flex-row gap-4 items-start relative z-10">
-            <div className="h-20 w-20 md:h-24 md:w-24 rounded-xl overflow-hidden shadow-lg border-2 border-background shrink-0 aspect-square">
+        <div className="container mx-auto px-4 py-2 md:py-3">
+          <div className="flex flex-col md:flex-row gap-3 items-center relative z-10">
+            <div className="h-16 w-16 md:h-20 md:w-20 rounded-lg overflow-hidden shadow-lg border-2 border-background shrink-0 aspect-square">
               <img 
                 src={teacher.photoUrl} 
                 alt={teacher.fullName} 
@@ -68,34 +68,34 @@ export default function TeacherProfile() {
               />
             </div>
             
-            <div className="space-y-2 flex-1">
+            <div className="space-y-1 flex-1 text-center md:text-left">
               <div>
-                <h1 className="text-2xl font-display font-bold text-white mb-1 drop-shadow-md">
+                <h1 className="text-xl md:text-2xl font-display font-bold text-white drop-shadow-md">
                   {teacher.fullName}
                 </h1>
-                <div className="flex flex-wrap gap-3 text-white/80 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
+                <div className="flex flex-wrap justify-center md:justify-start gap-3 text-white/90 text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <Building2 className="h-3.5 w-3.5" />
                     {teacher.department}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5" />
                     {teacher.university}
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap justify-center md:justify-start gap-1.5">
                 {teacher.coursesTaught.map((course, i) => (
-                  <Badge key={i} variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 transition-colors">
-                    <BookOpen className="h-3 w-3 mr-1" />
+                  <Badge key={i} variant="outline" className="bg-white/10 text-white border-white/20 px-2 py-0 h-5 text-[10px] hover:bg-white/20 transition-colors">
+                    <BookOpen className="h-2.5 w-2.5 mr-1" />
                     {course}
                   </Badge>
                 ))}
               </div>
             </div>
 
-            <div className="shrink-0 flex items-center gap-3">
+            <div className="shrink-0 flex items-center gap-2 mt-2 md:mt-0">
               <ReviewForm 
                 teacherId={teacherId} 
                 teacherName={teacher.fullName} 
@@ -112,7 +112,7 @@ export default function TeacherProfile() {
           </div>
         </div>
         {/* Dark overlay for readability */}
-        <div className="absolute inset-0 bg-black/40 z-0" />
+        <div className="absolute inset-0 bg-black/50 z-0" />
       </div>
 
       <div className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
