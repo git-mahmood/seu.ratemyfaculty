@@ -20,11 +20,11 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        <div className="absolute bottom-2 left-2 right-2 text-white">
-          <h3 className="font-display font-bold text-sm md:text-base leading-tight truncate">{teacher.fullName}</h3>
+        <div className="absolute bottom-2 left-2 right-2">
+          <h3 className="font-display font-bold text-sm md:text-base leading-tight truncate text-white">{teacher.fullName}</h3>
           <div className="flex items-center gap-1 text-white/90 text-[10px] md:text-xs mt-0.5">
             <Building2 className="h-3 w-3 shrink-0" />
-            <span className="truncate">{teacher.department}</span>
+            <span className="truncate text-white/90">{teacher.department}</span>
           </div>
         </div>
       </div>
