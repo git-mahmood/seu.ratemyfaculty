@@ -22,8 +22,8 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="max-w-3xl mx-auto text-center mb-12 space-y-4">
-          <h1 className="text-4xl md:text-5xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60 pb-2">
-            Find Your Next Favorite Teacher
+          <h1 className="text-3xl md:text-4xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60 pb-2">
+            Rate My Faculty
           </h1>
           <p className="text-lg text-muted-foreground">
             Honest reviews, past year questions, and comprehensive profiles for university students.
@@ -42,7 +42,7 @@ export default function Home() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="aspect-[4/5] rounded-xl bg-muted animate-pulse" />
             ))}
@@ -58,7 +58,7 @@ export default function Home() {
             <p>Try adjusting your search query.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
             {filteredTeachers?.map((teacher) => (
               <TeacherCard key={teacher.id} teacher={teacher} />
             ))}

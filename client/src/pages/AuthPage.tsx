@@ -31,7 +31,7 @@ export default function AuthPage() {
           <div className="mx-auto bg-primary/10 p-3 rounded-xl w-fit mb-2">
             <GraduationCap className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-display">Welcome to UniReviews</CardTitle>
+          <CardTitle className="text-2xl font-display">Welcome to Rate My Faculty</CardTitle>
           <CardDescription>
             Join your campus community to review teachers and share resources.
           </CardDescription>

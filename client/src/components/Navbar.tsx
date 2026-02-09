@@ -24,7 +24,7 @@ export function Navbar() {
             <GraduationCap className="h-6 w-6 text-primary" />
           </div>
           <span className="font-display font-bold text-xl tracking-tight hidden sm:block">
-            UniReviews
+            Rate My Faculty
           </span>
         </Link>
 
