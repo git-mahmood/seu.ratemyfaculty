@@ -47,7 +47,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
+    const [user] = await db.select().from(users).where(eq(users.email, username));
     return user;
   }
 
@@ -129,7 +129,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Reviews
-  async getReviewsByTeacherId(teacherId: number): Promise<(Review & { studentUsername: string; studentEmail: string | null })[]> {
+  async getReviewsByTeacherId(teacherId: number): Promise<(Review & { studentEmail: string | null })[]> {
     const result = await db
       .select({
         review: reviews,
@@ -141,7 +141,6 @@ export class DatabaseStorage implements IStorage {
 
     return result.map(({ review, student }) => ({
       ...review,
-      studentUsername: student.username,
       studentEmail: student.email,
     }));
   }
@@ -159,6 +158,20 @@ export class DatabaseStorage implements IStorage {
         and(
           eq(reviews.studentId, studentId),
           eq(reviews.teacherId, teacherId)
+        )
+      );
+    return review;
+  }
+
+  async getReviewByStudentTeacherCourse(studentId: number, teacherId: number, courseTaken: string): Promise<Review | undefined> {
+    const [review] = await db
+      .select()
+      .from(reviews)
+      .where(
+        and(
+          eq(reviews.studentId, studentId),
+          eq(reviews.teacherId, teacherId),
+          eq(reviews.courseTaken, courseTaken)
         )
       );
     return review;

@@ -91,8 +91,14 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
         setOpen(false);
       }
       form.reset();
-    } catch (error) {
-      // Error handled by hook
+    } catch (error: any) {
+      if (error.message === "Conflict" || error.status === 409) {
+        toast({
+          title: "Submission Blocked",
+          description: "You have already submitted a review for this faculty in this course.",
+          variant: "destructive"
+        });
+      }
     }
   };
 

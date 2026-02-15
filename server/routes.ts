@@ -148,7 +148,7 @@ export async function registerRoutes(
     
     const sanitized = reviews.map(r => ({
       ...r,
-      studentUsername: isAdmin ? r.studentUsername : "Anonymous Student",
+      studentUsername: isAdmin ? r.studentEmail : "Anonymous Student",
       studentEmail: isAdmin ? r.studentEmail : undefined
     }));
 
@@ -163,10 +163,10 @@ export async function registerRoutes(
       const input = api.reviews.create.input.parse(req.body);
       const studentId = (req.user as any).id;
       
-      // Check if already reviewed
-      const existing = await storage.getReviewByStudentAndTeacher(studentId, input.teacherId);
+      // Check if already reviewed for this specific course
+      const existing = await storage.getReviewByStudentTeacherCourse(studentId, input.teacherId, input.courseTaken);
       if (existing) {
-        return res.status(409).json({ message: "You have already reviewed this teacher" });
+        return res.status(409).json({ message: "You have already submitted a review for this faculty in this course." });
       }
 
       const review = await storage.createReview({ ...input, studentId });
@@ -265,8 +265,8 @@ export async function registerRoutes(
       // Manual parsing since it's FormData
       const teacherId = Number(req.body.teacherId);
       const courseCode = String(req.body.courseCode);
-      const semester = String(req.body.semester);
-      const examType = String(req.body.examType);
+      const semester = req.body.semester as "Spring" | "Summer" | "Fall";
+      const examType = req.body.examType as "Mid" | "Final" | "Quiz";
       const year = Number(req.body.year);
       const uploadedBy = (req.user as any).id;
       const fileUrl = `/uploads/${req.file.filename}`;
