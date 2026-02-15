@@ -22,7 +22,7 @@ export interface IStorage {
   deleteTeacher(id: number): Promise<boolean>;
 
   // Reviews
-  getReviewsByTeacherId(teacherId: number): Promise<(Review & { studentUsername: string })[]>;
+  getReviewsByTeacherId(teacherId: number): Promise<(Review & { studentUsername: string; studentEmail: string | null })[]>;
   getReview(id: number): Promise<Review | undefined>;
   getReviewByStudentAndTeacher(studentId: number, teacherId: number): Promise<Review | undefined>;
   createReview(review: InsertReview): Promise<Review>;
@@ -129,7 +129,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Reviews
-  async getReviewsByTeacherId(teacherId: number): Promise<(Review & { studentEmail: string | null })[]> {
+  async getReviewsByTeacherId(teacherId: number): Promise<(Review & { studentUsername: string; studentEmail: string | null })[]> {
     const result = await db
       .select({
         review: reviews,
@@ -141,6 +141,7 @@ export class DatabaseStorage implements IStorage {
 
     return result.map(({ review, student }) => ({
       ...review,
+      studentUsername: student.email,
       studentEmail: student.email,
     }));
   }

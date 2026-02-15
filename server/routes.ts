@@ -169,6 +169,10 @@ export async function registerRoutes(
         return res.status(409).json({ message: "You have already submitted a review for this faculty in this course." });
       }
 
+      if (!input.termsAccepted) {
+        return res.status(400).json({ message: "You must agree to the Terms & Conditions before submitting a review." });
+      }
+
       const review = await storage.createReview({ ...input, studentId });
       res.status(201).json(review);
     } catch (err) {
