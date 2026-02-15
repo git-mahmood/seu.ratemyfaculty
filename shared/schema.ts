@@ -31,7 +31,7 @@ export const reviews = pgTable("reviews", {
   markingStyle: text("marking_style", { enum: ["Open-minded", "Average", "Strict"] }).notNull(),
   questionDifficulty: text("question_difficulty", { enum: ["Easy", "Medium", "Hard"] }).notNull(),
   comment: text("comment"),
-  termsAccepted: boolean("terms_accepted").default(false).notNull(),
+  termsAccepted: boolean("terms_accepted").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (t) => ({

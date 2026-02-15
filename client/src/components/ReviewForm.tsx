@@ -82,7 +82,7 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
       markingStyle: "Average",
       questionDifficulty: "Medium",
       comment: "",
-      termsAccepted: false,
+      termsAccepted: true,
     },
   });
 
