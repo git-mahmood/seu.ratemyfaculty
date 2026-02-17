@@ -77,7 +77,7 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
     defaultValues: review || {
       teacherId,
       personality: "Neutral",
-      bestFor: "Average",
+      bestFor: "Average Students",
       courseTaken: "",
       markingStyle: "Average",
       questionDifficulty: "Medium",
