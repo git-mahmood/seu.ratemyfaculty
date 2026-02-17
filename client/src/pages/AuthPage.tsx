@@ -20,7 +20,9 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
 
   if (user) {
-    setLocation("/");
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect") || "/";
+    setLocation(redirect);
     return null;
   }
 

@@ -122,7 +122,8 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
 
   const handleOpenChange = (isOpen: boolean) => {
     if (isOpen && !user) {
-      setLocation("/auth");
+      const currentPath = window.location.pathname + window.location.search;
+      setLocation(`/auth?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
     if (isOpen && !isEditing) {
