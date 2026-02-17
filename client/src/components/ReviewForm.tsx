@@ -314,9 +314,9 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Strong">Strong Students</SelectItem>
-                          <SelectItem value="Average">Average Students</SelectItem>
-                          <SelectItem value="Weak">Weak Students</SelectItem>
+                          <SelectItem value="Strong Students">Strong Students</SelectItem>
+                          <SelectItem value="Average Students">Average Students</SelectItem>
+                          <SelectItem value="Weak Students">Weak Students</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
