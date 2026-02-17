@@ -87,6 +87,11 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
   });
 
   const onSubmit = async (data: Omit<InsertReview, "studentId">) => {
+    if (!user) {
+      const currentPath = window.location.pathname + window.location.search;
+      setLocation(`/auth?redirect=${encodeURIComponent(currentPath)}`);
+      return;
+    }
     try {
       if (!data.termsAccepted && !isEditing) {
         toast({

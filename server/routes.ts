@@ -157,7 +157,7 @@ export async function registerRoutes(
 
   app.post(api.reviews.create.path, async (req, res) => {
     if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "You must be logged in to submit a review" });
     }
     try {
       const input = api.reviews.create.input.parse(req.body);
