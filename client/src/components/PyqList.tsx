@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, UploadCloud, ChevronRight } from "lucide-react";
+import { FileText, Download, UploadCloud, ChevronRight, Share2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +30,7 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
   const { data: pyqs, isLoading } = usePyqs(teacherId);
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const { toast } = useToast();
   
   const groupedPyqs = useMemo(() => {
     if (!pyqs) return {};
@@ -40,6 +41,17 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
       return acc;
     }, {});
   }, [pyqs]);
+
+  const sharePyq = (pyq: any) => {
+    const text = `Check out this ${pyq.examType} ${pyq.year} paper for ${pyq.courseCode} on Rate My Faculty!`;
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: "Rate My Faculty - PYQ", text, url }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(`${text} ${url}`);
+      toast({ title: "Link copied to clipboard!" });
+    }
+  };
 
   if (isLoading) return <div className="animate-pulse h-24 bg-muted rounded-lg"></div>;
   if (!pyqs) return null;
@@ -72,27 +84,38 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
                 </div>
                 <div className="grid grid-cols-1 gap-2 pl-4">
                   {items.map((pyq: any) => (
-                    <a 
-                      key={pyq.id} 
-                      href={pyq.fileUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center p-3 rounded-lg border bg-card hover:border-primary/50 hover:bg-accent transition-all group shadow-sm"
-                    >
-                      <div className="bg-primary/10 p-2 rounded mr-3 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <FileText className="h-4 w-4" />
+                    <div key={pyq.id} className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <a 
+                          href={pyq.fileUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center p-3 rounded-lg border bg-card hover:border-primary/50 hover:bg-accent transition-all group shadow-sm"
+                        >
+                          <div className="bg-primary/10 p-2 rounded mr-3 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            <FileText className="h-4 w-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm">
+                              {pyq.examType} {pyq.year}
+                            </p>
+                            <p className="text-xs text-muted-foreground">{pyq.semester}</p>
+                          </div>
+                          <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
+                            <span className="text-xs font-medium hidden sm:inline">Download</span>
+                            <Download className="h-4 w-4" />
+                          </div>
+                        </a>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-10 w-10 shrink-0 border"
+                          onClick={() => sharePyq(pyq)}
+                        >
+                          <Share2 className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm">
-                          {pyq.examType} {pyq.year}
-                        </p>
-                        <p className="text-xs text-muted-foreground">{pyq.semester}</p>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
-                        <span className="text-xs font-medium hidden sm:inline">Download</span>
-                        <Download className="h-4 w-4" />
-                      </div>
-                    </a>
+                    </div>
                   ))}
                 </div>
               </div>

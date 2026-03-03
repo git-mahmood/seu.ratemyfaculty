@@ -29,7 +29,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { MessageSquarePlus, ScrollText, CheckCircle2 } from "lucide-react";
+import { MessageSquarePlus, ScrollText, CheckCircle2, Share2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -48,6 +48,7 @@ interface ReviewFormProps {
 export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trigger }: ReviewFormProps) {
   const [open, setOpen] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
+  const [showSignInPrompt, setShowSignInPrompt] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const { user } = useAuth();
   const [, setLocation] = useLocation();
@@ -88,8 +89,7 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
 
   const onSubmit = async (data: Omit<InsertReview, "studentId">) => {
     if (!user) {
-      const currentPath = window.location.pathname + window.location.search;
-      setLocation(`/auth?redirect=${encodeURIComponent(currentPath)}`);
+      setShowSignInPrompt(true);
       return;
     }
     try {
@@ -122,8 +122,7 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
 
   const handleOpenChange = (isOpen: boolean) => {
     if (isOpen && !user) {
-      const currentPath = window.location.pathname + window.location.search;
-      setLocation(`/auth?redirect=${encodeURIComponent(currentPath)}`);
+      setShowSignInPrompt(true);
       return;
     }
     if (isOpen && !isEditing) {
@@ -131,6 +130,11 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
       return;
     }
     setOpen(isOpen);
+  };
+
+  const goToSignIn = () => {
+    const currentPath = window.location.pathname + window.location.search;
+    setLocation(`/auth?redirect=${encodeURIComponent(currentPath)}`);
   };
 
   const handleAgree = () => {
@@ -142,10 +146,33 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
 
   return (
     <>
+      <Dialog open={showSignInPrompt} onOpenChange={setShowSignInPrompt}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Sign in Required</DialogTitle>
+            <DialogDescription>
+              Sign in to write a review and share your experience with the community.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button variant="outline" onClick={() => setShowSignInPrompt(false)}>
+              Cancel
+            </Button>
+            <Button onClick={goToSignIn}>
+              Sign In
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showTerms} onOpenChange={setShowTerms}>
         <DialogTrigger asChild>
           {trigger || (
-            <Button size="lg" className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
+            <Button 
+              size="lg" 
+              className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
+              onClick={() => handleOpenChange(true)}
+            >
               <MessageSquarePlus className="mr-2 h-5 w-5" />
               Write a Review
             </Button>
@@ -169,7 +196,7 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
               <li>No personal attacks, abusive language, or defamation.</li>
               <li>No false information or misleading statements.</li>
               <li>No hate speech or discrimination of any kind.</li>
-              <li>Reviews must be based on your actual personal academic experience.</li>
+              <li>Reviews must be based on your academic experience.</li>
               <li>The platform reserves the right to remove inappropriate reviews.</li>
             </ul>
           </div>

@@ -17,7 +17,8 @@ import {
   Meh,
   GraduationCap,
   Pencil,
-  Trash2
+  Trash2,
+  Share2
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -49,6 +50,17 @@ export default function TeacherProfile() {
     },
   });
 
+  const shareProfile = () => {
+    const text = `Check out ${teacher?.fullName}'s profile on Rate My Faculty!`;
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: "Rate My Faculty", text, url }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(`${text} ${url}`);
+      toast({ title: "Link copied to clipboard!" });
+    }
+  };
+
   if (teacherLoading) return <ProfileSkeleton />;
   if (teacherError || !teacher) return <div className="text-center py-20">Teacher not found</div>;
 
@@ -69,29 +81,29 @@ export default function TeacherProfile() {
             </div>
             
             <div className="space-y-1 flex-1 text-center md:text-left">
-              <div>
+              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
                 <h1 className="text-xl md:text-2xl font-display font-bold text-white drop-shadow-md">
                   {teacher.fullName}
                 </h1>
-                <div className="flex flex-wrap justify-center md:justify-start gap-3 text-white/90 text-xs">
-                  <div className="flex items-center gap-1.5">
-                    <Building2 className="h-3.5 w-3.5" />
-                    {teacher.department}
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {teacher.university}
-                  </div>
-                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-white hover:bg-white/20 h-8 gap-2 w-fit mx-auto md:mx-0"
+                  onClick={shareProfile}
+                >
+                  <Share2 className="h-4 w-4" />
+                  Share Profile
+                </Button>
               </div>
-
-              <div className="flex flex-wrap justify-center md:justify-start gap-1.5">
-                {teacher.coursesTaught.map((course, i) => (
-                  <Badge key={i} variant="outline" className="bg-white/10 text-white border-white/20 px-2 py-0 h-5 text-[10px] hover:bg-white/20 transition-colors">
-                    <BookOpen className="h-2.5 w-2.5 mr-1" />
-                    {course}
-                  </Badge>
-                ))}
+              <div className="flex flex-wrap justify-center md:justify-start gap-3 text-white/90 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <Building2 className="h-3.5 w-3.5" />
+                  {teacher.department}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" />
+                  {teacher.university}
+                </div>
               </div>
             </div>
 
@@ -139,6 +151,17 @@ export default function TeacherProfile() {
                 const isAdmin = user?.email === "2025100000379@seu.edu.bd";
                 const isOwner = user?.id === review.studentId;
                 
+                const shareReview = () => {
+                  const text = `Check out this review for ${teacher.fullName} on Rate My Faculty!`;
+                  const url = `${window.location.origin}/teacher/${teacher.id}`;
+                  if (navigator.share) {
+                    navigator.share({ title: "Rate My Faculty", text, url }).catch(console.error);
+                  } else {
+                    navigator.clipboard.writeText(`${text} ${url}`);
+                    toast({ title: "Link copied to clipboard!" });
+                  }
+                };
+
                 return (
                   <div key={review.id} className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex justify-between items-start mb-4">
@@ -156,19 +179,22 @@ export default function TeacherProfile() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {isOwner && (
-                          <ReviewForm 
-                            teacherId={teacher.id}
-                            teacherName={teacher.fullName}
-                            coursesTaught={teacher.coursesTaught}
-                            review={review}
-                            trigger={
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={shareReview}>
+                          <Share2 className="h-4 w-4" />
+                        </Button>
+                        <ReviewForm 
+                          teacherId={teacher.id}
+                          teacherName={teacher.fullName}
+                          coursesTaught={teacher.coursesTaught}
+                          review={review}
+                          trigger={
+                            isOwner ? (
                               <Button variant="ghost" size="icon" className="h-8 w-8">
                                 <Pencil className="h-4 w-4" />
                               </Button>
-                            }
-                          />
-                        )}
+                            ) : null
+                          }
+                        />
                         {(isOwner || isAdmin) && (
                           <Button 
                             variant="ghost" 
