@@ -166,18 +166,6 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
       </Dialog>
 
       <Dialog open={showTerms} onOpenChange={setShowTerms}>
-        <DialogTrigger asChild>
-          {trigger || (
-            <Button 
-              size="lg" 
-              className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
-              onClick={() => handleOpenChange(true)}
-            >
-              <MessageSquarePlus className="mr-2 h-5 w-5" />
-              Write a Review
-            </Button>
-          )}
-        </DialogTrigger>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -230,6 +218,17 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
           </div>
         </DialogContent>
       </Dialog>
+
+      {trigger || (
+        <Button 
+          size="lg" 
+          className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
+          onClick={() => handleOpenChange(true)}
+        >
+          <MessageSquarePlus className="mr-2 h-5 w-5" />
+          Write a Review
+        </Button>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-2xl">
