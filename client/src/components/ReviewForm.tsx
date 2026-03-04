@@ -49,6 +49,7 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
   const [open, setOpen] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -88,8 +89,7 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
 
   const onSubmit = async (data: Omit<InsertReview, "studentId">) => {
     if (!user) {
-      const currentPath = window.location.pathname + window.location.search;
-      setLocation(`/auth?redirect=${encodeURIComponent(currentPath)}`);
+      setShowLoginPrompt(true);
       return;
     }
     try {
@@ -122,8 +122,7 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
 
   const handleOpenChange = (isOpen: boolean) => {
     if (isOpen && !user) {
-      const currentPath = window.location.pathname + window.location.search;
-      setLocation(`/auth?redirect=${encodeURIComponent(currentPath)}`);
+      setShowLoginPrompt(true);
       return;
     }
     if (isOpen && !isEditing) {
@@ -131,6 +130,11 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
       return;
     }
     setOpen(isOpen);
+  };
+
+  const handleLoginRedirect = () => {
+    const currentPath = window.location.pathname + window.location.search;
+    setLocation(`/auth?redirect=${encodeURIComponent(currentPath)}`);
   };
 
   const handleAgree = () => {
@@ -142,10 +146,33 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
 
   return (
     <>
+      <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Sign in Required</DialogTitle>
+            <DialogDescription>
+              You haven't signed in. Sign in to write a review.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button variant="outline" onClick={() => setShowLoginPrompt(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleLoginRedirect}>
+              Sign In
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showTerms} onOpenChange={setShowTerms}>
         <DialogTrigger asChild>
           {trigger || (
-            <Button size="lg" className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
+            <Button 
+              size="lg" 
+              className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
+              onClick={() => handleOpenChange(true)}
+            >
               <MessageSquarePlus className="mr-2 h-5 w-5" />
               Write a Review
             </Button>
