@@ -50,6 +50,13 @@ export function setupAuth(app: Express) {
 
   passport.use(
     new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+      const isSeuEmail = email.toLowerCase().endsWith("@seu.edu.bd");
+      const isAllowedGmail = email.toLowerCase() === "mahmudur.ft@gmail.com";
+
+      if (!isSeuEmail && !isAllowedGmail) {
+        return done(null, false, { message: "Only SEU emails (@seu.edu.bd) are allowed." });
+      }
+
       const user = await storage.getUserByEmail(email);
       if (!user || !(await comparePasswords(password, user.password))) {
         return done(null, false);
@@ -70,6 +77,13 @@ export function setupAuth(app: Express) {
       const { email, password } = req.body;
       if (!email || !password) {
         return res.status(400).send("Email and password are required");
+      }
+
+      const isSeuEmail = email.toLowerCase().endsWith("@seu.edu.bd");
+      const isAllowedGmail = email.toLowerCase() === "mahmudur.ft@gmail.com";
+
+      if (!isSeuEmail && !isAllowedGmail) {
+        return res.status(403).send("Only SEU emails (@seu.edu.bd) are allowed to register.");
       }
 
       const existingUser = await storage.getUserByEmail(email);
