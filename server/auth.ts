@@ -54,7 +54,7 @@ export function setupAuth(app: Express) {
       const isAllowedGmail = email.toLowerCase() === "mahmudur.ft@gmail.com";
 
       if (!isSeuEmail && !isAllowedGmail) {
-        return done(null, false, { message: "Only SEU emails (@seu.edu.bd) are allowed." });
+        return done(null, false, { message: "Please try with your university mail (@seu.edu.bd)" });
       }
 
       const user = await storage.getUserByEmail(email);
@@ -83,7 +83,7 @@ export function setupAuth(app: Express) {
       const isAllowedGmail = email.toLowerCase() === "mahmudur.ft@gmail.com";
 
       if (!isSeuEmail && !isAllowedGmail) {
-        return res.status(403).send("Only SEU emails (@seu.edu.bd) are allowed to register.");
+        return res.status(403).send("Please try with your university mail (@seu.edu.bd)");
       }
 
       const existingUser = await storage.getUserByEmail(email);
