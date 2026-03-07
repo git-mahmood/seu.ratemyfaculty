@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GraduationCap } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AuthPage() {
   const { user, login, register, isLoggingIn, isRegistering } = useAuth();
@@ -123,9 +124,23 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean 
 function RegisterForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const isSeuEmail = email.toLowerCase().endsWith("@seu.edu.bd");
+    const isAllowedGmail = email.toLowerCase() === "mahmudur.ft@gmail.com";
+
+    if (!isSeuEmail && !isAllowedGmail) {
+      toast({
+        title: "Registration Restricted",
+        description: "Please try with your university mail (@seu.edu.bd)",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     onSubmit({ email, password });
   };
 
