@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, UploadCloud, ChevronRight } from "lucide-react";
+import { FileText, Download, UploadCloud, ChevronRight, HelpCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ContributionGuide } from "@/components/ContributionGuide";
 
 interface PyqListProps {
   teacherId: number;
@@ -30,6 +31,7 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
   const { data: pyqs, isLoading } = usePyqs(teacherId);
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const [showContributionGuide, setShowContributionGuide] = useState(false);
   
   const groupedPyqs = useMemo(() => {
     if (!pyqs) return {};
@@ -45,16 +47,29 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
   if (!pyqs) return null;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5 text-primary" />
-          Previous Year Questions
-        </CardTitle>
-        {!hideUpload && !!user && (user.role === "admin" || user.email === "2025100000379@seu.edu.bd") && (
-          <UploadPyqDialog teacherId={teacherId} open={open} onOpenChange={setOpen} />
-        )}
-      </CardHeader>
+    <>
+      <ContributionGuide open={showContributionGuide} onOpenChange={setShowContributionGuide} />
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-2">
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5 text-primary" />
+            Previous Year Questions
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
+              onClick={() => setShowContributionGuide(true)}
+            >
+              <HelpCircle className="h-4 w-4" />
+              <span className="hidden sm:inline">Contribute</span>
+            </Button>
+            {!hideUpload && !!user && (user.role === "admin" || user.email === "2025100000379@seu.edu.bd") && (
+              <UploadPyqDialog teacherId={teacherId} open={open} onOpenChange={setOpen} />
+            )}
+          </div>
+        </CardHeader>
       <CardContent>
         {pyqs.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
@@ -100,7 +115,8 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
           </div>
         )}
       </CardContent>
-    </Card>
+      </Card>
+    </>
   );
 }
 
