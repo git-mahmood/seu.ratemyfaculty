@@ -50,18 +50,33 @@ export function setupAuth(app: Express) {
 
   passport.use(
     new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
-      const isSeuEmail = email.toLowerCase().endsWith("@seu.edu.bd");
-      const isAllowedGmail = email.toLowerCase() === "mahmudur.ft@gmail.com";
+      try {
+        const isSeuEmail = email.toLowerCase().endsWith("@seu.edu.bd");
+        const isAllowedGmail = ["mahmudur.ft@gmail.com", "ratemyfaculty.seu@gmail.com"].includes(email.toLowerCase());
 
-      if (!isSeuEmail && !isAllowedGmail) {
-        return done(null, false, { message: "Please try with your university mail (@seu.edu.bd)" });
-      }
+        if (!isSeuEmail && !isAllowedGmail) {
+          return done(null, false, { message: "Please try with your university mail (@seu.edu.bd)" });
+        }
 
-      const user = await storage.getUserByEmail(email);
-      if (!user || !(await comparePasswords(password, user.password))) {
-        return done(null, false);
-      } else {
+        let user = await storage.getUserByEmail(email);
+        
+        if (!user) {
+          // Auto-register
+          const hashedPassword = await hashPassword(password);
+          user = await storage.createUser({
+            email,
+            password: hashedPassword,
+          });
+        } else {
+          // Check password for existing user
+          if (!(await comparePasswords(password, user.password))) {
+            return done(null, false, { message: "Invalid password" });
+          }
+        }
+        
         return done(null, user);
+      } catch (err) {
+        return done(err);
       }
     }),
   );

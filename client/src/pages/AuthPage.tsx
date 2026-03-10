@@ -46,20 +46,7 @@ export default function AuthPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="register">Register</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="login">
-              <LoginForm onSubmit={login} isLoading={isLoggingIn} />
-            </TabsContent>
-            
-            <TabsContent value="register">
-              <RegisterForm onSubmit={register} isLoading={isRegistering} />
-            </TabsContent>
-          </Tabs>
+          <LoginForm onSubmit={login} isLoading={isLoggingIn} />
         </CardContent>
         <CardFooter className="flex justify-center border-t pt-6 text-sm text-muted-foreground">
           <p>By continuing, you agree to our Terms of Service.</p>
@@ -102,77 +89,11 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean 
         />
       </div>
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Signing in..." : "Sign In"}
+        {isLoading ? "Signing in..." : "Login / Sign In"}
       </Button>
     </form>
   );
 }
 
-function RegisterForm({ onSubmit, isLoading }: { onSubmit: any, isLoading: boolean }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showDomainPrompt, setShowDomainPrompt] = useState(false);
+// RegisterForm removed as per simplified auth requirements
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const isSeuEmail = email.toLowerCase().endsWith("@seu.edu.bd");
-    const isAllowedGmail = email.toLowerCase() === "mahmudur.ft@gmail.com";
-
-    if (!isSeuEmail && !isAllowedGmail) {
-      setShowDomainPrompt(true);
-      return;
-    }
-    
-    onSubmit({ email, password });
-  };
-
-  return (
-    <>
-      <Dialog open={showDomainPrompt} onOpenChange={setShowDomainPrompt}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Registration Restricted</DialogTitle>
-            <DialogDescription>
-              Please try with your university mail (@seu.edu.bd)
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end mt-4">
-            <Button onClick={() => setShowDomainPrompt(false)}>
-              Understood
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="reg-email">Email</Label>
-        <Input 
-          id="reg-email" 
-          type="email"
-          placeholder="your@email.com"
-          value={email} 
-          onChange={e => setEmail(e.target.value)} 
-          required 
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="reg-password">Password</Label>
-        <Input 
-          id="reg-password" 
-          type="password" 
-          value={password} 
-          onChange={e => setPassword(e.target.value)} 
-          minLength={6}
-          required 
-        />
-      </div>
-      
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Creating account..." : "Create Account"}
-      </Button>
-    </form>
-  </>
-);
-}
