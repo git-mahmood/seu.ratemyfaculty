@@ -7,7 +7,7 @@ export function useAuth() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: user, isLoading, error } = useQuery({
+  const { data: user, isLoading, isFetching, error } = useQuery({
     queryKey: [api.auth.me.path],
     queryFn: async () => {
       const res = await fetch(api.auth.me.path);
@@ -92,7 +92,7 @@ export function useAuth() {
 
   return {
     user,
-    isLoading,
+    isLoading: isLoading || isFetching,
     error,
     login: loginMutation.mutate,
     isLoggingIn: loginMutation.isPending,
