@@ -290,7 +290,7 @@ export async function registerRoutes(
         Readable.from(req.file.buffer).pipe(stream);
       });
       const cloudinaryData = uploadResult as any;
-      const fileUrl = cloudinary.url(cloudinaryData.public_id, { resource_type: "raw", sign_url: true, type: "upload" });
+      const fileUrl = cloudinary.url(cloudinaryData.public_id + ".pdf", { resource_type: "raw", sign_url: true, type: "upload" });
 
       console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
