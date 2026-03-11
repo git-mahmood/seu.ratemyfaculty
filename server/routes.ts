@@ -275,10 +275,9 @@ export async function registerRoutes(
       const year = Number(req.body.year);
       const uploadedBy = (req.user as any).id;
       const fileName = Date.now() + '.pdf';
-      const { error: uploadError } = await supabase.storage.from('pyqs').upload(fileName, req.file.buffer, { contentType: 'application/pdf' });
-      if (uploadError) throw uploadError;
-      const { data: urlData } = supabase.storage.from('pyqs').getPublicUrl(fileName);
-      const fileUrl = urlData.publicUrl;
+      const filePath = path.join(UPLOADS_DIR, fileName);
+      fs.writeFileSync(filePath, req.file.buffer);
+      const fileUrl = `/uploads/${fileName}`;
 
       console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
