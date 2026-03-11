@@ -1,3 +1,4 @@
+import { v2 as cloudinary } from "cloudinary";
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -9,6 +10,12 @@ import path from "path";
 import fs from "fs";
 import express from "express";
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 // Ensure uploads directory exists
 const UPLOADS_DIR = path.join(process.cwd(), "client/public/uploads");
 if (!fs.existsSync(UPLOADS_DIR)) {
@@ -16,7 +23,8 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 }
 
 // Multer setup
-const storageConfig = multer.diskStorage({
+const storageConfig = multer.memoryStorage();
+const _disk = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, UPLOADS_DIR);
   },
@@ -24,6 +32,7 @@ const storageConfig = multer.diskStorage({
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, uniqueSuffix + path.extname(file.originalname));
   }
+});
 });
 const upload = multer({ 
   storage: storageConfig,
@@ -273,7 +282,15 @@ export async function registerRoutes(
       const examType = req.body.examType as "Mid" | "Final" | "Quiz";
       const year = Number(req.body.year);
       const uploadedBy = (req.user as any).id;
-      const fileUrl = `/uploads/${req.file.filename}`;
+      const uploadResult = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: 'raw', folder: 'pyqs' },
+          (error, result) => error ? reject(error) : resolve(result)
+        );
+        const { Readable } = require('stream');
+        Readable.from(req.file.buffer).pipe(stream);
+      });
+      const fileUrl = (uploadResult as any).secure_url;
 
       console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
