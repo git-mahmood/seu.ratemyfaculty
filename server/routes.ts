@@ -283,7 +283,7 @@ export async function registerRoutes(
       const uploadedBy = (req.user as any).id;
       const uploadResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { resource_type: 'auto', folder: 'pyqs', use_filename: true, unique_filename: true },
+          { resource_type: 'raw', folder: 'pyqs', use_filename: true, unique_filename: true },
           (error, result) => error ? reject(error) : resolve(result)
         );
         const { Readable } = require('stream');
