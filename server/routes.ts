@@ -283,13 +283,14 @@ export async function registerRoutes(
       const uploadedBy = (req.user as any).id;
       const uploadResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { resource_type: 'raw', folder: 'pyqs', use_filename: true, unique_filename: true, allowed_formats: ['pdf'] },
+          { resource_type: 'raw', folder: 'pyqs', use_filename: true, unique_filename: true },
           (error, result) => error ? reject(error) : resolve(result)
         );
         const { Readable } = require('stream');
         Readable.from(req.file.buffer).pipe(stream);
       });
-      const fileUrl = (uploadResult as any).secure_url;
+      const cloudinaryData = uploadResult as any;
+      const fileUrl = cloudinary.url(cloudinaryData.public_id, { resource_type: "raw", sign_url: true, type: "upload" });
 
       console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
