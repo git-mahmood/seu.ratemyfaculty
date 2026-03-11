@@ -1,6 +1,3 @@
-import { v2 as cloudinary } from "cloudinary";
-import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -11,12 +8,6 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import express from "express";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 // Ensure uploads directory exists
 const UPLOADS_DIR = path.join(process.cwd(), "client/public/uploads");
