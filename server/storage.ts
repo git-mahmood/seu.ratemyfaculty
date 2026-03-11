@@ -12,9 +12,7 @@ export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
-  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  updateUserRole(email: string, role: "admin" | "moderator" | "student"): Promise<User | undefined>;
 
   // Teachers
   getTeachers(): Promise<TeacherWithReviewCount[]>;

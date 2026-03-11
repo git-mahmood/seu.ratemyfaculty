@@ -16,8 +16,7 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 }
 
 // Multer setup
-const storageConfig = multer.memoryStorage();
-const _disk = multer.diskStorage({
+const storageConfig = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, UPLOADS_DIR);
   },
@@ -274,10 +273,7 @@ export async function registerRoutes(
       const examType = req.body.examType as "Mid" | "Final" | "Quiz";
       const year = Number(req.body.year);
       const uploadedBy = (req.user as any).id;
-      const fileName = Date.now() + '.pdf';
-      const filePath = path.join(UPLOADS_DIR, fileName);
-      fs.writeFileSync(filePath, req.file.buffer);
-      const fileUrl = `/uploads/${fileName}`;
+      const fileUrl = `/uploads/${req.file.filename}`;
 
       console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
