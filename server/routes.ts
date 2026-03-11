@@ -1,4 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
+import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -281,16 +283,11 @@ export async function registerRoutes(
       const examType = req.body.examType as "Mid" | "Final" | "Quiz";
       const year = Number(req.body.year);
       const uploadedBy = (req.user as any).id;
-      const uploadResult = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { resource_type: 'raw', folder: 'pyqs', use_filename: true, unique_filename: true },
-          (error, result) => error ? reject(error) : resolve(result)
-        );
-        const { Readable } = require('stream');
-        Readable.from(req.file.buffer).pipe(stream);
-      });
-      const cloudinaryData = uploadResult as any;
-      const fileUrl = cloudinary.url(cloudinaryData.public_id + ".pdf", { resource_type: "raw", sign_url: true, type: "upload" });
+      const fileName = Date.now() + '.pdf';
+      const { error: uploadError } = await supabase.storage.from('pyqs').upload(fileName, req.file.buffer, { contentType: 'application/pdf' });
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from('pyqs').getPublicUrl(fileName);
+      const fileUrl = urlData.publicUrl;
 
       console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
