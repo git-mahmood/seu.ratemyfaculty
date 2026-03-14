@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const isAdmin = user?.email === "2025100000379@seu.edu.bd";
+  const isAdmin = user?.role === "admin";
   const isModerator = user?.role === "moderator";
 
   const deleteMutation = useMutation({
