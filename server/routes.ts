@@ -67,7 +67,7 @@ export async function registerRoutes(
   app.post(api.teachers.create.path, async (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
     const user = req.user as any;
-    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    const isAdmin = ["2025100000379@seu.edu.bd", "2025100000403@seu.edu.bd"].includes(user.email);
     if (!isAdmin && user.role !== "moderator") {
       return res.status(403).json({ message: "Forbidden: Admin or Moderator only" });
     }
@@ -87,7 +87,7 @@ export async function registerRoutes(
   app.put(api.teachers.update.path, async (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
     const user = req.user as any;
-    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    const isAdmin = ["2025100000379@seu.edu.bd", "2025100000403@seu.edu.bd"].includes(user.email);
     if (!isAdmin && user.role !== "moderator") {
       return res.status(403).json({ message: "Forbidden: Admin or Moderator only" });
     }
@@ -110,7 +110,7 @@ export async function registerRoutes(
   app.delete(api.teachers.delete.path, async (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
     const user = req.user as any;
-    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    const isAdmin = ["2025100000379@seu.edu.bd", "2025100000403@seu.edu.bd"].includes(user.email);
     if (!isAdmin) {
       return res.status(403).json({ message: "Forbidden: Admin only" });
     }
@@ -126,7 +126,7 @@ export async function registerRoutes(
   app.patch("/api/admin/users/role", async (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).send("Unauthorized");
     const user = req.user as any;
-    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    const isAdmin = ["2025100000379@seu.edu.bd", "2025100000403@seu.edu.bd"].includes(user.email);
     if (!isAdmin) return res.status(403).send("Forbidden: Admin only");
 
     const { email, role } = req.body;
@@ -257,7 +257,7 @@ export async function registerRoutes(
   }, async (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
     const user = req.user as any;
-    const isAdmin = user.email === "2025100000379@seu.edu.bd";
+    const isAdmin = ["2025100000379@seu.edu.bd", "2025100000403@seu.edu.bd"].includes(user.email);
     if (!isAdmin && user.role !== "moderator") {
       return res.status(403).json({ message: "Forbidden: Admin or Moderator only" });
     }
