@@ -206,16 +206,20 @@ export async function registerRoutes(
   // === PYQS ===
 
   app.get(api.pyqs.list.path, async (req, res) => {
-    const pyqs = await storage.getPyqsByTeacherId(Number(req.params.teacherId));
-    // Generate signed URLs for each PYQ
-    const pyqsWithSignedUrls = pyqs.map((pyq: any) => ({
-      ...pyq,
-      fileUrl: cloudinary.utils.private_download_url(
-        pyq.fileUrl,
-        'pdf',
-        { resource_type: 'raw', expires_at: Math.floor(Date.now() / 1000) + 3600 }
-      )
-    }));
+    const pyqsWithSignedUrls = pyqs.map((pyq: any) => {
+      // Handle both old full URLs and new public_ids
+      const publicId = pyq.fileUrl.startsWith('http') 
+        ? pyq.fileUrl.split('/upload/')[1]
+        : pyq.fileUrl;
+      return {
+        ...pyq,
+        fileUrl: cloudinary.utils.private_download_url(
+          publicId,
+          'pdf',
+          { resource_type: 'raw', expires_at: Math.floor(Date.now() / 1000) + 3600 }
+        )
+      };
+    });
     res.json(pyqsWithSignedUrls);
   });
 
