@@ -5,28 +5,17 @@ import { api, errorSchemas } from "@shared/routes";
 import { setupAuth } from "./auth";
 import { z } from "zod";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
 import express from "express";
+import { v2 as cloudinary } from "cloudinary";
 
-// Ensure uploads directory exists
-const UPLOADS_DIR = path.join(process.cwd(), "client/public/uploads");
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-}
-
-// Multer setup
-const storageConfig = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, UPLOADS_DIR);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-const upload = multer({ 
-  storage: storageConfig,
+
+const upload = multer({
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     if (file.mimetype === "application/pdf") {
@@ -44,11 +33,6 @@ export async function registerRoutes(
   // Auth setup
   setupAuth(app);
 
-  // Serve uploads statically (though client/public is already served by Vite, 
-  // we might need this if we were serving strictly from backend, but Vite handles it in dev.
-  // In prod, serveStatic handles it. We just need to make sure the path is correct).
-  // The files will be at /uploads/filename.ext
-  
   // === TEACHERS ===
 
   app.get(api.teachers.list.path, async (req, res) => {
@@ -143,7 +127,6 @@ export async function registerRoutes(
   app.get(api.reviews.list.path, async (req, res) => {
     const reviews = await storage.getReviewsByTeacherId(Number(req.params.teacherId));
     
-    // Filter sensitive info based on role
     const isAdmin = req.isAuthenticated() && (req.user as any).email === "2025100000379@seu.edu.bd";
     
     const sanitized = reviews.map(r => ({
@@ -163,7 +146,6 @@ export async function registerRoutes(
       const input = api.reviews.create.input.parse(req.body);
       const studentId = (req.user as any).id;
       
-      // Check if already reviewed for this specific course
       const existing = await storage.getReviewByStudentTeacherCourse(studentId, input.teacherId, input.courseTaken);
       if (existing) {
         return res.status(409).json({ message: "You have already submitted a review for this faculty in this course." });
@@ -195,9 +177,6 @@ export async function registerRoutes(
         return res.status(404).json({ message: "Review not found" });
       }
 
-      const isAdmin = (req.user as any).email === "2025100000379@seu.edu.bd";
-      
-      // Admin can only edit their own reviews. Students can only edit their own reviews.
       if (existing.studentId !== (req.user as any).id) {
         return res.status(403).json({ message: "You can only edit your own reviews" });
       }
@@ -266,20 +245,32 @@ export async function registerRoutes(
     }
 
     try {
-      // Manual parsing since it's FormData
       const teacherId = Number(req.body.teacherId);
       const courseCode = String(req.body.courseCode);
       const semester = req.body.semester as "Spring" | "Summer" | "Fall";
       const examType = req.body.examType as "Mid" | "Final" | "Quiz";
       const year = Number(req.body.year);
       const uploadedBy = (req.user as any).id;
-      const fileUrl = `/uploads/${req.file.filename}`;
-
-      console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
       if (!teacherId || !courseCode || !year || !semester || !examType) {
-         return res.status(400).json({ message: "Missing required fields in request body" });
+        return res.status(400).json({ message: "Missing required fields in request body" });
       }
+
+      // Upload to Cloudinary
+      const uploadResult = await new Promise<any>((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: "raw", folder: "pyqs", format: "pdf" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(req.file!.buffer);
+      });
+
+      const fileUrl = uploadResult.secure_url;
+
+      console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
       const pyq = await storage.createPyq({
         teacherId,
@@ -293,15 +284,10 @@ export async function registerRoutes(
       
       res.status(201).json(pyq);
     } catch (err) {
-      console.error("PYQ Upload Database Error:", err);
-      res.status(500).json({ message: err instanceof Error ? err.message : "Internal server error during database save" });
+      console.error("PYQ Upload Error:", err);
+      res.status(500).json({ message: err instanceof Error ? err.message : "Internal server error during upload" });
     }
   });
-
-  // Seed Data
-  if (process.env.NODE_ENV !== "production") {
-    // Basic seed if needed
-  }
 
   return httpServer;
 }
