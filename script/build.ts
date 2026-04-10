@@ -30,7 +30,6 @@ const allowlist = [
   "xlsx",
   "zod",
   "zod-validation-error",
-  "cloudinary",
 ];
 
 async function buildAll() {
