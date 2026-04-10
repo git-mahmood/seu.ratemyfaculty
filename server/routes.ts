@@ -6,7 +6,8 @@ import { setupAuth } from "./auth";
 import { z } from "zod";
 import multer from "multer";
 import express from "express";
-import { v2 as cloudinary } from "cloudinary";
+
+const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -16,7 +17,7 @@ cloudinary.config({
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype === "application/pdf") {
       cb(null, true);
@@ -30,7 +31,6 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Auth setup
   setupAuth(app);
 
   // === TEACHERS ===
@@ -126,15 +126,12 @@ export async function registerRoutes(
 
   app.get(api.reviews.list.path, async (req, res) => {
     const reviews = await storage.getReviewsByTeacherId(Number(req.params.teacherId));
-    
     const isAdmin = req.isAuthenticated() && (req.user as any).email === "2025100000379@seu.edu.bd";
-    
     const sanitized = reviews.map(r => ({
       ...r,
       studentUsername: isAdmin ? r.studentEmail : "Anonymous Student",
       studentEmail: isAdmin ? r.studentEmail : undefined
     }));
-
     res.json(sanitized);
   });
 
@@ -145,16 +142,13 @@ export async function registerRoutes(
     try {
       const input = api.reviews.create.input.parse(req.body);
       const studentId = (req.user as any).id;
-      
       const existing = await storage.getReviewByStudentTeacherCourse(studentId, input.teacherId, input.courseTaken);
       if (existing) {
         return res.status(409).json({ message: "You have already submitted a review for this faculty in this course." });
       }
-
       if (!input.termsAccepted) {
         return res.status(400).json({ message: "You must agree to the Terms & Conditions before submitting a review." });
       }
-
       const review = await storage.createReview({ ...input, studentId });
       res.status(201).json(review);
     } catch (err) {
@@ -176,11 +170,9 @@ export async function registerRoutes(
       if (!existing) {
         return res.status(404).json({ message: "Review not found" });
       }
-
       if (existing.studentId !== (req.user as any).id) {
         return res.status(403).json({ message: "You can only edit your own reviews" });
       }
-
       const input = api.reviews.update.input.parse(req.body);
       const updated = await storage.updateReview(reviewId, input);
       res.json(updated);
@@ -202,14 +194,11 @@ export async function registerRoutes(
     if (!existing) {
       return res.status(404).json({ message: "Review not found" });
     }
-
     const isAdmin = (req.user as any).email === "2025100000379@seu.edu.bd";
     const isOwner = existing.studentId === (req.user as any).id;
-
     if (!isAdmin && !isOwner) {
       return res.status(403).json({ message: "Forbidden: You cannot delete this review" });
     }
-
     await storage.deleteReview(reviewId);
     res.status(204).send();
   });
@@ -218,7 +207,16 @@ export async function registerRoutes(
 
   app.get(api.pyqs.list.path, async (req, res) => {
     const pyqs = await storage.getPyqsByTeacherId(Number(req.params.teacherId));
-    res.json(pyqs);
+    // Generate signed URLs for each PYQ
+    const pyqsWithSignedUrls = pyqs.map((pyq: any) => ({
+      ...pyq,
+      fileUrl: cloudinary.utils.private_download_url(
+        pyq.fileUrl,
+        'pdf',
+        { resource_type: 'raw', expires_at: Math.floor(Date.now() / 1000) + 3600 }
+      )
+    }));
+    res.json(pyqsWithSignedUrls);
   });
 
   app.post(api.pyqs.create.path, (req, res, next) => {
@@ -256,11 +254,11 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Missing required fields in request body" });
       }
 
-      // Upload to Cloudinary
+      // Upload to Cloudinary - store public_id for signed URL generation later
       const uploadResult = await new Promise<any>((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { resource_type: "raw", folder: "pyqs", format: "pdf", upload_preset: "pyqs_preset" },
-          (error, result) => {
+          { resource_type: "raw", folder: "pyqs", format: "pdf" },
+          (error: any, result: any) => {
             if (error) reject(error);
             else resolve(result);
           }
@@ -268,7 +266,8 @@ export async function registerRoutes(
         stream.end(req.file!.buffer);
       });
 
-      const fileUrl = uploadResult.secure_url;
+      // Store the public_id instead of secure_url so we can generate signed URLs
+      const fileUrl = uploadResult.public_id;
 
       console.log("Creating PYQ with data:", { teacherId, courseCode, semester, examType, year, fileUrl, uploadedBy });
 
@@ -281,7 +280,7 @@ export async function registerRoutes(
         fileUrl,
         uploadedBy
       });
-      
+
       res.status(201).json(pyq);
     } catch (err) {
       console.error("PYQ Upload Error:", err);
