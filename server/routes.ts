@@ -6,7 +6,7 @@ import { setupAuth } from "./auth";
 import { z } from "zod";
 import multer from "multer";
 import express from "express";
-import { v2 as cloudinary } from "cloudinary";
+const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
