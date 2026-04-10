@@ -259,7 +259,7 @@ export async function registerRoutes(
       // Upload to Cloudinary
       const uploadResult = await new Promise<any>((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { resource_type: "raw", folder: "pyqs", upload_preset: "pyqs_preset" },
+          { resource_type: "raw", folder: "pyqs", format: "pdf", upload_preset: "pyqs_preset" },
           (error, result) => {
             if (error) reject(error);
             else resolve(result);
