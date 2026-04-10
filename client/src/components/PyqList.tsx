@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, UploadCloud, ChevronRight, HelpCircle } from "lucide-react";
+import { FileText, Download, UploadCloud, HelpCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,10 +22,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ContributionGuide } from "@/components/ContributionGuide";
-
-interface PyqListProps {
-  teacherId: number;
-}
 
 export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, hideUpload?: boolean }) {
   const { data: pyqs, isLoading } = usePyqs(teacherId);
@@ -70,51 +66,51 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
             )}
           </div>
         </CardHeader>
-      <CardContent>
-        {pyqs.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-            No PYQs uploaded for this teacher yet.
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {Object.entries(groupedPyqs).map(([courseCode, items]: [string, any]) => (
-              <div key={courseCode} className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-primary" />
-                  <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wider">
-                    Course Code: {courseCode}
-                  </h3>
+        <CardContent>
+          {pyqs.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
+              No PYQs uploaded for this teacher yet.
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {Object.entries(groupedPyqs).map(([courseCode, items]: [string, any]) => (
+                <div key={courseCode} className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary" />
+                    <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wider">
+                      Course Code: {courseCode}
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 pl-4">
+                    {items.map((pyq: any) => (
+                      <a 
+                        key={pyq.id} 
+                        href={pyq.fileUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center p-3 rounded-lg border bg-card hover:border-primary/50 hover:bg-accent transition-all group shadow-sm"
+                      >
+                        <div className="bg-primary/10 p-2 rounded mr-3 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <FileText className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm">
+                            {pyq.examType} {pyq.year}
+                          </p>
+                          <p className="text-xs text-muted-foreground">{pyq.semester}</p>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
+                          <span className="text-xs font-medium hidden sm:inline">Download</span>
+                          <Download className="h-4 w-4" />
+                        </div>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 gap-2 pl-4">
-                  {items.map((pyq: any) => (
-                    <a 
-                      key={pyq.id} 
-                      href={pyq.fileUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center p-3 rounded-lg border bg-card hover:border-primary/50 hover:bg-accent transition-all group shadow-sm"
-                    >
-                      <div className="bg-primary/10 p-2 rounded mr-3 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <FileText className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm">
-                          {pyq.examType} {pyq.year}
-                        </p>
-                        <p className="text-xs text-muted-foreground">{pyq.semester}</p>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
-                        <span className="text-xs font-medium hidden sm:inline">Download</span>
-                        <Download className="h-4 w-4" />
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
+              ))}
+            </div>
+          )}
+        </CardContent>
       </Card>
     </>
   );
@@ -122,7 +118,7 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
 
 export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: number, open: boolean, onOpenChange: (open: boolean) => void }) {
   const uploadMutation = useUploadPyq();
-  const [file, setFile] = useState<File | null>(null);
+  const [driveUrl, setDriveUrl] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [semester, setSemester] = useState("Spring");
   const [examType, setExamType] = useState("Mid");
@@ -131,8 +127,13 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !courseCode || !semester || !examType || !year) {
+    if (!driveUrl || !courseCode || !semester || !examType || !year) {
       toast({ title: "Validation Error", description: "All fields are required", variant: "destructive" });
+      return;
+    }
+
+    if (!driveUrl.includes("drive.google.com") && !driveUrl.startsWith("http")) {
+      toast({ title: "Invalid URL", description: "Please enter a valid Google Drive link", variant: "destructive" });
       return;
     }
 
@@ -142,12 +143,12 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
     formData.append("semester", semester);
     formData.append("examType", examType);
     formData.append("year", year);
-    formData.append("file", file);
+    formData.append("driveUrl", driveUrl);
 
     try {
       await uploadMutation.mutateAsync({ teacherId, formData });
       onOpenChange(false);
-      setFile(null);
+      setDriveUrl("");
       setCourseCode("");
       setSemester("Spring");
       setExamType("Mid");
@@ -167,7 +168,7 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Upload PYQ</DialogTitle>
+          <DialogTitle>Add PYQ</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -209,23 +210,26 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
               <Label>Year</Label>
               <Input 
                 type="number"
-                placeholder="e.g. 2023" 
+                placeholder="e.g. 2024" 
                 value={year} 
                 onChange={e => setYear(e.target.value)} 
               />
             </div>
-            <div className="space-y-2">
-              <Label>File (PDF)</Label>
+            <div className="space-y-2 col-span-2">
+              <Label>Google Drive Link</Label>
               <Input 
-                type="file" 
-                accept=".pdf"
-                className="cursor-pointer"
-                onChange={e => setFile(e.target.files?.[0] || null)} 
+                type="url"
+                placeholder="https://drive.google.com/file/d/..." 
+                value={driveUrl} 
+                onChange={e => setDriveUrl(e.target.value)} 
               />
+              <p className="text-xs text-muted-foreground">
+                Upload the PDF to Google Drive, set sharing to "Anyone with link", then paste the link here.
+              </p>
             </div>
           </div>
           <Button type="submit" className="w-full" disabled={uploadMutation.isPending}>
-            {uploadMutation.isPending ? "Uploading..." : "Upload Question"}
+            {uploadMutation.isPending ? "Saving..." : "Add Question"}
           </Button>
         </form>
       </DialogContent>
