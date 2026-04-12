@@ -36,10 +36,12 @@ export default function AdminDashboard() {
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
       const url = buildUrl(api.teachers.delete.path, { id });
-      await fetch(url, { method: "DELETE" });
+      const res = await fetch(url, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete teacher");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.teachers.list.path] });
+      queryClient.refetchQueries({ queryKey: [api.teachers.list.path] });
       toast({ title: "Teacher deleted" });
     },
   });
