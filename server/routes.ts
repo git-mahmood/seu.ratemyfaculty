@@ -16,8 +16,6 @@ export async function registerRoutes(
 
   // === TEACHERS ===
 
-  // === TEACHERS ===
-
   app.get(api.teachers.list.path, async (req, res) => {
     const teachers = await storage.getTeachers();
     res.json(teachers);
