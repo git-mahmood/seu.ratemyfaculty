@@ -18,21 +18,27 @@ export function usePyqs(teacherId: number) {
 export function useUploadPyq() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-
   return useMutation({
     mutationFn: async ({ teacherId, formData }: { teacherId: number; formData: FormData }) => {
-      // Note: The schema for this is a bit looser because of FormData, handled by controller
+      const body = {
+        teacherId: formData.get("teacherId"),
+        courseCode: formData.get("courseCode"),
+        semester: formData.get("semester"),
+        examType: formData.get("examType"),
+        year: formData.get("year"),
+        driveUrl: formData.get("driveUrl"),
+      };
       const res = await fetch(api.pyqs.create.path, {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
-
       if (!res.ok) throw new Error("Failed to upload PYQ");
       return api.pyqs.create.responses[201].parse(await res.json());
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [api.pyqs.list.path, data.teacherId] });
-      toast({ title: "Upload complete", description: "The past year question paper has been added." });
+      toast({ title: "Success!", description: "PYQ has been added successfully." });
     },
     onError: (err) => {
       toast({ title: "Upload failed", description: err.message, variant: "destructive" });
