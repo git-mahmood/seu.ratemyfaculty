@@ -124,9 +124,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteTeacher(id: number): Promise<boolean> {
-    const [deleted] = await db.delete(teachers).where(eq(teachers.id, id)).returning();
-    return !!deleted;
-  }
+  await db.delete(pyqs).where(eq(pyqs.teacherId, id));
+  await db.delete(reviews).where(eq(reviews.teacherId, id));
+  const [deleted] = await db.delete(teachers).where(eq(teachers.id, id)).returning();
+  return !!deleted;
+}
 
   // Reviews
   async getReviewsByTeacherId(teacherId: number): Promise<(Review & { studentUsername: string; studentEmail: string | null })[]> {
