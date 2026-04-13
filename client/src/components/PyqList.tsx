@@ -146,7 +146,17 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
     formData.append("driveUrl", driveUrl);
 
     try {
-      await uploadMutation.mutateAsync({ teacherId, formData });
+      await uploadMutation.mutateAsync({
+        teacherId,
+        data: {
+          teacherId,
+          courseCode,
+          semester,
+          examType,
+          year: Number(year),
+          driveUrl,
+        }
+      });
       onOpenChange(false);
       setDriveUrl("");
       setCourseCode("");
