@@ -110,9 +110,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTeacher(teacher: InsertTeacher): Promise<Teacher> {
-    const [newTeacher] = await db.insert(teachers).values(teacher).returning();
-    return newTeacher;
-  }
+  console.log("createTeacher input:", JSON.stringify(teacher));
+  const [newTeacher] = await db.insert(teachers).values(teacher).returning();
+  return newTeacher;
+}
 
   async updateTeacher(id: number, updates: Partial<InsertTeacher>): Promise<Teacher | undefined> {
     const [updated] = await db
