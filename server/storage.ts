@@ -124,7 +124,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteTeacher(id: number): Promise<boolean> {
-    // Delete related records first
     await db.delete(pyqs).where(eq(pyqs.teacherId, id));
     await db.delete(reviews).where(eq(reviews.teacherId, id));
     const [deleted] = await db.delete(teachers).where(eq(teachers.id, id)).returning();
