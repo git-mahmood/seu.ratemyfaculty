@@ -84,14 +84,11 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
           }}>
             {teacher.fullName}
           </h3>
-          <div style={{
-            display: "flex", alignItems: "center", gap: "4px",
-            marginTop: "2px",
-          }}>
-            <Building2 style={{ width: "9px", height: "9px", color: "rgba(0, 200, 255, 0.7)", flexShrink: 0 }} />
+          <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
+            <Building2 style={{ width: "11px", height: "11px", color: "rgba(0, 200, 255, 0.7)", flexShrink: 0 }} />
             <span style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "0.55rem",
+              fontSize: "0.7rem",
               color: "rgba(0, 200, 255, 0.7)",
               letterSpacing: "0.05em",
               overflow: "hidden",
@@ -105,12 +102,12 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
       </div>
 
       {/* Info section */}
-      <div style={{ padding: "8px", flexGrow: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          <MapPin style={{ width: "9px", height: "9px", color: "rgba(0, 200, 255, 0.4)", flexShrink: 0 }} />
+      <div style={{ padding: "10px", flexGrow: 1, display: "flex", flexDirection: "column", gap: "7px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <MapPin style={{ width: "11px", height: "11px", color: "rgba(0, 200, 255, 0.4)", flexShrink: 0 }} />
           <span style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "0.55rem",
+            fontSize: "0.7rem",
             color: "rgba(0, 200, 255, 0.4)",
             letterSpacing: "0.05em",
             overflow: "hidden",
@@ -121,11 +118,11 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
           </span>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          <Star style={{ width: "9px", height: "9px", color: "rgba(0, 200, 255, 0.7)", flexShrink: 0 }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <Star style={{ width: "11px", height: "11px", color: "rgba(0, 200, 255, 0.7)", flexShrink: 0 }} />
           <span style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "0.6rem",
+            fontSize: "0.75rem",
             color: "rgba(0, 200, 255, 0.7)",
             letterSpacing: "0.05em",
           }}>
@@ -138,12 +135,12 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
           <div className="hidden sm:block">
             <span style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "0.55rem",
+              fontSize: "0.7rem",
               letterSpacing: "0.05em",
               color: "rgba(0, 200, 255, 0.5)",
               background: "rgba(0, 200, 255, 0.06)",
               border: "1px solid rgba(0, 200, 255, 0.15)",
-              padding: "1px 6px",
+              padding: "2px 8px",
               display: "inline-block",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -165,13 +162,13 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
             alignItems: "center",
             justifyContent: "center",
             gap: "6px",
-            padding: "7px",
+            padding: "8px",
             background: "rgba(0, 200, 255, 0.06)",
             border: "none",
             borderTop: "1px solid rgba(0, 200, 255, 0.12)",
             color: "rgba(0, 200, 255, 0.7)",
             fontFamily: "var(--font-mono)",
-            fontSize: "0.6rem",
+            fontSize: "0.7rem",
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             cursor: "pointer",
@@ -188,7 +185,7 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
             el.style.color = "rgba(0, 200, 255, 0.7)";
           }}
         >
-          <BookOpen style={{ width: "10px", height: "10px" }} />
+          <BookOpen style={{ width: "11px", height: "11px" }} />
           View Profile
         </button>
       </Link>
