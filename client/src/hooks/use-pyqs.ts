@@ -19,23 +19,18 @@ export function useUploadPyq() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   return useMutation({
-    mutationFn: async ({ teacherId, formData }: { teacherId: number; formData: FormData }) => {
-      const body = {
-        teacherId: formData.get("teacherId"),
-        courseCode: formData.get("courseCode"),
-        semester: formData.get("semester"),
-        examType: formData.get("examType"),
-        year: formData.get("year"),
-        driveUrl: formData.get("driveUrl"),
-      };
-      const res = await fetch(api.pyqs.create.path, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) throw new Error("Failed to upload PYQ");
-      return api.pyqs.create.responses[201].parse(await res.json());
-    },
+    mutationFn: async ({ teacherId, data }: { teacherId: number; data: any }) => {
+  const res = await fetch(api.pyqs.create.path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || "Failed to upload PYQ");
+  }
+  return api.pyqs.create.responses[201].parse(await res.json());
+},
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [api.pyqs.list.path, data.teacherId] });
       toast({ title: "Success!", description: "PYQ has been added successfully." });
