@@ -80,17 +80,11 @@ export async function registerRoutes(
       return res.status(403).json({ message: "Forbidden: Admin only" });
     }
     const id = Number(req.params.id);
-    try {
-      await storage.deleteReviewsByTeacherId(id);
-      await storage.deletePyqsByTeacherId(id);
-      const success = await storage.deleteTeacher(id);
-      if (!success) {
-        return res.status(404).json({ message: "Teacher not found" });
-      }
-      res.status(204).send();
-    } catch (err) {
-      res.status(500).json({ message: "Failed to delete teacher" });
+    const success = await storage.deleteTeacher(id);
+    if (!success) {
+      return res.status(404).json({ message: "Teacher not found" });
     }
+    res.status(204).send();
   });
 
   // User Roles Management (Admin Only)
