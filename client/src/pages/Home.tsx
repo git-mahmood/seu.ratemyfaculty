@@ -16,10 +16,10 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="max-w-3xl mx-auto text-center mb-12 space-y-4">
           <h1 className="text-3xl md:text-4xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60 pb-2">
@@ -65,6 +65,13 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* Footer Section */}
+      <footer className="py-6 border-t">
+        <div className="container mx-auto px-4 text-center text-muted-foreground text-sm">
+          Made with ❤️ by <span className="font-semibold text-foreground">Mahmud</span>
+        </div>
+      </footer>
     </div>
   );
 }
