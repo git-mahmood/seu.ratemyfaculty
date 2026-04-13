@@ -52,7 +52,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const isAdmin = insertUser.email === "2025100000379@seu.edu.bd";
+    const isAdmin = ["2025100000379@seu.edu.bd", "2025100000403@seu.edu.bd"].includes(insertUser.email ?? "");
     const [user] = await db.insert(users).values({
       ...insertUser,
       role: isAdmin ? "admin" : "student"
