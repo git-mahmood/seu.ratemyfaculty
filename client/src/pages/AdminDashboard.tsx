@@ -80,8 +80,8 @@ export default function AdminDashboard() {
               <LayoutDashboard style={{ width:"22px", height:"22px", color:"rgba(0,200,255,0.9)" }} />
             </div>
             <div>
-              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.55rem",letterSpacing:"0.2em",color:"rgba(0,200,255,0.4)",textTransform:"uppercase",marginBottom:"2px" }}>
-                // Control Panel
+              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.85rem",letterSpacing:"0.2em",color:"rgba(0,200,255,0.85)",textTransform:"uppercase",marginBottom:"2px" }}>
+                 Control Panel
               </div>
               <h1 style={{ fontFamily:"var(--font-display)",fontSize:"1.6rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(200,230,255,0.95)" }}>
                 Dashboard
