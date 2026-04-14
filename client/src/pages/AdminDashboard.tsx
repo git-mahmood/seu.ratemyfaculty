@@ -127,7 +127,7 @@ export default function AdminDashboard() {
                 <TableHeader>
                   <TableRow style={{ borderBottom:"1px solid rgba(0,200,255,0.1)" }}>
                     {["Name","Department","University","Reviews","Actions"].map((h, i) => (
-                      <TableHead key={i} style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"rgba(0,200,255,0.5)",padding:"14px 16px" }}>
+                      <TableHead key={i} style={{ fontFamily:"var(--font-mono)",fontSize:"0.75rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"rgba(0,200,255,0.85)",padding:"14px 16px" }}>
                         {h}
                       </TableHead>
                     ))}
