@@ -327,8 +327,8 @@ function Metric({ label, value }: { label: string; value: string }) {
     <div>
       {/* Label — small, dim, uppercase */}
       <p style={{
-        fontFamily:"var(--font-mono)",fontSize:"0.52rem",
-        letterSpacing:"0.18em",color:"rgba(0,200,255,0.3)",
+        fontFamily:"var(--font-mono)",fontSize:"0.62rem",
+        letterSpacing:"0.18em",color:"rgba(0,200,255,0.55)",
         textTransform:"uppercase",marginBottom:"5px",
       }}>
         {label}
