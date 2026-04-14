@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRoute } from "wouter";
 import { useTeacher } from "@/hooks/use-teachers";
 import { useReviews } from "@/hooks/use-reviews";
@@ -15,6 +15,131 @@ import { api, buildUrl } from "@shared/routes";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
+
+// ── Mechanical keyboard click (Web Audio API, no file needed) ──────────────
+function playKeyClick() {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.008));
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.18;
+    src.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+    setTimeout(() => ctx.close(), 200);
+  } catch {}
+}
+
+// ── Subtle whoosh for review entry ────────────────────────────────────────
+function playWhoosh() {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.18, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.06));
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const filter = ctx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.value = 800;
+    filter.Q.value = 0.5;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.09;
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+    setTimeout(() => ctx.close(), 400);
+  } catch {}
+}
+
+// ── Typing name component ─────────────────────────────────────────────────
+function TypingName({ name }: { name: string }) {
+  const [displayed, setDisplayed] = useState("");
+  const [cursorPhase, setCursorPhase] = useState<"typing" | "blinking" | "hidden">("typing");
+  const indexRef = useRef(0);
+
+  useEffect(() => {
+    setDisplayed("");
+    indexRef.current = 0;
+    setCursorPhase("typing");
+
+    const interval = setInterval(() => {
+      if (indexRef.current < name.length) {
+        setDisplayed(name.slice(0, indexRef.current + 1));
+        playKeyClick();
+        indexRef.current++;
+      } else {
+        clearInterval(interval);
+        setCursorPhase("blinking");
+        // Blink for ~2s then fade out
+        setTimeout(() => setCursorPhase("hidden"), 2200);
+      }
+    }, 68);
+
+    return () => clearInterval(interval);
+  }, [name]);
+
+  return (
+    <span style={{ position: "relative" }}>
+      {displayed}
+      <span style={{
+        display: "inline-block",
+        width: "3px",
+        height: "1em",
+        background: "#00FBFF",
+        marginLeft: "3px",
+        verticalAlign: "text-bottom",
+        boxShadow: "0 0 8px rgba(0,251,255,0.8)",
+        animation: cursorPhase === "blinking" ? "cursorBlink 0.5s step-end infinite" : "none",
+        opacity: cursorPhase === "hidden" ? 0 : 1,
+        transition: cursorPhase === "hidden" ? "opacity 0.4s ease" : "none",
+      }} />
+      <style>{`
+        @keyframes cursorBlink {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0; }
+        }
+      `}</style>
+    </span>
+  );
+}
+
+// ── Animated review card ──────────────────────────────────────────────────
+function AnimatedReview({ children, index }: { children: React.ReactNode; index: number }) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const delay = index * 120; // cascade: 120ms apart
+    const t = setTimeout(() => {
+      setVisible(true);
+      playWhoosh();
+    }, delay);
+    return () => clearTimeout(t);
+  }, [index]);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(32px)",
+        transition: "opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function TeacherProfile() {
   const [, params] = useRoute("/teacher/:id");
@@ -43,7 +168,7 @@ export default function TeacherProfile() {
     <div className="min-h-screen flex items-center justify-center" style={{ background: "hsl(220,30%,4%)" }}>
       <Navbar />
       <p style={{ fontFamily: "var(--font-mono)", color: "rgba(255,80,80,0.8)", letterSpacing: "0.1em" }}>
-         FACULTY NOT FOUND
+        FACULTY NOT FOUND
       </p>
     </div>
   );
@@ -79,7 +204,7 @@ export default function TeacherProfile() {
         <div className="container mx-auto px-4 py-8 relative" style={{ zIndex: 3 }}>
           <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
 
-            {/* ===== AVATAR — large with glow ===== */}
+            {/* ===== AVATAR ===== */}
             <div style={{
               width: "112px", height: "112px", flexShrink: 0,
               border: "2px solid #00FBFF",
@@ -88,7 +213,6 @@ export default function TeacherProfile() {
             }}>
               <img src={teacher.photoUrl} alt={teacher.fullName} className="w-full h-full object-cover"
                 style={{ filter: "saturate(0.85)" }} />
-              {/* Corner brackets on avatar */}
               <div style={{ position:"absolute",top:"-2px",left:"-2px",width:"10px",height:"10px",borderTop:"2px solid #00FBFF",borderLeft:"2px solid #00FBFF" }} />
               <div style={{ position:"absolute",bottom:"-2px",right:"-2px",width:"10px",height:"10px",borderBottom:"2px solid #00FBFF",borderRight:"2px solid #00FBFF" }} />
             </div>
@@ -96,30 +220,19 @@ export default function TeacherProfile() {
             {/* ===== INFO ===== */}
             <div className="flex-1 space-y-3 text-center md:text-left">
               {/* Label */}
-              
-              {/* Name */}
+              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",letterSpacing:"0.22em",color:"rgba(0,200,255,0.45)",textTransform:"uppercase" }}>
+                // Faculty Profile
+              </div>
+              {/* Name — typing effect */}
               <h1 style={{
-  fontFamily:"var(--font-display)",fontWeight:800,
-  fontSize:"clamp(1.4rem,3.5vw,2rem)",letterSpacing:"0.08em",
-  textTransform:"uppercase",color:"rgba(224,240,255,0.97)",
-  textShadow:"0 0 32px rgba(0,200,255,0.35)",lineHeight:1.1,
-  position:"relative",overflow:"hidden",
-}}>
-  {teacher.fullName}
-  <span style={{
-    position:"absolute",
-    top:0, left:"-100%",
-    width:"60%", height:"100%",
-    background:"linear-gradient(90deg,transparent,rgba(0,251,255,0.35),transparent)",
-    animation:"shimmer 2.5s ease-in-out infinite",
-  }} />
-  <style>{`
-    @keyframes shimmer {
-      0%   { left: -100%; }
-      100% { left: 160%; }
-    }
-  `}</style>
-</h1>
+                fontFamily:"var(--font-display)",fontWeight:800,
+                fontSize:"clamp(1.4rem,3.5vw,2rem)",letterSpacing:"0.08em",
+                textTransform:"uppercase",color:"rgba(224,240,255,0.97)",
+                textShadow:"0 0 32px rgba(0,200,255,0.35)",lineHeight:1.1,
+                minHeight: "2.2rem",
+              }}>
+                <TypingName name={teacher.fullName} />
+              </h1>
               {/* Dept + Uni */}
               <div className="flex flex-wrap justify-center md:justify-start gap-6">
                 <div style={{ display:"flex",alignItems:"center",gap:"6px" }}>
@@ -135,7 +248,7 @@ export default function TeacherProfile() {
                   </span>
                 </div>
               </div>
-              {/* Course chips — prominent */}
+              {/* Course chips */}
               <div className="flex flex-wrap justify-center md:justify-start gap-2">
                 {teacher.coursesTaught.map((course, i) => (
                   <span key={i} style={{
@@ -153,7 +266,7 @@ export default function TeacherProfile() {
             </div>
 
             {/* ===== ACTION BUTTONS ===== */}
-<div className="flex items-center gap-3 shrink-0 mt-2 md:mt-0">
+            <div className="flex items-center gap-3 shrink-0 mt-2 md:mt-0">
             </div>
           </div>
         </div>
@@ -167,56 +280,55 @@ export default function TeacherProfile() {
           {/* Section header */}
           <div className="flex items-center justify-between">
             <div>
-              
               <h2 style={{ fontFamily:"var(--font-display)",fontSize:"1.4rem",fontWeight:800,letterSpacing:"0.1em",color:"rgba(200,232,255,0.95)",textTransform:"uppercase" }}>
                 Reviews
               </h2>
             </div>
             <div className="flex items-center gap-3">
-  {!!user && (user.role === "admin" || user.role === "moderator" || user.email === "2025100000379@seu.edu.bd") && (
-    <UploadPyqDialog teacherId={teacherId} open={pyqDialogOpen} onOpenChange={setPyqDialogOpen} />
-  )}
-  <ReviewForm
-    teacherId={teacherId}
-    teacherName={teacher.fullName}
-    coursesTaught={teacher.coursesTaught}
-    trigger={
-  <button
-    style={{
-      display: "flex", alignItems: "center", gap: "6px",
-      fontFamily: "var(--font-mono)", fontSize: "0.7rem",
-      letterSpacing: "0.1em", textTransform: "uppercase",
-      padding: "6px 14px",
-      border: "1px solid rgba(0,200,255,0.4)",
-      background: "rgba(0,200,255,0.08)",
-      color: "rgba(0,200,255,0.9)",
-      cursor: "pointer", transition: "all 0.3s ease",
-      boxShadow: "0 0 10px rgba(0,200,255,0.1)",
-    }}
-    onMouseEnter={e => {
-      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 18px rgba(0,200,255,0.35)";
-      (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.15)";
-      (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.8)";
-    }}
-    onMouseLeave={e => {
-      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 10px rgba(0,200,255,0.1)";
-      (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.08)";
-      (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.4)";
-    }}
-  >
-    <MessageSquarePlus style={{ width: "14px", height: "14px" }} />
-    Write a Review
-  </button>
-}
-  />
-  <span style={{
-    fontFamily:"var(--font-mono)",fontSize:"0.72rem",letterSpacing:"0.1em",
-    color:"rgba(0,200,255,0.85)",background:"rgba(0,200,255,0.08)",
-    border:"1px solid rgba(0,200,255,0.28)",padding:"5px 14px",
-  }}>
-    {teacher.reviewCount} Total
-  </span>
-</div>
+              {!!user && (user.role === "admin" || user.role === "moderator" || user.email === "2025100000379@seu.edu.bd") && (
+                <UploadPyqDialog teacherId={teacherId} open={pyqDialogOpen} onOpenChange={setPyqDialogOpen} />
+              )}
+              <ReviewForm
+                teacherId={teacherId}
+                teacherName={teacher.fullName}
+                coursesTaught={teacher.coursesTaught}
+                trigger={
+                  <button
+                    style={{
+                      display: "flex", alignItems: "center", gap: "6px",
+                      fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+                      letterSpacing: "0.1em", textTransform: "uppercase",
+                      padding: "6px 14px",
+                      border: "1px solid rgba(0,200,255,0.4)",
+                      background: "rgba(0,200,255,0.08)",
+                      color: "rgba(0,200,255,0.9)",
+                      cursor: "pointer", transition: "all 0.3s ease",
+                      boxShadow: "0 0 10px rgba(0,200,255,0.1)",
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 18px rgba(0,200,255,0.35)";
+                      (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.15)";
+                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.8)";
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 10px rgba(0,200,255,0.1)";
+                      (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.08)";
+                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.4)";
+                    }}
+                  >
+                    <MessageSquarePlus style={{ width: "14px", height: "14px" }} />
+                    Write a Review
+                  </button>
+                }
+              />
+              <span style={{
+                fontFamily:"var(--font-mono)",fontSize:"0.72rem",letterSpacing:"0.1em",
+                color:"rgba(0,200,255,0.85)",background:"rgba(0,200,255,0.08)",
+                border:"1px solid rgba(0,200,255,0.28)",padding:"5px 14px",
+              }}>
+                {teacher.reviewCount} Total
+              </span>
+            </div>
           </div>
           <div style={{ height:"1px",background:"linear-gradient(90deg,rgba(0,200,255,0.4),transparent)" }} />
 
@@ -230,101 +342,103 @@ export default function TeacherProfile() {
           ) : reviews?.length === 0 ? (
             <div className="text-center py-16" style={{ border:"1px dashed rgba(0,200,255,0.15)",background:"rgba(0,200,255,0.02)" }}>
               <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.82rem",color:"rgba(0,200,255,0.4)",letterSpacing:"0.1em" }}>
-                 No reviews yet. Be the first!
+                // No reviews yet. Be the first!
               </p>
             </div>
           ) : (
             <div className="space-y-4">
-              {reviews?.map((review) => {
+              {reviews?.map((review, index) => {
                 const isAdmin = user?.email === "2025100000379@seu.edu.bd";
                 const isOwner = user?.id === review.studentId;
 
                 return (
-                  <div key={review.id} style={{
-                    background:"rgba(2,10,25,0.82)",border:"1px solid rgba(0,200,255,0.12)",
-                    backdropFilter:"blur(12px)",padding:"24px",position:"relative",
-                    transition:"all 0.3s ease",
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.28)";
-                    (e.currentTarget as HTMLElement).style.boxShadow = "0 0 24px rgba(0,200,255,0.06)";
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.12)";
-                    (e.currentTarget as HTMLElement).style.boxShadow = "none";
-                  }}
-                  >
-                    {/* Corner brackets */}
-                    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"9px",height:"9px",borderTop:"1px solid rgba(0,200,255,0.5)",borderLeft:"1px solid rgba(0,200,255,0.5)" }} />
-                    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"9px",height:"9px",borderBottom:"1px solid rgba(0,200,255,0.5)",borderRight:"1px solid rgba(0,200,255,0.5)" }} />
+                  <AnimatedReview key={review.id} index={index}>
+                    <div style={{
+                      background:"rgba(2,10,25,0.82)",border:"1px solid rgba(0,200,255,0.12)",
+                      backdropFilter:"blur(12px)",padding:"24px",position:"relative",
+                      transition:"border-color 0.3s ease, box-shadow 0.3s ease",
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.28)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 24px rgba(0,200,255,0.06)";
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.12)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                    }}
+                    >
+                      {/* Corner brackets */}
+                      <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"9px",height:"9px",borderTop:"1px solid rgba(0,200,255,0.5)",borderLeft:"1px solid rgba(0,200,255,0.5)" }} />
+                      <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"9px",height:"9px",borderBottom:"1px solid rgba(0,200,255,0.5)",borderRight:"1px solid rgba(0,200,255,0.5)" }} />
 
-                    {/* Review header */}
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-3">
-                        <div style={{
-                          width:"40px",height:"40px",display:"flex",alignItems:"center",justifyContent:"center",
-                          background:"rgba(0,200,255,0.08)",border:"1px solid rgba(0,200,255,0.2)",flexShrink:0,
+                      {/* Review header */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-3">
+                          <div style={{
+                            width:"40px",height:"40px",display:"flex",alignItems:"center",justifyContent:"center",
+                            background:"rgba(0,200,255,0.08)",border:"1px solid rgba(0,200,255,0.2)",flexShrink:0,
+                          }}>
+                            <User style={{ width:"18px",height:"18px",color:"rgba(0,200,255,0.7)" }} />
+                          </div>
+                          <div>
+                            <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.8rem",color:"rgba(0,200,255,0.85)",letterSpacing:"0.04em",fontWeight:500 }}>
+                              {isAdmin ? review.studentUsername : "Anonymous Student"}
+                            </p>
+                            <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.65rem",color:"rgba(0,200,255,0.35)",letterSpacing:"0.04em",marginTop:"2px" }}>
+                              {new Date(review.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {isOwner && (
+                            <ReviewForm
+                              teacherId={teacher.id}
+                              teacherName={teacher.fullName}
+                              coursesTaught={teacher.coursesTaught}
+                              review={review}
+                              trigger={
+                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                  <Pencil className="h-4 w-4" style={{ color:"rgba(0,200,255,0.6)" }} />
+                                </Button>
+                              }
+                            />
+                          )}
+                          {(isOwner || isAdmin) && (
+                            <Button variant="ghost" size="icon" className="h-8 w-8"
+                              onClick={() => { if (confirm("Delete this review?")) deleteReviewMutation.mutate(review.id); }}
+                            >
+                              <Trash2 className="h-4 w-4" style={{ color:"rgba(255,80,80,0.7)" }} />
+                            </Button>
+                          )}
+                          {getPersonalityIcon(review.personality)}
+                        </div>
+                      </div>
+
+                      {/* Comment */}
+                      {review.comment && (
+                        <p style={{
+                          fontFamily:"var(--font-sans)",fontSize:"0.95rem",fontWeight:500,
+                          color:"#E2E8F0",lineHeight:1.7,
+                          marginBottom:"20px",
+                          borderLeft:"2px solid rgba(0,200,255,0.25)",
+                          paddingLeft:"14px",
                         }}>
-                          <User style={{ width:"18px",height:"18px",color:"rgba(0,200,255,0.7)" }} />
+                          "{review.comment}"
+                        </p>
+                      )}
+
+                      {/* Metrics */}
+                      <div style={{ borderTop:"1px solid rgba(0,200,255,0.08)",paddingTop:"14px" }}>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                          <Metric label="Course" value={review.courseTaken} />
+                          <Metric label="Personality" value={review.personality} />
+                          <Metric label="Best For" value={review.bestFor} />
+                          <Metric label="Marking" value={review.markingStyle} />
+                          <Metric label="Difficulty" value={review.questionDifficulty} />
                         </div>
-                        <div>
-                          <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.8rem",color:"rgba(0,200,255,0.85)",letterSpacing:"0.04em",fontWeight:500 }}>
-                            {isAdmin ? review.studentUsername : "Anonymous Student"}
-                          </p>
-                          <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.65rem",color:"rgba(0,200,255,0.35)",letterSpacing:"0.04em",marginTop:"2px" }}>
-                            {new Date(review.createdAt).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {isOwner && (
-                          <ReviewForm
-                            teacherId={teacher.id}
-                            teacherName={teacher.fullName}
-                            coursesTaught={teacher.coursesTaught}
-                            review={review}
-                            trigger={
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
-                                <Pencil className="h-4 w-4" style={{ color:"rgba(0,200,255,0.6)" }} />
-                              </Button>
-                            }
-                          />
-                        )}
-                        {(isOwner || isAdmin) && (
-                          <Button variant="ghost" size="icon" className="h-8 w-8"
-                            onClick={() => { if (confirm("Delete this review?")) deleteReviewMutation.mutate(review.id); }}
-                          >
-                            <Trash2 className="h-4 w-4" style={{ color:"rgba(255,80,80,0.7)" }} />
-                          </Button>
-                        )}
-                        {getPersonalityIcon(review.personality)}
                       </div>
                     </div>
-
-                    {/* Comment — high contrast, readable */}
-                    {review.comment && (
-                      <p style={{
-                        fontFamily:"var(--font-sans)",fontSize:"0.95rem",fontWeight:500,
-                        color:"#E2E8F0",lineHeight:1.7,
-                        marginBottom:"20px",
-                        borderLeft:"2px solid rgba(0,200,255,0.25)",
-                        paddingLeft:"14px",
-                      }}>
-                        "{review.comment}"
-                      </p>
-                    )}
-
-                    {/* Metrics — smaller labels, high-contrast values */}
-                    <div style={{ borderTop:"1px solid rgba(0,200,255,0.08)",paddingTop:"14px" }}>
-                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                        <Metric label="Course" value={review.courseTaken} />
-                        <Metric label="Personality" value={review.personality} />
-                        <Metric label="Best For" value={review.bestFor} />
-                        <Metric label="Marking" value={review.markingStyle} />
-                        <Metric label="Difficulty" value={review.questionDifficulty} />
-                      </div>
-                    </div>
-                  </div>
+                  </AnimatedReview>
                 );
               })}
             </div>
@@ -334,7 +448,7 @@ export default function TeacherProfile() {
         {/* ===== SIDEBAR ===== */}
         <div className="space-y-5">
 
-          {/* PYQ — compact */}
+          {/* PYQ */}
           <div style={{
             background:"rgba(2,10,25,0.82)",border:"1px solid rgba(0,200,255,0.12)",
             backdropFilter:"blur(12px)",position:"relative",overflow:"hidden",
@@ -344,7 +458,7 @@ export default function TeacherProfile() {
             <PyqList teacherId={teacher.id} hideUpload={true} />
           </div>
 
-          {/* Pro tip — compact */}
+          {/* Pro tip */}
           <div style={{
             background:"rgba(2,10,25,0.82)",border:"1px solid rgba(0,200,255,0.1)",
             backdropFilter:"blur(12px)",padding:"16px",position:"relative",
@@ -363,7 +477,7 @@ export default function TeacherProfile() {
           </div>
         </div>
       </div>
-    <Footer />
+      <Footer />
     </div>
   );
 }
@@ -371,7 +485,6 @@ export default function TeacherProfile() {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      {/* Label — small, dim, uppercase */}
       <p style={{
         fontFamily:"var(--font-mono)",fontSize:"0.62rem",
         letterSpacing:"0.18em",color:"rgba(0,200,255,0.55)",
@@ -379,7 +492,6 @@ function Metric({ label, value }: { label: string; value: string }) {
       }}>
         {label}
       </p>
-      {/* Value — bright, readable */}
       <p style={{
         fontFamily:"var(--font-mono)",fontSize:"0.78rem",
         color:"rgba(0,220,255,0.9)",letterSpacing:"0.04em",fontWeight:600,
