@@ -220,9 +220,7 @@ export default function TeacherProfile() {
             {/* ===== INFO ===== */}
             <div className="flex-1 space-y-3 text-center md:text-left">
               {/* Label */}
-              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",letterSpacing:"0.22em",color:"rgba(0,200,255,0.45)",textTransform:"uppercase" }}>
-                // Faculty Profile
-              </div>
+              
               {/* Name — typing effect */}
               <h1 style={{
                 fontFamily:"var(--font-display)",fontWeight:800,
@@ -342,7 +340,7 @@ export default function TeacherProfile() {
           ) : reviews?.length === 0 ? (
             <div className="text-center py-16" style={{ border:"1px dashed rgba(0,200,255,0.15)",background:"rgba(0,200,255,0.02)" }}>
               <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.82rem",color:"rgba(0,200,255,0.4)",letterSpacing:"0.1em" }}>
-                // No reviews yet. Be the first!
+                 No reviews yet. Be the first!
               </p>
             </div>
           ) : (
