@@ -141,11 +141,8 @@ export default function TeacherProfile() {
             </div>
 
             {/* ===== ACTION BUTTONS ===== */}
-            <div className="flex items-center gap-3 shrink-0 mt-2 md:mt-0">
-              <ReviewForm teacherId={teacherId} teacherName={teacher.fullName} coursesTaught={teacher.coursesTaught} />
-              {!!user && (user.role === "admin" || user.role === "moderator" || user.email === "2025100000379@seu.edu.bd") && (
-                <UploadPyqDialog teacherId={teacherId} open={pyqDialogOpen} onOpenChange={setPyqDialogOpen} />
-              )}
+<div className="flex items-center gap-3 shrink-0 mt-2 md:mt-0">
+  <ReviewForm teacherId={teacherId} teacherName={teacher.fullName} coursesTaught={teacher.coursesTaught} />
             </div>
           </div>
         </div>
@@ -166,13 +163,18 @@ export default function TeacherProfile() {
                 Reviews
               </h2>
             </div>
-            <span style={{
-              fontFamily:"var(--font-mono)",fontSize:"0.72rem",letterSpacing:"0.1em",
-              color:"rgba(0,200,255,0.85)",background:"rgba(0,200,255,0.08)",
-              border:"1px solid rgba(0,200,255,0.28)",padding:"5px 14px",
-            }}>
-              {teacher.reviewCount} Total
-            </span>
+            <div className="flex items-center gap-3">
+  {!!user && (user.role === "admin" || user.role === "moderator" || user.email === "2025100000379@seu.edu.bd") && (
+    <UploadPyqDialog teacherId={teacherId} open={pyqDialogOpen} onOpenChange={setPyqDialogOpen} />
+  )}
+  <span style={{
+    fontFamily:"var(--font-mono)",fontSize:"0.72rem",letterSpacing:"0.1em",
+    color:"rgba(0,200,255,0.85)",background:"rgba(0,200,255,0.08)",
+    border:"1px solid rgba(0,200,255,0.28)",padding:"5px 14px",
+  }}>
+    {teacher.reviewCount} Total
+  </span>
+</div>
           </div>
           <div style={{ height:"1px",background:"linear-gradient(90deg,rgba(0,200,255,0.4),transparent)" }} />
 
@@ -297,7 +299,7 @@ export default function TeacherProfile() {
           }}>
             <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,200,255,0.5)",borderLeft:"1px solid rgba(0,200,255,0.5)" }} />
             <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,200,255,0.5)",borderRight:"1px solid rgba(0,200,255,0.5)" }} />
-            <PyqList teacherId={teacher.id} />
+            <PyqList teacherId={teacher.id} hideUpload={true} />
           </div>
 
           {/* Pro tip — compact */}
