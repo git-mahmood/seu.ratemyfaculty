@@ -142,7 +142,6 @@ export default function TeacherProfile() {
 
             {/* ===== ACTION BUTTONS ===== */}
 <div className="flex items-center gap-3 shrink-0 mt-2 md:mt-0">
-  <ReviewForm teacherId={teacherId} teacherName={teacher.fullName} coursesTaught={teacher.coursesTaught} />
             </div>
           </div>
         </div>
@@ -165,6 +164,7 @@ export default function TeacherProfile() {
   {!!user && (user.role === "admin" || user.role === "moderator" || user.email === "2025100000379@seu.edu.bd") && (
     <UploadPyqDialog teacherId={teacherId} open={pyqDialogOpen} onOpenChange={setPyqDialogOpen} />
   )}
+  <ReviewForm teacherId={teacherId} teacherName={teacher.fullName} coursesTaught={teacher.coursesTaught} />
   <span style={{
     fontFamily:"var(--font-mono)",fontSize:"0.72rem",letterSpacing:"0.1em",
     color:"rgba(0,200,255,0.85)",background:"rgba(0,200,255,0.08)",
