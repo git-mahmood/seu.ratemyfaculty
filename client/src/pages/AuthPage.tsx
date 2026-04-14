@@ -1,3 +1,4 @@
+import { playLoginClick } from "@/lib/sounds";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
@@ -200,6 +201,7 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any; isLoading: boolean 
       <button
         type="submit"
         disabled={isLoading}
+        onClick={() => playLoginClick()}
         className="w-full"
         style={{
           display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",
