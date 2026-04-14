@@ -156,9 +156,7 @@ export default function TeacherProfile() {
           {/* Section header */}
           <div className="flex items-center justify-between">
             <div>
-              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.58rem",letterSpacing:"0.22em",color:"rgba(0,200,255,0.4)",textTransform:"uppercase",marginBottom:"4px" }}>
-                // Student Feedback
-              </div>
+              
               <h2 style={{ fontFamily:"var(--font-display)",fontSize:"1.4rem",fontWeight:800,letterSpacing:"0.1em",color:"rgba(200,232,255,0.95)",textTransform:"uppercase" }}>
                 Reviews
               </h2>
