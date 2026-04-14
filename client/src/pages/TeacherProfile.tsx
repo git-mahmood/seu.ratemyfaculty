@@ -43,7 +43,7 @@ export default function TeacherProfile() {
     <div className="min-h-screen flex items-center justify-center" style={{ background: "hsl(220,30%,4%)" }}>
       <Navbar />
       <p style={{ fontFamily: "var(--font-mono)", color: "rgba(255,80,80,0.8)", letterSpacing: "0.1em" }}>
-        // FACULTY NOT FOUND
+         FACULTY NOT FOUND
       </p>
     </div>
   );
@@ -169,11 +169,33 @@ export default function TeacherProfile() {
     teacherName={teacher.fullName}
     coursesTaught={teacher.coursesTaught}
     trigger={
-      <Button variant="outline" size="sm" className="gap-2" onClick={() => {}}>
-        <MessageSquarePlus className="h-4 w-4" />
-        Write a Review
-      </Button>
-    }
+  <button
+    style={{
+      display: "flex", alignItems: "center", gap: "6px",
+      fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+      letterSpacing: "0.1em", textTransform: "uppercase",
+      padding: "6px 14px",
+      border: "1px solid rgba(0,200,255,0.4)",
+      background: "rgba(0,200,255,0.08)",
+      color: "rgba(0,200,255,0.9)",
+      cursor: "pointer", transition: "all 0.3s ease",
+      boxShadow: "0 0 10px rgba(0,200,255,0.1)",
+    }}
+    onMouseEnter={e => {
+      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 18px rgba(0,200,255,0.35)";
+      (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.15)";
+      (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.8)";
+    }}
+    onMouseLeave={e => {
+      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 10px rgba(0,200,255,0.1)";
+      (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.08)";
+      (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,200,255,0.4)";
+    }}
+  >
+    <MessageSquarePlus style={{ width: "14px", height: "14px" }} />
+    Write a Review
+  </button>
+}
   />
   <span style={{
     fontFamily:"var(--font-mono)",fontSize:"0.72rem",letterSpacing:"0.1em",
