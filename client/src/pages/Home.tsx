@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { TeacherCard } from "@/components/TeacherCard";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 // Animated star field canvas
 function StarField() {
@@ -24,7 +25,6 @@ function StarField() {
     resize();
     window.addEventListener("resize", resize);
 
-    // Stars
     const stars = Array.from({ length: 200 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
@@ -35,7 +35,6 @@ function StarField() {
       twinkleDir: Math.random() > 0.5 ? 1 : -1,
     }));
 
-    // Shooting stars
     const shootingStars: {
       x: number; y: number; len: number;
       speed: number; alpha: number; active: boolean; angle: number;
@@ -58,7 +57,6 @@ function StarField() {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw stars
       stars.forEach((s) => {
         s.alpha += s.twinkleSpeed * s.twinkleDir;
         if (s.alpha >= 1) { s.alpha = 1; s.twinkleDir = -1; }
@@ -69,7 +67,6 @@ function StarField() {
         ctx.fillStyle = `rgba(180, 220, 255, ${s.alpha})`;
         ctx.fill();
 
-        // Occasional bright star with glow
         if (s.r > 1.2) {
           ctx.beginPath();
           ctx.arc(s.x, s.y, s.r * 2, 0, Math.PI * 2);
@@ -78,12 +75,9 @@ function StarField() {
         }
       });
 
-      // Shooting stars
       frame++;
       shootingStars.forEach((s, i) => {
-        if (!s.active && frame % 120 === i * 24) {
-          spawnShootingStar(s);
-        }
+        if (!s.active && frame % 120 === i * 24) spawnShootingStar(s);
         if (!s.active) return;
 
         const dx = Math.cos(s.angle) * s.speed;
@@ -167,21 +161,6 @@ export default function Home() {
             transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
-          {/* Top label */}
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <div className="hud-line flex-1 max-w-[80px]" />
-            <span style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.65rem",
-              letterSpacing: "0.2em",
-              color: "rgba(0, 200, 255, 0.6)",
-              textTransform: "uppercase",
-            }}>
-              SEU // Faculty Intelligence System
-            </span>
-            <div className="hud-line flex-1 max-w-[80px]" />
-          </div>
-
           {/* Main title */}
           <div className="relative">
             <h1
@@ -251,7 +230,7 @@ export default function Home() {
               style={{ color: "rgba(0, 200, 255, 0.5)", zIndex: 2 }}
             />
             <Input
-              placeholder="SEARCH FACULTY // NAME · DEPT · UNIVERSITY"
+              placeholder="SEARCH FACULTY NAME · DEPT · UNIVERSITY"
               className="pl-12 py-6 rounded-none"
               style={{
                 background: "rgba(0, 15, 30, 0.8)",
@@ -266,33 +245,15 @@ export default function Home() {
             />
           </div>
 
-          {/* Stats row */}
+          {/* Faculty count only */}
           {teachers && (
-            <div className="flex items-center justify-center gap-8 pt-2">
-              {[
-                { label: "Faculty", value: teachers.length },
-                { label: "Online", value: "Active" },
-                { label: "System", value: "Online" },
-              ].map((stat, i) => (
-                <div key={i} className="text-center" style={{
-                  opacity: mounted ? 1 : 0,
-                  transition: `opacity 0.6s ease ${0.4 + i * 0.1}s`,
-                }}>
-                  <div style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "1.1rem",
-                    color: "rgba(0, 220, 255, 0.9)",
-                    fontWeight: 700,
-                  }}>{stat.value}</div>
-                  <div style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.6rem",
-                    color: "rgba(100, 160, 200, 0.6)",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                  }}>{stat.label}</div>
-                </div>
-              ))}
+            <div className="text-center pt-2" style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.6s ease 0.4s" }}>
+              <div style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem", color: "rgba(0, 220, 255, 0.9)", fontWeight: 700 }}>
+                {teachers.length}
+              </div>
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "rgba(100, 160, 200, 0.6)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                Faculty
+              </div>
             </div>
           )}
         </div>
@@ -357,22 +318,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 py-6" style={{ borderTop: "1px solid rgba(0, 200, 255, 0.1)" }}>
-        <div className="hud-line mb-4 opacity-20" />
-        <div className="container mx-auto px-4 text-center">
-          <span style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
-            color: "rgba(0, 200, 255, 0.4)",
-            letterSpacing: "0.15em",
-          }}>
-            ENGINEERED WITH ❤️ BY{" "}
-            <span style={{ color: "rgba(0, 200, 255, 0.8)", fontWeight: 700 }}>MAHMUD</span>
-            {" "}// SEU RATE MY FACULTY v1.0
-          </span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
