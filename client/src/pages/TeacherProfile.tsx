@@ -101,13 +101,27 @@ export default function TeacherProfile() {
               </div>
               {/* Name */}
               <h1 style={{
-                fontFamily:"var(--font-display)",fontWeight:800,
-                fontSize:"clamp(1.4rem,3.5vw,2rem)",letterSpacing:"0.08em",
-                textTransform:"uppercase",color:"rgba(224,240,255,0.97)",
-                textShadow:"0 0 32px rgba(0,200,255,0.35)",lineHeight:1.1,
-              }}>
-                {teacher.fullName}
-              </h1>
+  fontFamily:"var(--font-display)",fontWeight:800,
+  fontSize:"clamp(1.4rem,3.5vw,2rem)",letterSpacing:"0.08em",
+  textTransform:"uppercase",color:"rgba(224,240,255,0.97)",
+  textShadow:"0 0 32px rgba(0,200,255,0.35)",lineHeight:1.1,
+  position:"relative",overflow:"hidden",
+}}>
+  {teacher.fullName}
+  <span style={{
+    position:"absolute",
+    top:0, left:"-100%",
+    width:"60%", height:"100%",
+    background:"linear-gradient(90deg,transparent,rgba(0,251,255,0.35),transparent)",
+    animation:"shimmer 2.5s ease-in-out infinite",
+  }} />
+  <style>{`
+    @keyframes shimmer {
+      0%   { left: -100%; }
+      100% { left: 160%; }
+    }
+  `}</style>
+</h1>
               {/* Dept + Uni */}
               <div className="flex flex-wrap justify-center md:justify-start gap-6">
                 <div style={{ display:"flex",alignItems:"center",gap:"6px" }}>
