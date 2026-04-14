@@ -86,6 +86,44 @@ export default function AdminDashboard() {
               <h1 style={{ fontFamily:"var(--font-display)",fontSize:"1.6rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(200,230,255,0.95)" }}>
                 Dashboard
               </h1>
+              {/* ===== TEACHER COUNT STAT ===== */}
+<div style={{
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "12px",
+  padding: "8px 16px",
+  background: "rgba(0, 200, 255, 0.03)",
+  border: "1px solid rgba(0, 200, 255, 0.2)",
+  position: "relative",
+}}>
+  {/* Sub-pixel corner brackets */}
+  <div style={{ position: "absolute", top: "-1px", left: "-1px", width: "4px", height: "4px", borderTop: "1px solid #00FBFF", borderLeft: "1px solid #00FBFF" }} />
+  <div style={{ position: "absolute", bottom: "-1px", right: "-1px", width: "4px", height: "4px", borderBottom: "1px solid #00FBFF", borderRight: "1px solid #00FBFF" }} />
+  
+  <Users style={{ width: "14px", height: "14px", color: "rgba(0, 200, 255, 0.6)" }} />
+  
+  <div className="flex flex-col">
+    <span style={{ 
+      fontFamily: "var(--font-mono)", 
+      fontSize: "0.55rem", 
+      textTransform: "uppercase", 
+      letterSpacing: "0.15em", 
+      color: "rgba(0, 200, 255, 0.45)",
+      lineHeight: 1
+    }}>
+      Total_Faculty
+    </span>
+    <span style={{ 
+      fontFamily: "var(--font-mono)", 
+      fontSize: "1.1rem", 
+      fontWeight: 700, 
+      color: "#E0F2FE",
+      textShadow: "0 0 10px rgba(0, 251, 255, 0.3)"
+    }}>
+      {teachersLoading ? "---" : String(teachers?.length).padStart(3, '0')}
+    </span>
+  </div>
+</div>
               <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.65rem",color:"rgba(0,200,255,0.4)",letterSpacing:"0.05em" }}>
                 Manage faculty and platform content
               </p>
