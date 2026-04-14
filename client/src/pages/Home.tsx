@@ -1,3 +1,4 @@
+import { playKeyClick } from "@/lib/sounds";
 import { useState, useEffect, useRef } from "react";
 import { useTeachers } from "@/hooks/use-teachers";
 import { Navbar } from "@/components/Navbar";
@@ -231,6 +232,7 @@ export default function Home() {
             />
             <Input
               placeholder="SEARCH FACULTY NAME · DEPT · UNIVERSITY"
+              onKeyDown={() => playKeyClick()}
               className="pl-12 py-6 rounded-none"
               style={{
                 background: "rgba(0, 15, 30, 0.8)",
