@@ -1,3 +1,4 @@
+import { playClick } from "@/lib/sounds";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -84,6 +85,7 @@ export function Navbar() {
           {/* Teachers nav link */}
           <Link href="/">
             <button
+              onClick={() => playClick()}
               style={{
                 fontFamily: "var(--font-mono)",
                 fontSize: "0.7rem",
@@ -196,6 +198,7 @@ export function Navbar() {
                   transition: "all 0.3s ease",
                   boxShadow: "0 0 12px rgba(0, 200, 255, 0.1)",
                 }}
+                onClick={() => playClick()}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(0, 200, 255, 0.3)";
                   (e.currentTarget as HTMLElement).style.background = "rgba(0, 200, 255, 0.15)";
