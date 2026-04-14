@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { GraduationCap, LogIn } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Footer } from "@/components/Footer";
 
 // Mini star field for auth page
 function StarField() {
@@ -59,7 +60,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative" style={{ background:"hsl(220,30%,4%)" }}>
+    <div className="min-h-screen flex flex-col relative" style={{ background:"hsl(220,30%,4%)" }}>
       <StarField />
 
       {/* Nebula blobs */}
@@ -71,80 +72,84 @@ export default function AuthPage() {
         backgroundImage:"linear-gradient(rgba(0,200,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,0.025) 1px,transparent 1px)",
         backgroundSize:"60px 60px" }} />
 
-      {/* Auth card */}
-      <div
-        style={{
-          position:"relative",zIndex:1,width:"100%",maxWidth:"420px",
-          background:"rgba(2,10,25,0.9)",
-          border:"1px solid rgba(0,200,255,0.2)",
-          backdropFilter:"blur(20px)",
-          boxShadow:"0 0 60px rgba(0,0,0,0.8),0 0 30px rgba(0,200,255,0.06)",
-          opacity: mounted ? 1 : 0,
-          transform: mounted ? "translateY(0)" : "translateY(24px)",
-          transition:"all 0.8s cubic-bezier(0.16,1,0.3,1)",
-        }}
-      >
-        {/* Corner brackets */}
-        <div style={{ position:"absolute",top:"-2px",left:"-2px",width:"16px",height:"16px",borderTop:"2px solid rgba(0,200,255,0.7)",borderLeft:"2px solid rgba(0,200,255,0.7)" }} />
-        <div style={{ position:"absolute",top:"-2px",right:"-2px",width:"16px",height:"16px",borderTop:"2px solid rgba(0,200,255,0.7)",borderRight:"2px solid rgba(0,200,255,0.7)" }} />
-        <div style={{ position:"absolute",bottom:"-2px",left:"-2px",width:"16px",height:"16px",borderBottom:"2px solid rgba(0,200,255,0.7)",borderLeft:"2px solid rgba(0,200,255,0.7)" }} />
-        <div style={{ position:"absolute",bottom:"-2px",right:"-2px",width:"16px",height:"16px",borderBottom:"2px solid rgba(0,200,255,0.7)",borderRight:"2px solid rgba(0,200,255,0.7)" }} />
+      {/* Center content */}
+      <div className="flex-1 flex items-center justify-center p-4" style={{ zIndex:1, position:"relative" }}>
+        {/* Auth card */}
+        <div
+          style={{
+            position:"relative", width:"100%", maxWidth:"420px",
+            background:"rgba(2,10,25,0.9)",
+            border:"1px solid rgba(0,200,255,0.2)",
+            backdropFilter:"blur(20px)",
+            boxShadow:"0 0 60px rgba(0,0,0,0.8),0 0 30px rgba(0,200,255,0.06)",
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? "translateY(0)" : "translateY(24px)",
+            transition:"all 0.8s cubic-bezier(0.16,1,0.3,1)",
+          }}
+        >
+          {/* Corner brackets */}
+          <div style={{ position:"absolute",top:"-2px",left:"-2px",width:"16px",height:"16px",borderTop:"2px solid rgba(0,200,255,0.7)",borderLeft:"2px solid rgba(0,200,255,0.7)" }} />
+          <div style={{ position:"absolute",top:"-2px",right:"-2px",width:"16px",height:"16px",borderTop:"2px solid rgba(0,200,255,0.7)",borderRight:"2px solid rgba(0,200,255,0.7)" }} />
+          <div style={{ position:"absolute",bottom:"-2px",left:"-2px",width:"16px",height:"16px",borderBottom:"2px solid rgba(0,200,255,0.7)",borderLeft:"2px solid rgba(0,200,255,0.7)" }} />
+          <div style={{ position:"absolute",bottom:"-2px",right:"-2px",width:"16px",height:"16px",borderBottom:"2px solid rgba(0,200,255,0.7)",borderRight:"2px solid rgba(0,200,255,0.7)" }} />
 
-        {/* Top scanner line */}
-        <div style={{ position:"absolute",top:0,left:0,right:0,height:"1px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.8),transparent)" }} />
+          {/* Top scanner line */}
+          <div style={{ position:"absolute",top:0,left:0,right:0,height:"1px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.8),transparent)" }} />
 
-        {/* Header */}
-        <div style={{ padding:"32px 32px 24px",textAlign:"center" }}>
-          {/* Icon */}
+          {/* Header */}
+          <div style={{ padding:"32px 32px 24px",textAlign:"center" }}>
+            {/* Icon */}
+            <div style={{
+              width:"60px",height:"60px",margin:"0 auto 16px",
+              display:"flex",alignItems:"center",justifyContent:"center",
+              background:"rgba(0,200,255,0.08)",border:"1px solid rgba(0,200,255,0.3)",
+              boxShadow:"0 0 20px rgba(0,200,255,0.15)",position:"relative",
+            }}>
+              <div style={{ position:"absolute",top:"-2px",left:"-2px",width:"8px",height:"8px",borderTop:"2px solid rgba(0,200,255,0.8)",borderLeft:"2px solid rgba(0,200,255,0.8)" }} />
+              <div style={{ position:"absolute",bottom:"-2px",right:"-2px",width:"8px",height:"8px",borderBottom:"2px solid rgba(0,200,255,0.8)",borderRight:"2px solid rgba(0,200,255,0.8)" }} />
+              <GraduationCap style={{ width:"28px",height:"28px",color:"rgba(0,200,255,0.9)" }} />
+            </div>
+
+
+            {/* Title */}
+            <h1 style={{
+              fontFamily:"var(--font-display)",fontSize:"1.5rem",fontWeight:800,
+              letterSpacing:"0.1em",textTransform:"uppercase",
+              background:"linear-gradient(135deg,#00e5ff 0%,#ffffff 50%,#a855f7 100%)",
+              WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",
+              marginBottom:"10px",
+            }}>
+              Rate My Faculty
+            </h1>
+
+            <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.78rem",color:"rgba(0,200,255,0.5)",letterSpacing:"0.05em" }}>
+              Enter credentials to access the system
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div style={{ height:"1px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.2),transparent)",margin:"0 32px" }} />
+
+          {/* Form */}
+          <div style={{ padding:"24px 32px 32px" }}>
+            <LoginForm onSubmit={login} isLoading={isLoggingIn} />
+          </div>
+
+          {/* Card footer */}
           <div style={{
-            width:"60px",height:"60px",margin:"0 auto 16px",
-            display:"flex",alignItems:"center",justifyContent:"center",
-            background:"rgba(0,200,255,0.08)",border:"1px solid rgba(0,200,255,0.3)",
-            boxShadow:"0 0 20px rgba(0,200,255,0.15)",position:"relative",
+            borderTop:"1px solid rgba(0,200,255,0.08)",
+            padding:"14px 32px",textAlign:"center",
           }}>
-            <div style={{ position:"absolute",top:"-2px",left:"-2px",width:"8px",height:"8px",borderTop:"2px solid rgba(0,200,255,0.8)",borderLeft:"2px solid rgba(0,200,255,0.8)" }} />
-            <div style={{ position:"absolute",bottom:"-2px",right:"-2px",width:"8px",height:"8px",borderBottom:"2px solid rgba(0,200,255,0.8)",borderRight:"2px solid rgba(0,200,255,0.8)" }} />
-            <GraduationCap style={{ width:"28px",height:"28px",color:"rgba(0,200,255,0.9)" }} />
+            <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.72rem",color:"rgba(0,200,255,0.45)",letterSpacing:"0.08em" }}>
+              Only @seu.edu.bd emails are authorized
+            </p>
           </div>
-
-          {/* System label */}
-          <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.55rem",letterSpacing:"0.25em",color:"rgba(0,200,255,0.4)",textTransform:"uppercase",marginBottom:"8px" }}>
-            SEU // Faculty Intelligence System
-          </div>
-
-          {/* Title */}
-          <h1 style={{
-            fontFamily:"var(--font-display)",fontSize:"1.3rem",fontWeight:800,
-            letterSpacing:"0.1em",textTransform:"uppercase",
-            background:"linear-gradient(135deg,#00e5ff 0%,#ffffff 50%,#a855f7 100%)",
-            WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",
-            marginBottom:"8px",
-          }}>
-            Rate My Faculty
-          </h1>
-
-          <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.65rem",color:"rgba(0,200,255,0.4)",letterSpacing:"0.05em" }}>
-            Enter credentials to access the system
-          </p>
         </div>
+      </div>
 
-        {/* Divider */}
-        <div style={{ height:"1px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.2),transparent)",margin:"0 32px" }} />
-
-        {/* Form */}
-        <div style={{ padding:"24px 32px 32px" }}>
-          <LoginForm onSubmit={login} isLoading={isLoggingIn} />
-        </div>
-
-        {/* Footer */}
-        <div style={{
-          borderTop:"1px solid rgba(0,200,255,0.08)",
-          padding:"14px 32px",textAlign:"center",
-        }}>
-          <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",color:"rgba(0,200,255,0.3)",letterSpacing:"0.08em" }}>
-            Only @seu.edu.bd emails are authorized
-          </p>
-        </div>
+      {/* Page footer */}
+      <div style={{ position:"relative",zIndex:1 }}>
+        <Footer />
       </div>
     </div>
   );
@@ -162,7 +167,7 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any; isLoading: boolean 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-2">
-        <Label style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",letterSpacing:"0.15em",color:"rgba(0,200,255,0.5)",textTransform:"uppercase" }}>
+        <Label style={{ fontFamily:"var(--font-mono)",fontSize:"0.85rem",letterSpacing:"0.15em",color:"rgba(0,200,255,0.9)",textTransform:"uppercase" }}>
           Email Address
         </Label>
         <Input
@@ -176,7 +181,7 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any; isLoading: boolean 
       </div>
 
       <div className="space-y-2">
-        <Label style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",letterSpacing:"0.15em",color:"rgba(0,200,255,0.5)",textTransform:"uppercase" }}>
+        <Label style={{ fontFamily:"var(--font-mono)",fontSize:"0.85rem",letterSpacing:"0.15em",color:"rgba(0,200,255,0.9)",textTransform:"uppercase" }}>
           Password
         </Label>
         <Input
@@ -187,7 +192,7 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any; isLoading: boolean 
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.58rem",color:"rgba(0,200,255,0.3)",letterSpacing:"0.04em" }}>
+        <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.72rem",color:"rgba(0,200,255,0.45)",letterSpacing:"0.04em" }}>
           New user? Your password will be set on first login.
         </p>
       </div>
@@ -202,7 +207,7 @@ function LoginForm({ onSubmit, isLoading }: { onSubmit: any; isLoading: boolean 
           background: isLoading ? "rgba(0,200,255,0.04)" : "rgba(0,200,255,0.1)",
           border:"1px solid rgba(0,200,255,0.4)",
           color: isLoading ? "rgba(0,200,255,0.3)" : "rgba(0,200,255,0.95)",
-          fontFamily:"var(--font-display)",fontSize:"0.75rem",fontWeight:700,
+          fontFamily:"var(--font-display)",fontSize:"0.82rem",fontWeight:700,
           letterSpacing:"0.15em",textTransform:"uppercase",
           cursor: isLoading ? "not-allowed" : "pointer",
           transition:"all 0.3s ease",
