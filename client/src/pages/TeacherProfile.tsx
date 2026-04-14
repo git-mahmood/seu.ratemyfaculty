@@ -96,9 +96,7 @@ export default function TeacherProfile() {
             {/* ===== INFO ===== */}
             <div className="flex-1 space-y-3 text-center md:text-left">
               {/* Label */}
-              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",letterSpacing:"0.22em",color:"rgba(0,200,255,0.45)",textTransform:"uppercase" }}>
-                 Faculty Profile
-              </div>
+              
               {/* Name */}
               <h1 style={{
   fontFamily:"var(--font-display)",fontWeight:800,
