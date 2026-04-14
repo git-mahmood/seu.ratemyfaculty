@@ -247,17 +247,6 @@ export default function Home() {
             />
           </div>
 
-          {/* Faculty count only */}
-          {teachers && (
-            <div className="text-center pt-2" style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.6s ease 0.4s" }}>
-              <div style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem", color: "rgba(0, 220, 255, 0.9)", fontWeight: 700 }}>
-                {teachers.length}
-              </div>
-              <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "rgba(100, 160, 200, 0.6)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                Faculty
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Divider */}
