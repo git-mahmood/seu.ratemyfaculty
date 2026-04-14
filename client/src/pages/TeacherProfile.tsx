@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, buildUrl } from "@shared/routes";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/Footer";
 
 export default function TeacherProfile() {
   const [, params] = useRoute("/teacher/:id");
@@ -318,6 +319,7 @@ export default function TeacherProfile() {
           </div>
         </div>
       </div>
+    <Footer />
     </div>
   );
 }
@@ -371,6 +373,7 @@ function ProfileSkeleton() {
         </div>
         <div style={{ height:"200px",background:"rgba(0,200,255,0.04)",border:"1px solid rgba(0,200,255,0.08)",animation:"pulse 2s infinite" }} />
       </div>
+      <Footer/>
     </div>
   );
 }
