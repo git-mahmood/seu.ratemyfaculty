@@ -7,7 +7,7 @@ import { ReviewForm } from "@/components/ReviewForm";
 import { PyqList, UploadPyqDialog } from "@/components/PyqList";
 import {
   Building2, MapPin, BookOpen, User, Smile, Frown, Meh,
-  GraduationCap, Pencil, Trash2,
+  GraduationCap, Pencil, Trash2, MessageSquarePlus,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -164,7 +164,17 @@ export default function TeacherProfile() {
   {!!user && (user.role === "admin" || user.role === "moderator" || user.email === "2025100000379@seu.edu.bd") && (
     <UploadPyqDialog teacherId={teacherId} open={pyqDialogOpen} onOpenChange={setPyqDialogOpen} />
   )}
-  <ReviewForm teacherId={teacherId} teacherName={teacher.fullName} coursesTaught={teacher.coursesTaught} />
+  <ReviewForm
+    teacherId={teacherId}
+    teacherName={teacher.fullName}
+    coursesTaught={teacher.coursesTaught}
+    trigger={
+      <Button variant="outline" size="sm" className="gap-2" onClick={() => {}}>
+        <MessageSquarePlus className="h-4 w-4" />
+        Write a Review
+      </Button>
+    }
+  />
   <span style={{
     fontFamily:"var(--font-mono)",fontSize:"0.72rem",letterSpacing:"0.1em",
     color:"rgba(0,200,255,0.85)",background:"rgba(0,200,255,0.08)",
