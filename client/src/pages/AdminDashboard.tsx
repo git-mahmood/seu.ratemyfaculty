@@ -147,7 +147,7 @@ export default function AdminDashboard() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    teachers?.map((teacher) => (
+                    [...(teachers ?? [])].sort((a, b) => a.fullName.localeCompare(b.fullName)).map((teacher) => (
                       <TableRow
                         key={teacher.id}
                         style={{ borderBottom:"1px solid rgba(0,200,255,0.06)", transition:"background 0.2s ease" }}
