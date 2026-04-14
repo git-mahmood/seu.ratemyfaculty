@@ -219,7 +219,11 @@ export function ReviewForm({ teacherId, teacherName, coursesTaught, review, trig
         </DialogContent>
       </Dialog>
 
-      {trigger || (
+      {trigger ? (
+        <span onClick={() => handleOpenChange(true)} style={{ cursor: "pointer" }}>
+          {trigger}
+        </span>
+      ) : (
         <Button 
           size="lg" 
           className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
