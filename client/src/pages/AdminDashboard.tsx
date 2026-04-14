@@ -69,6 +69,8 @@ export default function AdminDashboard() {
 
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
+          
+          {/* LEFT: ICON AND TITLE GROUP */}
           <div className="flex items-center gap-4">
             <div style={{
               width:"48px", height:"48px", display:"flex", alignItems:"center", justifyContent:"center",
@@ -79,67 +81,6 @@ export default function AdminDashboard() {
               <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"6px",height:"6px",borderBottom:"2px solid rgba(0,200,255,0.8)",borderRight:"2px solid rgba(0,200,255,0.8)" }} />
               <LayoutDashboard style={{ width:"22px", height:"22px", color:"rgba(0,200,255,0.9)" }} />
             </div>
-            {/* ===== CENTRAL METRICS PANEL ===== */}
-<div style={{
-  flex: 1,
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: "0 40px"
-}}>
-  <div style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "20px",
-    padding: "12px 24px",
-    background: "rgba(0, 200, 255, 0.03)",
-    borderLeft: "1px solid rgba(0, 200, 255, 0.2)",
-    borderRight: "1px solid rgba(0, 200, 255, 0.2)",
-    position: "relative",
-  }}>
-    {/* Decorative scanning line */}
-    <div style={{ 
-      position: "absolute", top: 0, left: "10%", right: "10%", height: "1px", 
-      background: "linear-gradient(90deg, transparent, rgba(0,255,255,0.5), transparent)" 
-    }} />
-    
-    <div className="flex flex-col items-end">
-      <span style={{ 
-        fontFamily: "var(--font-mono)", fontSize: "0.6rem", 
-        color: "rgba(0, 200, 255, 0.4)", textTransform: "uppercase", letterSpacing: "0.2em" 
-      }}>
-        System_Status
-      </span>
-      <span style={{ 
-        fontFamily: "var(--font-mono)", fontSize: "0.7rem", 
-        color: "#00FBFF", textTransform: "uppercase" 
-      }}>
-        Active_Node
-      </span>
-    </div>
-
-    <div style={{ width: "1px", height: "30px", background: "rgba(0, 200, 255, 0.1)" }} />
-
-    <div className="flex items-center gap-4">
-      <Users style={{ width: "20px", height: "20px", color: "rgba(0, 200, 255, 0.8)" }} />
-      <div className="flex flex-col">
-        <span style={{ 
-          fontFamily: "var(--font-mono)", fontSize: "0.55rem", 
-          textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(0, 200, 255, 0.5)" 
-        }}>
-          Total_Faculty_Count
-        </span>
-        <span style={{ 
-          fontFamily: "var(--font-display)", fontSize: "1.8rem", 
-          fontWeight: 800, color: "#E0F2FE", lineHeight: 1,
-          textShadow: "0 0 15px rgba(0, 251, 255, 0.4)"
-        }}>
-          {teachersLoading ? "--" : String(teachers?.length).padStart(3, '0')}
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
             <div>
               <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.85rem",letterSpacing:"0.2em",color:"rgba(0,200,255,0.85)",textTransform:"uppercase",marginBottom:"2px" }}>
                  Control Panel
@@ -152,6 +93,50 @@ export default function AdminDashboard() {
               </p>
             </div>
           </div>
+
+          {/* CENTER: THE FACULTY COUNT (This fills the empty space) */}
+          <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "20px",
+              padding: "12px 24px",
+              background: "rgba(0, 200, 255, 0.03)",
+              borderLeft: "1px solid rgba(0, 200, 255, 0.2)",
+              borderRight: "1px solid rgba(0, 200, 255, 0.2)",
+              position: "relative",
+            }}>
+              <div style={{ 
+                position: "absolute", top: 0, left: "10%", right: "10%", height: "1px", 
+                background: "linear-gradient(90deg, transparent, rgba(0,255,255,0.5), transparent)" 
+              }} />
+              
+              <div className="flex flex-col items-end">
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "rgba(0, 200, 255, 0.4)", textTransform: "uppercase", letterSpacing: "0.2em" }}>
+                  System_Status
+                </span>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "#00FBFF", textTransform: "uppercase" }}>
+                  Active_Node
+                </span>
+              </div>
+
+              <div style={{ width: "1px", height: "30px", background: "rgba(0, 200, 255, 0.1)" }} />
+
+              <div className="flex items-center gap-4">
+                <Users style={{ width: "20px", height: "20px", color: "rgba(0, 200, 255, 0.8)" }} />
+                <div className="flex flex-col">
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(0, 200, 255, 0.5)" }}>
+                    Total_Faculty
+                  </span>
+                  <span style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: 800, color: "#E0F2FE", lineHeight: 1, textShadow: "0 0 15px rgba(0, 251, 255, 0.4)" }}>
+                    {teachersLoading ? "--" : String(teachers?.length).padStart(3, '0')}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT: ACTION BUTTON */}
           <TeacherForm />
         </div>
 
