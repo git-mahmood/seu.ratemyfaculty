@@ -75,16 +75,6 @@ export function Navbar() {
             }}>
               Rate My Faculty
             </div>
-            <div style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.5rem",
-              letterSpacing: "0.2em",
-              color: "rgba(0, 200, 255, 0.4)",
-              textTransform: "uppercase",
-              marginTop: "2px",
-            }}>
-              SEU // Academic Intelligence
-            </div>
           </div>
         </Link>
 
