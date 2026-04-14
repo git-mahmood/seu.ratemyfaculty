@@ -1,3 +1,4 @@
+import { playHover, playClick } from "@/lib/sounds";
 import { Link } from "wouter";
 import { type TeacherWithReviewCount } from "@shared/schema";
 import { Star, Building2, BookOpen, MapPin } from "lucide-react";
@@ -18,6 +19,7 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
         cursor: "pointer",
       }}
       onMouseEnter={e => {
+        playHover();
         const el = e.currentTarget as HTMLElement;
         el.style.border = "1px solid rgba(0, 200, 255, 0.5)";
         el.style.boxShadow = "0 0 25px rgba(0, 200, 255, 0.12), inset 0 0 25px rgba(0, 200, 255, 0.03)";
@@ -157,6 +159,7 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
       <Link href={`/teacher/${teacher.id}`} className="w-full" style={{ textDecoration: "none" }}>
         <button
           className="w-full"
+          onClick={() => playClick()}
           style={{
             display: "flex",
             alignItems: "center",
