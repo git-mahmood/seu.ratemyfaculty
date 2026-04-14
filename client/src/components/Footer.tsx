@@ -13,7 +13,7 @@ export function Footer() {
           <span style={{ fontSize: "1rem" }}>❤️</span>
           {" "}BY{" "}
           <span style={{ color: "#00FBFF", fontWeight: 700, letterSpacing: "0.15em" }}>MAHMUD</span>
-          {" "}// SEU RATE MY FACULTY v1.0
+          {" "} SEU RATE MY FACULTY v1.0
         </span>
       </div>
     </footer>
