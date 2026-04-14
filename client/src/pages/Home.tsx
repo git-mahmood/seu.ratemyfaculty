@@ -140,11 +140,19 @@ export default function Home() {
     setTimeout(() => setMounted(true), 100);
   }, []);
 
-  const filteredTeachers = teachers?.filter(t =>
-    t.fullName.toLowerCase().includes(search.toLowerCase()) ||
-    t.department.toLowerCase().includes(search.toLowerCase()) ||
-    t.university.toLowerCase().includes(search.toLowerCase())
-  );
+  // ✅ ONLY CHANGE: added courses search
+  const filteredTeachers = teachers?.filter(t => {
+    const query = search.toLowerCase();
+
+    return (
+      t.fullName.toLowerCase().includes(query) ||
+      t.department.toLowerCase().includes(query) ||
+      t.university.toLowerCase().includes(query) ||
+      t.courses?.some(course =>
+        course.toLowerCase().includes(query)
+      )
+    );
+  });
 
   return (
     <div className="flex flex-col min-h-screen" style={{ background: "hsl(220, 30%, 4%)" }}>
