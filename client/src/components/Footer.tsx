@@ -35,18 +35,18 @@ function GlitchText({ text }: { text: string }) {
   return (
   <span
     ref={ref}
-    className="heartbeat-glow" // <--- Add this class name here
+    className="heartbeat-glow"
     style={{
-        color: "#00FBFF",
-        fontWeight: 700,
-        letterSpacing: "0.15em",
-        textShadow: "0 0 8px rgba(0,251,255,0.6), 0 0 20px rgba(0,251,255,0.3)",
-      }}
-    >
-      {text}
-    </span>
-  );
-}
+      color: "#00FBFF",
+      fontWeight: 700,
+      letterSpacing: "0.15em",
+      /* We keep a base shadow here so it doesn't look flat if the CSS fails to load */
+      textShadow: "0 0 8px rgba(0,251,255,0.6)", 
+    }}
+  >
+    {text}
+  </span>
+);
 
 export function Footer() {
   return (
