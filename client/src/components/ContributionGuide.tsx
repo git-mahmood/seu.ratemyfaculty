@@ -93,11 +93,11 @@ export function ContributionGuide({ open, onOpenChange }: ContributionGuideProps
               <ul className="space-y-2 text-muted-foreground">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  <span><strong>Faculty Name & Initial</strong> (e.g., [FBH])</span>
+                  <span><strong>Faculty Name or Initial</strong> (e.g., [FBH])</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  <span><strong>Course Code</strong> (e.g., MAT141 [Differential and Integral Calculus])</span>
+                  <span><strong>Course Title</strong> (e.g., [Differential and Integral Calculus])</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
