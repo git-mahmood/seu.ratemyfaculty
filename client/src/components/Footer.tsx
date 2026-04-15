@@ -33,9 +33,10 @@ function GlitchText({ text }: { text: string }) {
   }, [text]);
 
   return (
-    <span
-      ref={ref}
-      style={{
+  <span
+    ref={ref}
+    className="heartbeat-glow" // <--- Add this class name here
+    style={{
         color: "#00FBFF",
         fontWeight: 700,
         letterSpacing: "0.15em",
