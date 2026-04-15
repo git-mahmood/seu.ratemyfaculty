@@ -65,14 +65,12 @@ function playWhoosh() {
 function TypingName({ name }: { name: string }) {
   const [displayed, setDisplayed] = useState("");
   const [cursorPhase, setCursorPhase] = useState<"typing" | "blinking" | "hidden">("typing");
-  const [shimmerActive, setShimmerActive] = useState(false);
   const indexRef = useRef(0);
 
   useEffect(() => {
     setDisplayed("");
     indexRef.current = 0;
     setCursorPhase("typing");
-    setShimmerActive(false);
 
     const interval = setInterval(() => {
       if (indexRef.current < name.length) {
@@ -82,8 +80,8 @@ function TypingName({ name }: { name: string }) {
       } else {
         clearInterval(interval);
         setCursorPhase("blinking");
+        // Blink for ~2s then fade out
         setTimeout(() => setCursorPhase("hidden"), 2200);
-        setTimeout(() => setShimmerActive(true), 5000);
       }
     }, 68);
 
@@ -91,9 +89,8 @@ function TypingName({ name }: { name: string }) {
   }, [name]);
 
   return (
-    <span style={{ position: "relative", display: "inline-block" }}>
+    <span style={{ position: "relative" }}>
       {displayed}
-      {/* Blinking cursor */}
       <span style={{
         display: "inline-block",
         width: "3px",
@@ -106,35 +103,16 @@ function TypingName({ name }: { name: string }) {
         opacity: cursorPhase === "hidden" ? 0 : 1,
         transition: cursorPhase === "hidden" ? "opacity 0.4s ease" : "none",
       }} />
-      {/* Glow shadow sweep — left to right, loops forever */}
-      {shimmerActive && (
-        <span style={{
-          position: "absolute",
-          top: "-4px",
-          left: "-8px",
-          width: "40%",
-          height: "calc(100% + 8px)",
-          background: "radial-gradient(ellipse at center, rgba(0,251,255,0.55) 0%, rgba(0,200,255,0.25) 40%, transparent 75%)",
-          filter: "blur(8px)",
-          pointerEvents: "none",
-          animation: "glowSweep 2.8s ease-in-out infinite",
-        }} />
-      )}
       <style>{`
         @keyframes cursorBlink {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0; }
         }
-        @keyframes glowSweep {
-          0%   { left: -20%; opacity: 0; }
-          10%  { opacity: 1; }
-          90%  { opacity: 1; }
-          100% { left: 110%; opacity: 0; }
-        }
       `}</style>
     </span>
   );
 }
+
 // ── Animated review card ──────────────────────────────────────────────────
 function AnimatedReview({ children, index }: { children: React.ReactNode; index: number }) {
   const [visible, setVisible] = useState(false);
