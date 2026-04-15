@@ -232,7 +232,7 @@ export default function Home() {
               style={{ color: "rgba(0, 200, 255, 0.5)", zIndex: 2 }}
             />
             <Input
-              placeholder="SEARCH FACULTY NAME · FACULTY INITIAL · COURSE CODE"
+              placeholder="SEARCH FACULTY NAME · FACULTY INITIAL · COURSE TITLE"
               onKeyDown={() => playKeyClick()}
               className="pl-12 py-6 rounded-none"
               style={{
