@@ -174,8 +174,11 @@ export default function TeacherProfile() {
   );
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "hsl(220,30%,4%)" }}>
-      <Navbar />
+  /* This 'flex flex-col' makes the page a vertical stack */
+  <div className="min-h-screen flex flex-col" style={{ background: "hsl(220,30%,4%)" }}>
+    <Navbar />
+    {/* This 'flex-1' grows to fill all empty space, pushing the footer down */}
+    <main className="flex-1">
 
       {/* ===== HEADER BANNER ===== */}
       <div style={{
@@ -484,6 +487,7 @@ export default function TeacherProfile() {
           </div>
         </div>
       </div>
+      </main>
       <Footer />
     </div>
   );
@@ -519,22 +523,24 @@ function getPersonalityIcon(type: string) {
 
 function ProfileSkeleton() {
   return (
-    <div className="min-h-screen" style={{ background:"hsl(220,30%,4%)" }}>
+    <div className="min-h-screen flex flex-col" style={{ background:"hsl(220,30%,4%)" }}>
       <Navbar />
-      <div style={{ borderBottom:"1px solid rgba(0,200,255,0.1)",padding:"32px 0" }}>
-        <div className="container mx-auto px-4 flex gap-6">
-          <div style={{ width:"112px",height:"112px",background:"rgba(0,200,255,0.05)",border:"1px solid rgba(0,200,255,0.1)",animation:"pulse 2s infinite" }} />
-          <div className="flex-1 space-y-3">
-            <div style={{ height:"28px",width:"60%",background:"rgba(0,200,255,0.05)",animation:"pulse 2s infinite" }} />
-            <div style={{ height:"18px",width:"40%",background:"rgba(0,200,255,0.05)",animation:"pulse 2s infinite" }} />
+      <div className="flex-1">
+        <div style={{ borderBottom:"1px solid rgba(0,200,255,0.1)",padding:"32px 0" }}>
+          <div className="container mx-auto px-4 flex gap-6">
+            <div style={{ width:"112px",height:"112px",background:"rgba(0,200,255,0.05)",border:"1px solid rgba(0,200,255,0.1)",animation:"pulse 2s infinite" }} />
+            <div className="flex-1 space-y-3">
+              <div style={{ height:"28px",width:"60%",background:"rgba(0,200,255,0.05)",animation:"pulse 2s infinite" }} />
+              <div style={{ height:"18px",width:"40%",background:"rgba(0,200,255,0.05)",animation:"pulse 2s infinite" }} />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-4">
-          {[1,2].map(i => <div key={i} style={{ height:"160px",background:"rgba(0,200,255,0.04)",border:"1px solid rgba(0,200,255,0.08)",animation:"pulse 2s infinite" }} />)}
+        <div className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-4">
+            {[1,2].map(i => <div key={i} style={{ height:"160px",background:"rgba(0,200,255,0.04)",border:"1px solid rgba(0,200,255,0.08)",animation:"pulse 2s infinite" }} />)}
+          </div>
+          <div style={{ height:"200px",background:"rgba(0,200,255,0.04)",border:"1px solid rgba(0,200,255,0.08)",animation:"pulse 2s infinite" }} />
         </div>
-        <div style={{ height:"200px",background:"rgba(0,200,255,0.04)",border:"1px solid rgba(0,200,255,0.08)",animation:"pulse 2s infinite" }} />
       </div>
       <Footer/>
     </div>
