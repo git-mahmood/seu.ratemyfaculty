@@ -141,10 +141,11 @@ export default function Home() {
   }, []);
 
   const filteredTeachers = teachers?.filter(t =>
-    t.fullName.toLowerCase().includes(search.toLowerCase()) ||
-    t.department.toLowerCase().includes(search.toLowerCase()) ||
-    t.university.toLowerCase().includes(search.toLowerCase())
-  );
+  t.fullName.toLowerCase().includes(search.toLowerCase()) ||
+  t.department.toLowerCase().includes(search.toLowerCase()) ||
+  t.university.toLowerCase().includes(search.toLowerCase()) ||
+  t.coursesTaught.some(course => course.toLowerCase().includes(search.toLowerCase()))
+);
 
   return (
     <div className="flex flex-col min-h-screen" style={{ background: "hsl(220, 30%, 4%)" }}>
@@ -231,7 +232,7 @@ export default function Home() {
               style={{ color: "rgba(0, 200, 255, 0.5)", zIndex: 2 }}
             />
             <Input
-              placeholder="SEARCH FACULTY NAME · DEPT · UNIVERSITY"
+              placeholder="SEARCH FACULTY NAME · FACULTY INITIAL · COURSE CODE"
               onKeyDown={() => playKeyClick()}
               className="pl-12 py-6 rounded-none"
               style={{
