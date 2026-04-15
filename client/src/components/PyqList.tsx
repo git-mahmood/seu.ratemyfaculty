@@ -183,9 +183,9 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2 col-span-2">
-              <Label>Course Code</Label>
+              <Label>Course Code With Title</Label>
               <Input 
-                placeholder="e.g. CSE-101" 
+                placeholder="e.g. CSE181 [Discrete Mathematics]" 
                 value={courseCode} 
                 onChange={e => setCourseCode(e.target.value)} 
               />
