@@ -65,12 +65,14 @@ function playWhoosh() {
 function TypingName({ name }: { name: string }) {
   const [displayed, setDisplayed] = useState("");
   const [cursorPhase, setCursorPhase] = useState<"typing" | "blinking" | "hidden">("typing");
+  const [shimmerActive, setShimmerActive] = useState(false);
   const indexRef = useRef(0);
 
   useEffect(() => {
     setDisplayed("");
     indexRef.current = 0;
     setCursorPhase("typing");
+    setShimmerActive(false);
 
     const interval = setInterval(() => {
       if (indexRef.current < name.length) {
@@ -80,8 +82,9 @@ function TypingName({ name }: { name: string }) {
       } else {
         clearInterval(interval);
         setCursorPhase("blinking");
-        // Blink for ~2s then fade out
         setTimeout(() => setCursorPhase("hidden"), 2200);
+        // Start shimmer 5 seconds after typing ends
+        setTimeout(() => setShimmerActive(true), 5000);
       }
     }, 68);
 
@@ -89,8 +92,9 @@ function TypingName({ name }: { name: string }) {
   }, [name]);
 
   return (
-    <span style={{ position: "relative" }}>
+    <span style={{ position: "relative", display: "inline-block" }}>
       {displayed}
+      {/* Blinking cursor */}
       <span style={{
         display: "inline-block",
         width: "3px",
@@ -103,10 +107,26 @@ function TypingName({ name }: { name: string }) {
         opacity: cursorPhase === "hidden" ? 0 : 1,
         transition: cursorPhase === "hidden" ? "opacity 0.4s ease" : "none",
       }} />
+      {/* Shimmer sweep — loops forever once active */}
+      {shimmerActive && (
+        <span style={{
+          position: "absolute",
+          top: 0, left: 0,
+          width: "100%", height: "100%",
+          background: "linear-gradient(90deg, transparent 0%, rgba(0,251,255,0.45) 50%, transparent 100%)",
+          backgroundSize: "200% 100%",
+          animation: "nameSweep 2.2s ease-in-out infinite",
+          pointerEvents: "none",
+        }} />
+      )}
       <style>{`
         @keyframes cursorBlink {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0; }
+        }
+        @keyframes nameSweep {
+          0%   { background-position: -100% 0; }
+          100% { background-position: 200% 0; }
         }
       `}</style>
     </span>
@@ -246,21 +266,30 @@ export default function TeacherProfile() {
                   </span>
                 </div>
               </div>
-              {/* Course chips */}
-              <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                {teacher.coursesTaught.map((course, i) => (
-                  <span key={i} style={{
-                    fontFamily:"var(--font-mono)",fontSize:"0.78rem",letterSpacing:"0.06em",fontWeight:500,
-                    color:"#00FBFF",background:"rgba(0,251,255,0.08)",
-                    border:"1px solid rgba(0,251,255,0.4)",padding:"5px 14px",
-                    display:"flex",alignItems:"center",gap:"6px",
-                    boxShadow:"0 0 8px rgba(0,251,255,0.1)",
-                  }}>
-                    <BookOpen style={{ width:"11px",height:"11px" }} />
-                    {course}
-                  </span>
-                ))}
-              </div>
+              {/* Course chips — entry animation */}
+<div className="flex flex-wrap justify-center md:justify-start gap-2">
+  {teacher.coursesTaught.map((course, i) => (
+    <span key={i} style={{
+      fontFamily:"var(--font-mono)",fontSize:"0.78rem",letterSpacing:"0.06em",fontWeight:500,
+      color:"#00FBFF",background:"rgba(0,251,255,0.08)",
+      border:"1px solid rgba(0,251,255,0.4)",padding:"5px 14px",
+      display:"flex",alignItems:"center",gap:"6px",
+      boxShadow:"0 0 8px rgba(0,251,255,0.1)",
+      opacity: 0,
+      animation: `chipFadeIn 0.5s ease forwards`,
+      animationDelay: `${0.3 + i * 0.15}s`,
+    }}>
+      <BookOpen style={{ width:"11px",height:"11px" }} />
+      {course}
+      <style>{`
+        @keyframes chipFadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </span>
+  ))}
+</div>
             </div>
 
             {/* ===== ACTION BUTTONS ===== */}
