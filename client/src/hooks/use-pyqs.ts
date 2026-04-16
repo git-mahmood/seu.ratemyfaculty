@@ -40,3 +40,29 @@ export function useUploadPyq() {
     },
   });
 }
+export function useUpdatePyq() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async ({ id, teacherId, data }: { id: number; teacherId: number; data: any }) => {
+      const res = await fetch(`/api/pyqs/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to update PYQ");
+      }
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [api.pyqs.list.path, data.teacherId] });
+      toast({ title: "Updated!", description: "PYQ has been updated successfully." });
+    },
+    onError: (err: Error) => {
+      toast({ title: "Update failed", description: err.message, variant: "destructive" });
+    },
+  });
+}
+
