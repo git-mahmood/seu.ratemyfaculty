@@ -230,5 +230,32 @@ export async function registerRoutes(
     }
   });
 
+  app.put("/api/pyqs/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    const user = req.user as any;
+    const isAdmin = ["2025100000379@seu.edu.bd", "2025100000403@seu.edu.bd"].includes(user.email);
+    if (!isAdmin && user.role !== "moderator") {
+      return res.status(403).json({ message: "Forbidden: Admin or Moderator only" });
+    }
+    try {
+      const id = Number(req.params.id);
+      const { courseCode, semester, examType, year, driveUrl } = req.body;
+      if (!courseCode || !semester || !examType || !year || !driveUrl) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      const updated = await storage.updatePyq(id, {
+        courseCode,
+        semester,
+        examType,
+        year: Number(year),
+        fileUrl: driveUrl,
+      });
+      if (!updated) return res.status(404).json({ message: "PYQ not found" });
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   return httpServer;
 }
