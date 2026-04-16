@@ -32,6 +32,7 @@ export interface IStorage {
   // PYQs
   getPyqsByTeacherId(teacherId: number): Promise<Pyq[]>;
   createPyq(pyq: InsertPyq): Promise<Pyq>;
+  updatePyq(id: number, updates: Partial<InsertPyq>): Promise<Pyq | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -208,6 +209,15 @@ export class DatabaseStorage implements IStorage {
   async createPyq(pyq: InsertPyq): Promise<Pyq> {
     const [newPyq] = await db.insert(pyqs).values(pyq).returning();
     return newPyq;
+  }
+
+  async updatePyq(id: number, updates: Partial<InsertPyq>): Promise<Pyq | undefined> {
+    const [updated] = await db
+      .update(pyqs)
+      .set(updates)
+      .where(eq(pyqs.id, id))
+      .returning();
+    return updated;
   }
 }
 
