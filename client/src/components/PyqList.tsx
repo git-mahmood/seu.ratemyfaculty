@@ -82,29 +82,35 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
                     </h3>
                   </div>
                   <div className="grid grid-cols-1 gap-2 pl-4">
-                    {items.map((pyq: any) => (
-                      <a 
-                        key={pyq.id} 
-                        href={pyq.fileUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center p-3 rounded-lg border bg-card hover:border-primary/50 hover:bg-accent transition-all group shadow-sm"
-                      >
-                        <div className="bg-primary/10 p-2 rounded mr-3 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                          <FileText className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm">
-                            {pyq.examType} {pyq.year}
-                          </p>
-                          <p className="text-xs text-muted-foreground">{pyq.semester}</p>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
-                          <span className="text-xs font-medium hidden sm:inline">Download</span>
-                          <Download className="h-4 w-4" />
-                        </div>
-                      </a>
-                    ))}
+                   {items.map((pyq: any) => (
+                      <div key={pyq.id} className="relative group/pyq">
+                        
+                          href={pyq.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center p-3 rounded-lg border bg-card hover:border-primary/50 hover:bg-accent transition-all group shadow-sm"
+                        >
+                          <div className="bg-primary/10 p-2 rounded mr-3 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            <FileText className="h-4 w-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm">
+                              {pyq.examType} {pyq.year}
+                            </p>
+                            <p className="text-xs text-muted-foreground">{pyq.semester}</p>
+                          </div>
+                          <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
+                            <span className="text-xs font-medium hidden sm:inline">Download</span>
+                            <Download className="h-4 w-4" />
+                          </div>
+                        </a>
+                        {!!user && (user.role === "admin" || user.role === "moderator" || user.email === "2025100000379@seu.edu.bd") && (
+                          <div className="absolute right-10 top-1/2 -translate-y-1/2 opacity-0 group-hover/pyq:opacity-100 transition-opacity duration-200">
+                            <EditPyqDialog pyq={pyq} teacherId={teacherId} />
+                          </div>
+                        )}
+                      </div>
+                    ))} 
                   </div>
                 </div>
               ))}
