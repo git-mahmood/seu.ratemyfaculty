@@ -161,6 +161,16 @@ export const api = {
     },
   },
   pyqs: {
+    update: {
+      method: 'PUT' as const,
+      path: '/api/pyqs/:id',
+      responses: {
+        200: z.custom<typeof pyqs.$inferSelect>(),
+        401: errorSchemas.unauthorized,
+        403: errorSchemas.forbidden,
+        404: errorSchemas.notFound,
+      },
+    },
     list: {
       method: 'GET' as const,
       path: '/api/teachers/:teacherId/pyqs',
