@@ -1,10 +1,10 @@
-import { usePyqs, useUploadPyq } from "@/hooks/use-pyqs";
+import { usePyqs, useUploadPyq, useUpdatePyq } from "@/hooks/use-pyqs";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, UploadCloud, HelpCircle } from "lucide-react";
+import { FileText, Download, UploadCloud, HelpCircle, Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -244,5 +244,122 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+export function EditPyqDialog({ pyq, teacherId }: { pyq: any; teacherId: number }) {
+  const [open, setOpen] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const updateMutation = useUpdatePyq();
+  const [driveUrl, setDriveUrl] = useState(pyq.fileUrl);
+  const [courseCode, setCourseCode] = useState(pyq.courseCode);
+  const [semester, setSemester] = useState(pyq.semester);
+  const [examType, setExamType] = useState(pyq.examType);
+  const [year, setYear] = useState(String(pyq.year));
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!driveUrl || !courseCode || !semester || !examType || !year) {
+      toast({ title: "Validation Error", description: "All fields are required", variant: "destructive" });
+      return;
+    }
+    try {
+      await updateMutation.mutateAsync({
+        id: pyq.id,
+        teacherId,
+        data: { courseCode, semester, examType, year, driveUrl },
+      });
+      setOpen(false);
+    } catch (err) {
+      // handled by hook
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={e => { e.preventDefault(); e.stopPropagation(); setOpen(true); }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          padding: "2px 4px",
+          opacity: hovered ? 1 : 0,
+          transition: "opacity 0.2s ease",
+          color: "rgba(0,200,255,0.7)",
+        }}
+        title="Edit PYQ"
+      >
+        <Pencil style={{ width: "13px", height: "13px" }} />
+      </button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit PYQ</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2 col-span-2">
+                <Label>Course Code With Title</Label>
+                <Input
+                  placeholder="e.g. CSE181 [Discrete Mathematics]"
+                  value={courseCode}
+                  onChange={e => setCourseCode(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Semester</Label>
+                <Select value={semester} onValueChange={setSemester}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Spring">Spring</SelectItem>
+                    <SelectItem value="Summer">Summer</SelectItem>
+                    <SelectItem value="Fall">Fall</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Exam Type</Label>
+                <Select value={examType} onValueChange={setExamType}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Mid">Mid</SelectItem>
+                    <SelectItem value="Final">Final</SelectItem>
+                    <SelectItem value="Quiz">Quiz</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Year</Label>
+                <Input
+                  type="number"
+                  placeholder="e.g. 2024"
+                  value={year}
+                  onChange={e => setYear(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label>Google Drive Link</Label>
+                <Input
+                  type="url"
+                  placeholder="https://drive.google.com/file/d/..."
+                  value={driveUrl}
+                  onChange={e => setDriveUrl(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Upload the PDF to Google Drive, set sharing to "Anyone with link", then paste the link here.
+                </p>
+              </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
