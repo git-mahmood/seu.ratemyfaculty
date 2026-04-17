@@ -82,9 +82,9 @@ export function PyqList({ teacherId, hideUpload = false }: { teacherId: number, 
                     </h3>
                   </div>
                   <div className="grid grid-cols-1 gap-2 pl-4">
-                   {items.map((pyq: any) => (
+                    {items.map((pyq: any) => (
                       <div key={pyq.id} className="relative group/pyq">
-                        
+                        <a
                           href={pyq.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -143,14 +143,6 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
       return;
     }
 
-    const formData = new FormData();
-    formData.append("teacherId", teacherId.toString());
-    formData.append("courseCode", courseCode);
-    formData.append("semester", semester);
-    formData.append("examType", examType);
-    formData.append("year", year);
-    formData.append("driveUrl", driveUrl);
-
     try {
       await uploadMutation.mutateAsync({
         teacherId,
@@ -175,83 +167,86 @@ export function UploadPyqDialog({ teacherId, open, onOpenChange }: { teacherId: 
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <UploadCloud className="h-4 w-4" />
-          Upload PYQ
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Add PYQ</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2 col-span-2">
-              <Label>Course Code With Title</Label>
-              <Input 
-                placeholder="e.g. CSE181 [Discrete Mathematics]" 
-                value={courseCode} 
-                onChange={e => setCourseCode(e.target.value)} 
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Semester</Label>
-              <Select value={semester} onValueChange={setSemester}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Spring">Spring</SelectItem>
-                  <SelectItem value="Summer">Summer</SelectItem>
-                  <SelectItem value="Fall">Fall</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Exam Type</Label>
-              <Select value={examType} onValueChange={setExamType}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Mid">Mid</SelectItem>
-                  <SelectItem value="Final">Final</SelectItem>
-                  <SelectItem value="Quiz">Quiz</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Year</Label>
-              <Input 
-                type="number"
-                placeholder="e.g. 2024" 
-                value={year} 
-                onChange={e => setYear(e.target.value)} 
-              />
-            </div>
-            <div className="space-y-2 col-span-2">
-              <Label>Google Drive Link</Label>
-              <Input 
-                type="url"
-                placeholder="https://drive.google.com/file/d/..." 
-                value={driveUrl} 
-                onChange={e => setDriveUrl(e.target.value)} 
-              />
-              <p className="text-xs text-muted-foreground">
-                Upload the PDF to Google Drive, set sharing to "Anyone with link", then paste the link here.
-              </p>
-            </div>
-          </div>
-          <Button type="submit" className="w-full" disabled={uploadMutation.isPending}>
-            {uploadMutation.isPending ? "Saving..." : "Add Question"}
+    <div className="flex">
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-2">
+            <UploadCloud className="h-4 w-4" />
+            Upload PYQ
           </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </DialogTrigger>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add PYQ</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2 col-span-2">
+                <Label>Course Code With Title</Label>
+                <Input 
+                  placeholder="e.g. CSE181 [Discrete Mathematics]" 
+                  value={courseCode} 
+                  onChange={e => setCourseCode(e.target.value)} 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Semester</Label>
+                <Select value={semester} onValueChange={setSemester}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Spring">Spring</SelectItem>
+                    <SelectItem value="Summer">Summer</SelectItem>
+                    <SelectItem value="Fall">Fall</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Exam Type</Label>
+                <Select value={examType} onValueChange={setExamType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Mid">Mid</SelectItem>
+                    <SelectItem value="Final">Final</SelectItem>
+                    <SelectItem value="Quiz">Quiz</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Year</Label>
+                <Input 
+                  type="number"
+                  placeholder="e.g. 2024" 
+                  value={year} 
+                  onChange={e => setYear(e.target.value)} 
+                />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label>Google Drive Link</Label>
+                <Input 
+                  type="url"
+                  placeholder="https://drive.google.com/file/d/..." 
+                  value={driveUrl} 
+                  onChange={e => setDriveUrl(e.target.value)} 
+                />
+                <p className="text-xs text-muted-foreground">
+                  Upload the PDF to Google Drive, set sharing to "Anyone with link", then paste the link here.
+                </p>
+              </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={uploadMutation.isPending}>
+              {uploadMutation.isPending ? "Saving..." : "Add Question"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
+
 export function EditPyqDialog({ pyq, teacherId }: { pyq: any; teacherId: number }) {
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
