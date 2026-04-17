@@ -280,22 +280,17 @@ export function EditPyqDialog({ pyq, teacherId }: { pyq: any; teacherId: number 
     <>
       <button
         onClick={e => { e.preventDefault(); e.stopPropagation(); setOpen(true); }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
         style={{
           background: "none",
           border: "none",
           cursor: "pointer",
           padding: "2px 4px",
-          opacity: hovered ? 1 : 0,
-          transition: "opacity 0.2s ease",
           color: "rgba(0,200,255,0.7)",
         }}
         title="Edit PYQ"
       >
         <Pencil style={{ width: "13px", height: "13px" }} />
       </button>
-
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
