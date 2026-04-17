@@ -267,7 +267,7 @@ export default function Home() {
         ) : error ? (
           <div className="text-center py-20" style={{ color: "rgba(255, 80, 80, 0.8)" }}>
             <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
-              // CONNECTION FAILED
+               CONNECTION FAILED
             </h2>
             <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.85rem", marginTop: "0.5rem" }}>
               Unable to retrieve faculty data. Retry later.
@@ -281,7 +281,7 @@ export default function Home() {
               color: "rgba(0, 200, 255, 0.5)",
               letterSpacing: "0.1em",
             }}>
-              // NO RESULTS FOUND
+               NO RESULTS FOUND
             </h2>
             <p style={{
               fontFamily: "var(--font-mono)",
