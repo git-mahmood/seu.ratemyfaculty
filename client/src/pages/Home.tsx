@@ -219,6 +219,25 @@ export default function Home() {
             Honest reviews · Past year questions · Faculty profiles
           </p>
 
+          {/* Stats row */}
+          {teachers && (
+            <div className="flex items-center justify-center gap-8 pt-2">
+              {[
+                { label: "Faculty", value: teachers.length },
+                { label: "Reviews", value: teachers.reduce((sum, t) => sum + t.reviewCount, 0) },
+              ].map((stat, i) => (
+                <div key={i} className="text-center" style={{ opacity: mounted ? 1 : 0, transition: `opacity 0.6s ease ${0.3 + i * 0.1}s` }}>
+                  <div style={{ fontFamily:"var(--font-display)",fontSize:"1.4rem",color:"rgba(0,220,255,0.9)",fontWeight:700 }}>
+                    {stat.value}
+                  </div>
+                  <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.65rem",color:"rgba(100,160,200,0.6)",letterSpacing:"0.15em",textTransform:"uppercase" }}>
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Search bar */}
           <div
             className="relative max-w-xl mx-auto mt-6 corner-brackets"
