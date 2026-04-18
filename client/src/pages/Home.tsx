@@ -219,22 +219,108 @@ export default function Home() {
             Honest reviews · Past year questions · Faculty profiles
           </p>
 
-          {/* Stats row */}
+          {/* Stats banner */}
           {teachers && (
-            <div className="flex items-center justify-center gap-8 pt-2">
-              {[
-                { label: "Faculty", value: teachers.length },
-                { label: "Reviews", value: teachers.reduce((sum, t) => sum + t.reviewCount, 0) },
-              ].map((stat, i) => (
-                <div key={i} className="text-center" style={{ opacity: mounted ? 1 : 0, transition: `opacity 0.6s ease ${0.3 + i * 0.1}s` }}>
-                  <div style={{ fontFamily:"var(--font-display)",fontSize:"1.4rem",color:"rgba(0,220,255,0.9)",fontWeight:700 }}>
-                    {stat.value}
+            <div style={{
+              opacity: mounted ? 1 : 0,
+              transition: "opacity 0.6s ease 0.4s",
+              marginTop: "8px",
+            }}>
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1px 1fr",
+                background: "rgba(2,10,25,0.85)",
+                border: "1px solid rgba(0,200,255,0.2)",
+                backdropFilter: "blur(16px)",
+                boxShadow: "0 0 40px rgba(0,200,255,0.08), inset 0 0 40px rgba(0,200,255,0.02)",
+                position: "relative",
+                overflow: "hidden",
+              }}>
+                {/* Top glow line */}
+                <div style={{ position:"absolute",top:0,left:0,right:0,height:"2px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.6),rgba(168,85,247,0.6),transparent)" }} />
+                {/* Bottom glow line */}
+                <div style={{ position:"absolute",bottom:0,left:0,right:0,height:"1px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.3),transparent)" }} />
+
+                {/* Faculty stat */}
+                <div style={{ padding:"28px 40px", display:"flex", alignItems:"center", gap:"20px" }}>
+                  <div style={{
+                    width:"52px", height:"52px", flexShrink:0,
+                    display:"flex", alignItems:"center", justifyContent:"center",
+                    background:"rgba(0,200,255,0.08)",
+                    border:"1px solid rgba(0,200,255,0.25)",
+                    boxShadow:"0 0 16px rgba(0,200,255,0.15)",
+                  }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(0,200,255,0.9)" strokeWidth="1.5">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
                   </div>
-                  <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.65rem",color:"rgba(100,160,200,0.6)",letterSpacing:"0.15em",textTransform:"uppercase" }}>
-                    {stat.label}
+                  <div>
+                    <div style={{
+                      fontFamily:"var(--font-display)",
+                      fontSize:"2.4rem",
+                      fontWeight:800,
+                      color:"rgba(0,220,255,0.95)",
+                      letterSpacing:"0.05em",
+                      lineHeight:1,
+                    }}>
+                      {teachers.length}
+                    </div>
+                    <div style={{
+                      fontFamily:"var(--font-mono)",
+                      fontSize:"0.7rem",
+                      color:"rgba(100,160,200,0.6)",
+                      letterSpacing:"0.2em",
+                      textTransform:"uppercase",
+                      marginTop:"6px",
+                    }}>
+                      Faculty Profiles
+                    </div>
                   </div>
                 </div>
-              ))}
+
+                {/* Divider */}
+                <div style={{ background:"rgba(0,200,255,0.12)", width:"1px" }} />
+
+                {/* Reviews stat */}
+                <div style={{ padding:"28px 40px", display:"flex", alignItems:"center", gap:"20px" }}>
+                  <div style={{
+                    width:"52px", height:"52px", flexShrink:0,
+                    display:"flex", alignItems:"center", justifyContent:"center",
+                    background:"rgba(168,85,247,0.08)",
+                    border:"1px solid rgba(168,85,247,0.25)",
+                    boxShadow:"0 0 16px rgba(168,85,247,0.15)",
+                  }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(168,85,247,0.9)" strokeWidth="1.5">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{
+                      fontFamily:"var(--font-display)",
+                      fontSize:"2.4rem",
+                      fontWeight:800,
+                      color:"rgba(168,85,247,0.95)",
+                      letterSpacing:"0.05em",
+                      lineHeight:1,
+                    }}>
+                      {teachers.reduce((sum, t) => sum + t.reviewCount, 0)}
+                    </div>
+                    <div style={{
+                      fontFamily:"var(--font-mono)",
+                      fontSize:"0.7rem",
+                      color:"rgba(150,100,200,0.6)",
+                      letterSpacing:"0.2em",
+                      textTransform:"uppercase",
+                      marginTop:"6px",
+                    }}>
+                      Reviews Submitted
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
