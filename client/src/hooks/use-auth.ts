@@ -18,6 +18,38 @@ export function useAuth() {
     retry: false,
   });
 
+  // GOOGLE LOGIN MUTATION (The Final Piece)
+  const googleLoginMutation = useMutation({
+    mutationFn: async (token: string) => {
+      const res = await fetch("/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Google Authentication failed");
+      }
+      // Assuming it returns the same user object structure
+      return await res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData([api.auth.me.path], data);
+      toast({
+        title: "Authorized",
+        description: `Logged in as ${data.email}`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Access Denied",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const loginMutation = useMutation({
     mutationFn: async (credentials: z.infer<typeof api.auth.login.input>) => {
       const res = await fetch(api.auth.login.path, {
@@ -63,12 +95,6 @@ export function useAuth() {
       return api.auth.register.responses[201].parse(await res.json());
     },
     onSuccess: (data) => {
-      // Auto login after register usually, or just set user data
-      // For this API flow, register creates user but might not set session?
-      // Usually passport handles req.login in register if configured, assuming yes based on typical Replit usage.
-      // If not, we might need to redirect to login. Let's assume auto-login or redirect.
-      // But typically register just returns user. Let's assume we need to login or it sets session.
-      // Actually simpler: just re-query or set data.
       toast({ title: "Account created!", description: "Please log in with your new account." });
     },
     onError: (error) => {
@@ -96,6 +122,7 @@ export function useAuth() {
     error,
     login: loginMutation.mutate,
     isLoggingIn: loginMutation.isPending,
+    googleLoginMutation, // Exported to AuthPage
     register: registerMutation.mutate,
     isRegistering: registerMutation.isPending,
     logout: logoutMutation.mutate,
