@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Express } from "express";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
@@ -48,6 +49,42 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        callbackURL: "https://seu-ratemyfaculty.onrender.com/api/auth/google/callback",
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          const email = profile.emails?.[0]?.value;
+          if (!email || !email.endsWith("@seu.edu.bd")) {
+            return done(null, false);
+          }
+          let user = await storage.getUserByGoogleId(profile.id);
+          if (!user) {
+            user = await storage.getUserByEmail(email);
+            if (user) {
+              // Link Google ID to existing account
+              user = await storage.updateUserGoogleId(user.id, profile.id) || user;
+            } else {
+              // Create new account
+              user = await storage.createUser({
+                email,
+                password: "",
+                googleId: profile.id,
+              });
+            }
+          }
+          return done(null, user);
+        } catch (err) {
+          return done(err);
+        }
+      }
+    )
+  );
+  
   passport.use(
     new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
       try {
@@ -124,6 +161,17 @@ export function setupAuth(app: Express) {
   app.post("/api/login", passport.authenticate("local"), (req, res) => {
     res.status(200).json(req.user);
   });
+
+  app.get("/api/auth/google",
+    passport.authenticate("google", { scope: ["email", "profile"] })
+  );
+
+  app.get("/api/auth/google/callback",
+    passport.authenticate("google", { failureRedirect: "/auth?error=not_seu_email" }),
+    (req, res) => {
+      res.redirect("/");
+    }
+  );
 
   app.post("/api/logout", (req, res, next) => {
     req.logout((err) => {
