@@ -284,7 +284,7 @@ body::after {
 input, textarea, select {
   background: rgba(0, 20, 40, 0.8) !important;
   border-color: rgba(0, 200, 255, 0.2) !important;
-  color: rgba(0, 200, 255, 0.9) !important;
+  color: rgba(0, 255, 240, 0.5) !important;
   font-family: var(--font-mono) !important;
   transition: all 0.3s ease;
 }
