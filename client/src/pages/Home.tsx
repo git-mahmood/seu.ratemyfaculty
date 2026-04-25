@@ -187,10 +187,10 @@ export default function Home() {
     <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,200,255,0.7)",borderLeft:"1px solid rgba(0,200,255,0.7)" }} />
     <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,200,255,0.7)",borderRight:"1px solid rgba(0,200,255,0.7)" }} />
     
-    <div style={{ fontFamily:"var(--font-display)", fontSize:"1.5rem", fontWeight:800, color:"#00dcff", lineHeight:1 }}>
+    <div style={{ fontFamily:"var(--font-display)", fontSize:"1rem", fontWeight:800, color:"#00dcff", lineHeight:1 }}>
       {totalReviews}
     </div>
-    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1.5rem", fontWeight:800, color:"#00dcff", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
+    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1rem", fontWeight:800, color:"#00dcff", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
       Reviews
     </div>
   </div>
@@ -209,10 +209,10 @@ export default function Home() {
     <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(168,85,247,0.7)",borderLeft:"1px solid rgba(168,85,247,0.7)" }} />
     <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(168,85,247,0.7)",borderRight:"1px solid rgba(168,85,247,0.7)" }} />
     
-    <div style={{ fontFamily:"var(--font-display)", fontSize:"1.5rem", fontWeight:800, color:"#a855f7", lineHeight:1 }}>
+    <div style={{ fontFamily:"var(--font-display)", fontSize:"1rem", fontWeight:800, color:"#a855f7", lineHeight:1 }}>
       {STATS.pyqUploaded}
     </div>
-    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1.5rem", fontWeight:800, color:"#a855f7", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
+    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1rem", fontWeight:800, color:"#a855f7", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
       PYQ Uploaded
     </div>
   </div>
@@ -231,10 +231,10 @@ export default function Home() {
     <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,255,150,0.7)",borderLeft:"1px solid rgba(0,255,150,0.7)" }} />
     <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,255,150,0.7)",borderRight:"1px solid rgba(0,255,150,0.7)" }} />
     
-    <div style={{ fontFamily:"var(--font-display)", fontSize:"1.5rem", fontWeight:800, color:"#00ff96", lineHeight:1 }}>
+    <div style={{ fontFamily:"var(--font-display)", fontSize:"1rem", fontWeight:800, color:"#00ff96", lineHeight:1 }}>
       {STATS.usersJoined}
     </div>
-    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1.5rem", fontWeight:800, color:"#00ff96", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
+    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1rem", fontWeight:800, color:"#00ff96", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
       Users Joined
     </div>
   </div>
