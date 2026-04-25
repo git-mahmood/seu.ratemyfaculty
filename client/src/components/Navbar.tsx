@@ -1,5 +1,5 @@
-import { playClick, playDropdown, playKeyClick } from "@/lib/sounds";
-import { Link, useLocation } from "wouter";
+import { playClick, playDropdown } from "@/lib/sounds";
+import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { GraduationCap, LogOut, ShieldCheck, LogIn, Menu } from "lucide-react";
 import {
@@ -17,7 +17,6 @@ interface NavbarProps {
 }
 
 export function Navbar({ search = "", onSearch }: NavbarProps) {
-  const [location] = useLocation();
   const { user, logout } = useAuth();
 
   return (
@@ -33,7 +32,7 @@ export function Navbar({ search = "", onSearch }: NavbarProps) {
       {/* Top scanner line */}
       <div style={{ position:"absolute",top:0,left:0,right:0,height:"1px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.8),transparent)" }} />
 
-      <div className="container mx-auto px-4 h-16 flex items-center gap-4">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
 
         {/* ── Logo ── */}
         <Link href="/" style={{ textDecoration:"none",flexShrink:0 }}>
@@ -51,119 +50,108 @@ export function Navbar({ search = "", onSearch }: NavbarProps) {
               <div style={{ fontFamily:"var(--font-display)",fontSize:"0.95rem",fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"rgba(0,200,255,0.9)",lineHeight:1 }}>
                 Rate My Faculty
               </div>
-              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.48rem",letterSpacing:"0.14em",color:"rgba(0,200,255,0.4)",textTransform:"uppercase",marginTop:"2px" }}>
+              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.55rem",letterSpacing:"0.12em",color:"rgba(0,200,255,0.5)",textTransform:"uppercase",marginTop:"3px" }}>
                 Faculty Reviews & Previous Year Questions
               </div>
             </div>
           </div>
         </Link>
 
-        )}
-
-        {/* ── Right: hamburger menu ── */}
-        <div className="ml-auto flex items-center gap-3 flex-shrink-0">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                onClick={() => playDropdown()}
-                style={{
-                  display:"flex",alignItems:"center",justifyContent:"center",
-                  width:"38px",height:"38px",
-                  border:"1px solid rgba(0,200,255,0.3)",
-                  background:"rgba(0,200,255,0.05)",
-                  cursor:"pointer",transition:"all 0.3s ease",
-                  color:"rgba(0,200,255,0.8)",
-                  flexShrink:0,
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.1)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 0 12px rgba(0,200,255,0.2)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.05)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
-                }}
-              >
-                <Menu className="h-5 w-5" />
-              </button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent
-              align="end"
-              forceMount
+        {/* ── Hamburger menu ── */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              onClick={() => playDropdown()}
               style={{
-                background:"rgba(2,10,25,0.97)",
-                border:"1px solid rgba(0,200,255,0.2)",
-                backdropFilter:"blur(20px)",
-                boxShadow:"0 0 40px rgba(0,0,0,0.9),0 0 20px rgba(0,200,255,0.05)",
-                minWidth:"220px",
+                display:"flex",alignItems:"center",justifyContent:"center",
+                width:"38px",height:"38px",
+                border:"1px solid rgba(0,200,255,0.3)",
+                background:"rgba(0,200,255,0.05)",
+                cursor:"pointer",transition:"all 0.3s ease",
+                color:"rgba(0,200,255,0.8)",
+                flexShrink:0,
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.1)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 0 12px rgba(0,200,255,0.2)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(0,200,255,0.05)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "none";
               }}
             >
-              {user ? (
-                <>
-                  {/* User info */}
-                  <DropdownMenuLabel className="font-normal px-3 py-3">
-                    <div className="flex flex-col gap-1">
-                      <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.72rem",color:"rgba(0,200,255,0.85)",letterSpacing:"0.04em",wordBreak:"break-all" }}>
-                        {user.email}
-                      </p>
-                      <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",color:"rgba(0,200,255,0.4)",letterSpacing:"0.12em",textTransform:"uppercase" }}>
-                        ◈ {user.role} Access
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator style={{ background:"rgba(0,200,255,0.1)" }} />
+              <Menu className="h-5 w-5" />
+            </button>
+          </DropdownMenuTrigger>
 
-                  {/* Admin Dashboard */}
-                  {(user.role === "admin" || user.role === "moderator") && (
-                    <Link href="/admin">
-                      <DropdownMenuItem
-                        className="cursor-pointer px-3 py-2"
-                        onClick={() => playClick()}
-                        style={{ fontFamily:"var(--font-mono)",fontSize:"0.75rem",color:"rgba(0,200,255,0.8)",letterSpacing:"0.05em" }}
-                      >
-                        <ShieldCheck className="mr-2 h-4 w-4" />
-                        Admin Dashboard
-                      </DropdownMenuItem>
-                    </Link>
-                  )}
-
-                  {/* Disconnect */}
-                  <DropdownMenuItem
-                    onClick={() => { playClick(); logout(); }}
-                    className="cursor-pointer px-3 py-2"
-                    style={{ fontFamily:"var(--font-mono)",fontSize:"0.75rem",color:"rgba(255,80,80,0.85)",letterSpacing:"0.05em" }}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Disconnect
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <>
-                  <DropdownMenuLabel className="font-normal px-3 py-3">
-                    <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.65rem",color:"rgba(0,200,255,0.45)",letterSpacing:"0.1em",textTransform:"uppercase" }}>
-                      Not signed in
+          <DropdownMenuContent
+            align="end"
+            forceMount
+            style={{
+              background:"rgba(2,10,25,0.97)",
+              border:"1px solid rgba(0,200,255,0.2)",
+              backdropFilter:"blur(20px)",
+              boxShadow:"0 0 40px rgba(0,0,0,0.9),0 0 20px rgba(0,200,255,0.05)",
+              minWidth:"220px",
+            }}
+          >
+            {user ? (
+              <>
+                <DropdownMenuLabel className="font-normal px-3 py-3">
+                  <div className="flex flex-col gap-1">
+                    <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.72rem",color:"rgba(0,200,255,0.85)",letterSpacing:"0.04em",wordBreak:"break-all" }}>
+                      {user.email}
                     </p>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator style={{ background:"rgba(0,200,255,0.1)" }} />
-                  <Link href="/auth">
+                    <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.6rem",color:"rgba(0,200,255,0.4)",letterSpacing:"0.12em",textTransform:"uppercase" }}>
+                      ◈ {user.role} Access
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator style={{ background:"rgba(0,200,255,0.1)" }} />
+                {(user.role === "admin" || user.role === "moderator") && (
+                  <Link href="/admin">
                     <DropdownMenuItem
                       className="cursor-pointer px-3 py-2"
                       onClick={() => playClick()}
-                      style={{ fontFamily:"var(--font-mono)",fontSize:"0.75rem",color:"rgba(0,200,255,0.85)",letterSpacing:"0.05em" }}
+                      style={{ fontFamily:"var(--font-mono)",fontSize:"0.75rem",color:"rgba(0,200,255,0.8)",letterSpacing:"0.05em" }}
                     >
-                      <LogIn className="mr-2 h-4 w-4" />
-                      Continue with Google
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      Admin Dashboard
                     </DropdownMenuItem>
                   </Link>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                )}
+                <DropdownMenuItem
+                  onClick={() => { playClick(); logout(); }}
+                  className="cursor-pointer px-3 py-2"
+                  style={{ fontFamily:"var(--font-mono)",fontSize:"0.75rem",color:"rgba(255,80,80,0.85)",letterSpacing:"0.05em" }}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Disconnect
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <>
+                <DropdownMenuLabel className="font-normal px-3 py-3">
+                  <p style={{ fontFamily:"var(--font-mono)",fontSize:"0.65rem",color:"rgba(0,200,255,0.45)",letterSpacing:"0.1em",textTransform:"uppercase" }}>
+                    Not signed in
+                  </p>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator style={{ background:"rgba(0,200,255,0.1)" }} />
+                <Link href="/auth">
+                  <DropdownMenuItem
+                    className="cursor-pointer px-3 py-2"
+                    onClick={() => playClick()}
+                    style={{ fontFamily:"var(--font-mono)",fontSize:"0.75rem",color:"rgba(0,200,255,0.85)",letterSpacing:"0.05em" }}
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Continue with Google
+                  </DropdownMenuItem>
+                </Link>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-        </div>
-      )}
     </nav>
   );
 }
