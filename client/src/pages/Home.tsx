@@ -171,14 +171,14 @@ export default function Home() {
                 <div style={{ display:"flex", gap:"12px", flexWrap:"wrap", maxWidth:"520px" }}>
 
                  {/* Parent Container - Ensure this is present to keep them side-by-side */}
-<div style={{ display: "flex", flexWrap: "nowrap", gap: "48px", alignItems: "center" }}>
+<div style={{ display: "flex", flexWrap: "nowrap", gap: "50px", alignItems: "center" }}>
   
   {/* Reviews */}
   <div style={{
     flex: "0 0 auto",
     border: "1px solid rgba(0,200,255,0.3)",
     background: "rgba(0,200,255,0.05)",
-    padding: "6px 16px",
+    padding: "6px 18px",
     position: "relative",
     display: "flex",
     alignItems: "center",
@@ -200,7 +200,7 @@ export default function Home() {
     flex: "0 0 auto",
     border: "1px solid rgba(168,85,247,0.3)",
     background: "rgba(168,85,247,0.05)",
-    padding: "6px 16px",
+    padding: "6px 18px",
     position: "relative",
     display: "flex",
     alignItems: "center",
@@ -222,7 +222,7 @@ export default function Home() {
     flex: "0 0 auto",
     border: "1px solid rgba(0,255,150,0.3)",
     background: "rgba(0,255,150,0.05)",
-    padding: "6px 16px",
+    padding: "6px 18px",
     position: "relative",
     display: "flex",
     alignItems: "center",
