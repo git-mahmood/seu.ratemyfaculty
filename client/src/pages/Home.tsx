@@ -1,7 +1,3 @@
-home.tsx
-
-
-
 import { playKeyClick, playClick } from "@/lib/sounds";
 import { useState, useEffect, useRef } from "react";
 import { useTeachers } from "@/hooks/use-teachers";
