@@ -109,12 +109,129 @@ export default function Home() {
       <main className="flex-1 relative z-10">
 
         {/* ===== HERO BANNER ===== */}
-        <div style={{
-          position: "relative",
-          overflow: "hidden",
-          borderBottom: "1px solid rgba(0,200,255,0.12)",
-          padding: "56px 24px 48px",
-        }}>
+        <div className="container mx-auto px-4 pt-8 pb-4">
+          <div style={{
+            position: "relative",
+            overflow: "hidden",
+            border: "1px solid rgba(0,200,255,0.2)",
+            background: "rgba(2,10,25,0.85)",
+            backdropFilter: "blur(16px)",
+            padding: "48px 40px 40px",
+            boxShadow: "0 0 60px rgba(0,200,255,0.06), inset 0 0 60px rgba(0,200,255,0.02)",
+          }}>
+            {/* Grid background inside box */}
+            <div style={{
+              position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+              backgroundImage: "linear-gradient(rgba(0,200,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,0.05) 1px,transparent 1px)",
+              backgroundSize: "48px 48px",
+            }} />
+            {/* Top glow line */}
+            <div style={{ position:"absolute",top:0,left:0,right:0,height:"2px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.7),rgba(168,85,247,0.6),transparent)",zIndex:1 }} />
+            {/* Corner brackets */}
+            <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"16px",height:"16px",borderTop:"2px solid rgba(0,200,255,0.8)",borderLeft:"2px solid rgba(0,200,255,0.8)",zIndex:2 }} />
+            <div style={{ position:"absolute",top:"-1px",right:"-1px",width:"16px",height:"16px",borderTop:"2px solid rgba(0,200,255,0.8)",borderRight:"2px solid rgba(0,200,255,0.8)",zIndex:2 }} />
+            <div style={{ position:"absolute",bottom:"-1px",left:"-1px",width:"16px",height:"16px",borderBottom:"2px solid rgba(0,200,255,0.8)",borderLeft:"2px solid rgba(0,200,255,0.8)",zIndex:2 }} />
+            <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"16px",height:"16px",borderBottom:"2px solid rgba(0,200,255,0.8)",borderRight:"2px solid rgba(0,200,255,0.8)",zIndex:2 }} />
+
+            {/* Content */}
+            <div className="relative" style={{ zIndex: 2 }}>
+              {/* Heading */}
+              <div style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? "translateY(0)" : "translateY(24px)",
+                transition: "all 0.8s cubic-bezier(0.16,1,0.3,1)",
+              }}>
+                <h1 style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(1.8rem,4vw,3rem)",
+                  fontWeight: 800,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  background: "linear-gradient(135deg,#00e5ff 0%,#ffffff 45%,#a855f7 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  lineHeight: 1.15,
+                  marginBottom: "16px",
+                  maxWidth: "700px",
+                }}>
+                  Access PYQ and Faculty Review<br />Anytime, Anywhere
+                </h1>
+
+                <p style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "0.95rem",
+                  color: "rgba(150,210,255,0.65)",
+                  letterSpacing: "0.03em",
+                  marginBottom: "40px",
+                  maxWidth: "520px",
+                }}>
+                  Get detailed info about your next faculty's personality, marking style and exam difficulty.
+                </p>
+
+                {/* Three separate stat boxes */}
+                <div style={{ display:"flex", gap:"16px", flexWrap:"wrap" }}>
+                  {/* Reviews */}
+                  <div style={{
+                    flex: "1 1 140px",
+                    border: "1px solid rgba(0,200,255,0.25)",
+                    background: "rgba(0,200,255,0.05)",
+                    padding: "20px 24px",
+                    position: "relative",
+                    boxShadow: "0 0 16px rgba(0,200,255,0.06)",
+                  }}>
+                    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,200,255,0.7)",borderLeft:"1px solid rgba(0,200,255,0.7)" }} />
+                    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,200,255,0.7)",borderRight:"1px solid rgba(0,200,255,0.7)" }} />
+                    <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(0,220,255,0.95)",letterSpacing:"0.05em",lineHeight:1 }}>
+                      {totalReviews}
+                    </div>
+                    <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(0,180,220,0.55)",letterSpacing:"0.18em",textTransform:"uppercase",marginTop:"8px" }}>
+                      Reviews
+                    </div>
+                  </div>
+
+                  {/* PYQ */}
+                  <div style={{
+                    flex: "1 1 140px",
+                    border: "1px solid rgba(168,85,247,0.25)",
+                    background: "rgba(168,85,247,0.05)",
+                    padding: "20px 24px",
+                    position: "relative",
+                    boxShadow: "0 0 16px rgba(168,85,247,0.06)",
+                  }}>
+                    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(168,85,247,0.7)",borderLeft:"1px solid rgba(168,85,247,0.7)" }} />
+                    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(168,85,247,0.7)",borderRight:"1px solid rgba(168,85,247,0.7)" }} />
+                    <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(168,85,247,0.95)",letterSpacing:"0.05em",lineHeight:1 }}>
+                      {STATS.pyqUploaded}
+                    </div>
+                    <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(140,80,200,0.55)",letterSpacing:"0.18em",textTransform:"uppercase",marginTop:"8px" }}>
+                      PYQ Uploaded
+                    </div>
+                  </div>
+
+                  {/* Users */}
+                  <div style={{
+                    flex: "1 1 140px",
+                    border: "1px solid rgba(0,255,150,0.25)",
+                    background: "rgba(0,255,150,0.04)",
+                    padding: "20px 24px",
+                    position: "relative",
+                    boxShadow: "0 0 16px rgba(0,255,150,0.05)",
+                  }}>
+                    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,255,150,0.7)",borderLeft:"1px solid rgba(0,255,150,0.7)" }} />
+                    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,255,150,0.7)",borderRight:"1px solid rgba(0,255,150,0.7)" }} />
+                    <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(0,255,150,0.9)",letterSpacing:"0.05em",lineHeight:1 }}>
+                      {STATS.usersJoined}
+                    </div>
+                    <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(0,180,100,0.55)",letterSpacing:"0.18em",textTransform:"uppercase",marginTop:"8px" }}>
+                      Users Joined
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
           {/* Grid background */}
           <div style={{
             position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
