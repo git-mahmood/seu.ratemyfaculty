@@ -165,7 +165,7 @@ export default function Home() {
                 </p>
 
                 {/* Three separate stat boxes */}
-                <div style={{ display:"flex", gap:"16px", flexWrap:"wrap" }}>
+                <div style={{ display:"flex", gap:"12px", flexWrap:"wrap", maxWidth:"520px" }}>
 
                   {/* Reviews */}
                   <div style={{
