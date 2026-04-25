@@ -170,62 +170,74 @@ export default function Home() {
                 {/* Three separate stat boxes */}
                 <div style={{ display:"flex", gap:"12px", flexWrap:"wrap", maxWidth:"520px" }}>
 
-                  {/* Reviews */}
-                  <div style={{
-                    flex: "1 1 140px",
-                    border: "1px solid rgba(0,200,255,0.25)",
-                    background: "rgba(0,200,255,0.05)",
-                    padding: "5px 24px",
-                    position: "relative",
-                    boxShadow: "0 0 16px rgba(0,200,255,0.06)",
-                  }}>
-                    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,200,255,0.7)",borderLeft:"1px solid rgba(0,200,255,0.7)" }} />
-                    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,200,255,0.7)",borderRight:"1px solid rgba(0,200,255,0.7)" }} />
-                    <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(0,220,255,0.95)",letterSpacing:"0.05em",lineHeight:1 }}>
-                      {totalReviews}
-                    </div>
-                    <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(0,180,220,0.55)",letterSpacing:"0.18em",textTransform:"uppercase",marginTop:"8px" }}>
-                      Reviews
-                    </div>
-                  </div>
+                 {/* Reviews */}
+<div style={{
+  flex: "0 1 auto", // Prevents stretching, box fits content
+  border: "1px solid rgba(0,200,255,0.25)",
+  background: "rgba(0,200,255,0.05)",
+  padding: "4px 16px", // Slimmer rectangular padding
+  position: "relative",
+  boxShadow: "0 0 16px rgba(0,200,255,0.06)",
+  display: "flex", // Puts items in a row
+  alignItems: "baseline", // Aligns text to bottom of the number
+  gap: "8px" // Space between number and label
+}}>
+  <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,200,255,0.7)",borderLeft:"1px solid rgba(0,200,255,0.7)" }} />
+  <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,200,255,0.7)",borderRight:"1px solid rgba(0,200,255,0.7)" }} />
+  
+  <div style={{ fontFamily:"var(--font-display)",fontSize:"1.5rem",fontWeight:800,color:"rgba(0,220,255,0.95)",letterSpacing:"0.05em",lineHeight:1 }}>
+    {totalReviews}
+  </div>
+  <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",fontWeight:800,color:"rgba(0,180,220,0.55)",letterSpacing:"0.12em",textTransform:"uppercase",whiteSpace:"nowrap" }}>
+    Reviews
+  </div>
+</div>
 
-                  {/* PYQ */}
-                  <div style={{
-                    flex: "1 1 140px",
-                    border: "1px solid rgba(168,85,247,0.25)",
-                    background: "rgba(168,85,247,0.05)",
-                    padding: "5px 24px",
-                    position: "relative",
-                    boxShadow: "0 0 16px rgba(168,85,247,0.06)",
-                  }}>
-                    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(168,85,247,0.7)",borderLeft:"1px solid rgba(168,85,247,0.7)" }} />
-                    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(168,85,247,0.7)",borderRight:"1px solid rgba(168,85,247,0.7)" }} />
-                    <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(168,85,247,0.95)",letterSpacing:"0.05em",lineHeight:1 }}>
-                      {STATS.pyqUploaded}
-                    </div>
-                    <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(140,80,200,0.55)",letterSpacing:"0.18em",textTransform:"uppercase",marginTop:"8px" }}>
-                      PYQ Uploaded
-                    </div>
-                  </div>
+{/* PYQ */}
+<div style={{
+  flex: "0 1 auto",
+  border: "1px solid rgba(168,85,247,0.25)",
+  background: "rgba(168,85,247,0.05)",
+  padding: "4px 16px",
+  position: "relative",
+  boxShadow: "0 0 16px rgba(168,85,247,0.06)",
+  display: "flex",
+  alignItems: "baseline",
+  gap: "8px"
+}}>
+  <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(168,85,247,0.7)",borderLeft:"1px solid rgba(168,85,247,0.7)" }} />
+  <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(168,85,247,0.7)",borderRight:"1px solid rgba(168,85,247,0.7)" }} />
+  
+  <div style={{ fontFamily:"var(--font-display)",fontSize:"1.5rem",fontWeight:800,color:"rgba(168,85,247,0.95)",letterSpacing:"0.05em",lineHeight:1 }}>
+    {STATS.pyqUploaded}
+  </div>
+  <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",fontWeight:800,color:"rgba(140,80,200,0.55)",letterSpacing:"0.12em",textTransform:"uppercase",whiteSpace:"nowrap" }}>
+    PYQ Uploaded
+  </div>
+</div>
 
-                  {/* Users */}
-                  <div style={{
-                    flex: "1 1 140px",
-                    border: "1px solid rgba(0,255,150,0.25)",
-                    background: "rgba(0,255,150,0.04)",
-                    padding: "5px 24px",
-                    position: "relative",
-                    boxShadow: "0 0 16px rgba(0,255,150,0.05)",
-                  }}>
-                    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,255,150,0.7)",borderLeft:"1px solid rgba(0,255,150,0.7)" }} />
-                    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,255,150,0.7)",borderRight:"1px solid rgba(0,255,150,0.7)" }} />
-                    <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(0,255,150,0.9)",letterSpacing:"0.05em",lineHeight:1 }}>
-                      {STATS.usersJoined}
-                    </div>
-                    <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(0,180,100,0.55)",letterSpacing:"0.18em",textTransform:"uppercase",marginTop:"8px" }}>
-                      Users Joined
-                    </div>
-                  </div>
+{/* Users */}
+<div style={{
+  flex: "0 1 auto",
+  border: "1px solid rgba(0,255,150,0.25)",
+  background: "rgba(0,255,150,0.04)",
+  padding: "4px 16px",
+  position: "relative",
+  boxShadow: "0 0 16px rgba(0,255,150,0.05)",
+  display: "flex",
+  alignItems: "baseline",
+  gap: "8px"
+}}>
+  <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,255,150,0.7)",borderLeft:"1px solid rgba(0,255,150,0.7)" }} />
+  <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,255,150,0.7)",borderRight:"1px solid rgba(0,255,150,0.7)" }} />
+  
+  <div style={{ fontFamily:"var(--font-display)",fontSize:"1.5rem",fontWeight:800,color:"rgba(0,255,150,0.9)",letterSpacing:"0.05em",lineHeight:1 }}>
+    {STATS.usersJoined}
+  </div>
+  <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",fontWeight:800,color:"rgba(0,180,100,0.55)",letterSpacing:"0.12em",textTransform:"uppercase",whiteSpace:"nowrap" }}>
+    Users Joined
+  </div>
+</div>
 
                 </div>
               </div>
