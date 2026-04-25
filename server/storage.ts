@@ -13,6 +13,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByGoogleId(googleId: string): Promise<User | undefined>;
+  updateUserGoogleId(id: number, googleId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   // Teachers
   getTeachers(): Promise<TeacherWithReviewCount[]>;
@@ -66,6 +67,15 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+async updateUserGoogleId(id: number, googleId: string): Promise<User | undefined> {
+    const [updated] = await db
+      .update(users)
+      .set({ googleId })
+      .where(eq(users.id, id))
+      .returning();
+    return updated;
+  }
+  
   async updateUserRole(email: string, role: "admin" | "moderator" | "student"): Promise<User | undefined> {
     // Prevent changing role of the fixed admin
     if (email === "2025100000379@seu.edu.bd") return undefined;
