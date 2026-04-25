@@ -158,7 +158,7 @@ export default function Home() {
 
                 <p style={{
                   fontFamily: "var(--font-sans)",
-                  fontSize: "1rem",
+                  fontSize: "2rem",
                   color: "rgba(150,210,255,0.65)",
                   letterSpacing: "0.03em",
                   marginBottom: "40px",
