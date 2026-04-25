@@ -171,7 +171,7 @@ export default function Home() {
                 <div style={{ display:"flex", gap:"12px", flexWrap:"wrap", maxWidth:"520px" }}>
 
                  {/* Parent Container - Ensure this is present to keep them side-by-side */}
-<div style={{ display: "flex", flexWrap: "nowrap", gap: "20px", alignItems: "center" }}>
+<div style={{ display: "flex", flexWrap: "nowrap", gap: "32px", alignItems: "center" }}>
   
   {/* Reviews */}
   <div style={{
