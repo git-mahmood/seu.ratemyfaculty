@@ -11,7 +11,6 @@ const STATS = {
   usersJoined: 8,
 };
 
-// Animated star field canvas
 function StarField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -85,7 +84,6 @@ export default function Home() {
 
   useEffect(() => { setTimeout(() => setMounted(true), 100); }, []);
 
-  // Filter
   const filteredTeachers = teachers
     ?.filter(t =>
       t.fullName.toLowerCase().includes(search.toLowerCase()) ||
@@ -93,12 +91,10 @@ export default function Home() {
       t.university.toLowerCase().includes(search.toLowerCase()) ||
       t.coursesTaught.some(c => c.toLowerCase().includes(search.toLowerCase()))
     )
-    // Sort by most reviewed first
     .sort((a, b) => b.reviewCount - a.reviewCount) ?? [];
 
   const visibleTeachers = filteredTeachers.slice(0, visibleCount);
   const hasMore = visibleCount < filteredTeachers.length;
-
   const totalReviews = teachers?.reduce((sum, t) => sum + t.reviewCount, 0) ?? 0;
 
   return (
@@ -135,7 +131,6 @@ export default function Home() {
 
             {/* Content */}
             <div className="relative" style={{ zIndex: 2 }}>
-              {/* Heading */}
               <div style={{
                 opacity: mounted ? 1 : 0,
                 transform: mounted ? "translateY(0)" : "translateY(24px)",
@@ -171,6 +166,7 @@ export default function Home() {
 
                 {/* Three separate stat boxes */}
                 <div style={{ display:"flex", gap:"16px", flexWrap:"wrap" }}>
+
                   {/* Reviews */}
                   <div style={{
                     flex: "1 1 140px",
@@ -227,111 +223,7 @@ export default function Home() {
                       Users Joined
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-          {/* Grid background */}
-          <div style={{
-            position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
-            backgroundImage: "linear-gradient(rgba(0,200,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,0.04) 1px,transparent 1px)",
-            backgroundSize: "48px 48px",
-          }} />
-          {/* Glow blobs */}
-          <div style={{
-            position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
-            background: "radial-gradient(ellipse 60% 60% at 50% 0%,rgba(0,100,255,0.1) 0%,transparent 70%)",
-          }} />
-          {/* Top scanner line */}
-          <div style={{ position:"absolute",top:0,left:0,right:0,height:"2px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.6),rgba(168,85,247,0.6),transparent)",zIndex:1 }} />
 
-          <div className="container mx-auto max-w-4xl text-center relative" style={{ zIndex: 2 }}>
-            {/* Main heading */}
-            <div
-              style={{
-                opacity: mounted ? 1 : 0,
-                transform: mounted ? "translateY(0)" : "translateY(24px)",
-                transition: "all 0.8s cubic-bezier(0.16,1,0.3,1)",
-              }}
-            >
-              <h1 style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(1.8rem,5vw,3.2rem)",
-                fontWeight: 800,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                background: "linear-gradient(135deg,#00e5ff 0%,#ffffff 45%,#a855f7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                lineHeight: 1.15,
-                marginBottom: "16px",
-              }}>
-                Access PYQ and Faculty Review<br />Anytime, Anywhere
-              </h1>
-
-              <p style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "1rem",
-                color: "rgba(150,210,255,0.7)",
-                letterSpacing: "0.03em",
-                fontWeight: 400,
-                marginBottom: "40px",
-                maxWidth: "560px",
-                margin: "0 auto 40px",
-              }}>
-                Get detailed info about your next faculty's personality, marking style and exam difficulty.
-              </p>
-
-              {/* Stats row */}
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1px 1fr 1px 1fr",
-                background: "rgba(2,10,25,0.82)",
-                border: "1px solid rgba(0,200,255,0.18)",
-                backdropFilter: "blur(16px)",
-                boxShadow: "0 0 40px rgba(0,200,255,0.07)",
-                maxWidth: "640px",
-                margin: "0 auto",
-                position: "relative",
-                overflow: "hidden",
-              }}>
-                {/* Top gradient line */}
-                <div style={{ position:"absolute",top:0,left:0,right:0,height:"1px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.5),rgba(168,85,247,0.5),transparent)" }} />
-
-                {/* Stat 1 — Reviews */}
-                <div style={{ padding:"24px 16px",display:"flex",flexDirection:"column",alignItems:"center",gap:"6px" }}>
-                  <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(0,220,255,0.95)",letterSpacing:"0.05em",lineHeight:1 }}>
-                    {totalReviews}
-                  </div>
-                  <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(100,160,200,0.6)",letterSpacing:"0.18em",textTransform:"uppercase" }}>
-                    Reviews
-                  </div>
-                </div>
-
-                <div style={{ background:"rgba(0,200,255,0.1)",width:"1px" }} />
-
-                {/* Stat 2 — PYQ */}
-                <div style={{ padding:"24px 16px",display:"flex",flexDirection:"column",alignItems:"center",gap:"6px" }}>
-                  <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(168,85,247,0.95)",letterSpacing:"0.05em",lineHeight:1 }}>
-                    {STATS.pyqUploaded}
-                  </div>
-                  <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(150,100,200,0.6)",letterSpacing:"0.18em",textTransform:"uppercase" }}>
-                    PYQ Uploaded
-                  </div>
-                </div>
-
-                <div style={{ background:"rgba(0,200,255,0.1)",width:"1px" }} />
-
-                {/* Stat 3 — Users */}
-                <div style={{ padding:"24px 16px",display:"flex",flexDirection:"column",alignItems:"center",gap:"6px" }}>
-                  <div style={{ fontFamily:"var(--font-display)",fontSize:"2rem",fontWeight:800,color:"rgba(0,255,150,0.9)",letterSpacing:"0.05em",lineHeight:1 }}>
-                    {STATS.usersJoined}
-                  </div>
-                  <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.62rem",color:"rgba(0,180,100,0.6)",letterSpacing:"0.18em",textTransform:"uppercase" }}>
-                    Users Joined
-                  </div>
                 </div>
               </div>
             </div>
@@ -340,8 +232,6 @@ export default function Home() {
 
         {/* ===== FACULTY GRID ===== */}
         <div className="container mx-auto px-4 py-8">
-
-          {/* Divider */}
           <div style={{ height:"1px",background:"linear-gradient(90deg,rgba(0,200,255,0.3),transparent)",marginBottom:"24px" }} />
 
           {isLoading ? (
@@ -375,7 +265,6 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Show More button */}
               {hasMore && (
                 <div className="flex justify-center mt-8">
                   <button
