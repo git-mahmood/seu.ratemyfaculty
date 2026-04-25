@@ -240,16 +240,17 @@ export default function Home() {
               value={search}
               onChange={e => { setSearch(e.target.value); setVisibleCount(INITIAL_SIZE); }}
               onKeyDown={() => playKeyClick()}
-              style={{
+             style={{
                 width:"100%",
-                paddingLeft:"44px",paddingRight:"16px",paddingTop:"14px",paddingBottom:"14px",
-                background:"rgba(0,15,30,0.8)",
-                border:"1px solid rgba(0,200,255,0.25)",
-                fontFamily:"var(--font-mono)",fontSize:"0.78rem",
+                paddingLeft:"48px",paddingRight:"20px",paddingTop:"18px",paddingBottom:"18px",
+                background:"rgba(0,15,30,0.85)",
+                border:"1px solid rgba(0,200,255,0.4)",
+                fontFamily:"var(--font-mono)",fontSize:"0.85rem",
                 letterSpacing:"0.08em",color:"rgba(0,200,255,0.9)",
                 outline:"none",transition:"all 0.3s ease",
+                boxShadow:"0 0 20px rgba(0,200,255,0.15), inset 0 0 20px rgba(0,200,255,0.03)",
               }}
-              onFocus={e => { e.currentTarget.style.borderColor="rgba(0,200,255,0.6)"; e.currentTarget.style.boxShadow="0 0 16px rgba(0,200,255,0.15)"; }}
+              onFocus={e => { e.currentTarget.style.borderColor="rgba(0,200,255,0.8)"; e.currentTarget.style.boxShadow="0 0 30px rgba(0,200,255,0.3), inset 0 0 20px rgba(0,200,255,0.05)"; }}
               onBlur={e => { e.currentTarget.style.borderColor="rgba(0,200,255,0.25)"; e.currentTarget.style.boxShadow="none"; }}
             />
           </div>
