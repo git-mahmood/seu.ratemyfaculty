@@ -1,7 +1,7 @@
 import { playClick, playDropdown, playKeyClick } from "@/lib/sounds";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
-import { GraduationCap, LogOut, ShieldCheck, Search, LogIn, Menu } from "lucide-react";
+import { GraduationCap, LogOut, ShieldCheck, LogIn, Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,29 +58,6 @@ export function Navbar({ search = "", onSearch }: NavbarProps) {
           </div>
         </Link>
 
-        {/* ── Search bar (center, grows) ── */}
-        {onSearch && (
-          <div className="flex-1 relative max-w-xl mx-auto hidden sm:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5" style={{ color:"rgba(0,200,255,0.5)",zIndex:2 }} />
-            <input
-              type="text"
-              placeholder="SEARCH FACULTY NAME · FACULTY INITIAL · COURSE TITLE"
-              value={search}
-              onChange={e => onSearch(e.target.value)}
-              onKeyDown={() => playKeyClick()}
-              style={{
-                width:"100%",
-                paddingLeft:"32px",paddingRight:"12px",paddingTop:"8px",paddingBottom:"8px",
-                background:"rgba(0,15,30,0.8)",
-                border:"1px solid rgba(0,200,255,0.2)",
-                fontFamily:"var(--font-mono)",fontSize:"0.72rem",
-                letterSpacing:"0.06em",color:"rgba(0,200,255,0.9)",
-                outline:"none",transition:"all 0.3s ease",
-              }}
-              onFocus={e => { e.currentTarget.style.borderColor = "rgba(0,200,255,0.5)"; e.currentTarget.style.boxShadow = "0 0 12px rgba(0,200,255,0.15)"; }}
-              onBlur={e => { e.currentTarget.style.borderColor = "rgba(0,200,255,0.2)"; e.currentTarget.style.boxShadow = "none"; }}
-            />
-          </div>
         )}
 
         {/* ── Right: hamburger menu ── */}
@@ -185,26 +162,6 @@ export function Navbar({ search = "", onSearch }: NavbarProps) {
           </DropdownMenu>
         </div>
       </div>
-
-      {/* Mobile search */}
-      {onSearch && (
-        <div className="sm:hidden px-4 pb-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5" style={{ color:"rgba(0,200,255,0.5)",zIndex:2 }} />
-            <input
-              type="text"
-              placeholder="Search faculty, course..."
-              value={search}
-              onChange={e => onSearch(e.target.value)}
-              onKeyDown={() => playKeyClick()}
-              style={{
-                width:"100%",paddingLeft:"32px",paddingRight:"12px",paddingTop:"8px",paddingBottom:"8px",
-                background:"rgba(0,15,30,0.8)",border:"1px solid rgba(0,200,255,0.2)",
-                fontFamily:"var(--font-mono)",fontSize:"0.72rem",
-                letterSpacing:"0.06em",color:"rgba(0,200,255,0.9)",outline:"none",
-              }}
-            />
-          </div>
         </div>
       )}
     </nav>
