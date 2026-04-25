@@ -105,7 +105,7 @@ export default function Home() {
       <main className="flex-1 relative z-10">
 
         {/* ===== HERO BANNER ===== */}
-        <div className="container mx-auto px-4 pt-8 pb-4" style={{ maxWidth:"1500px" }}>
+        <div className="container mx-auto px-4 pt-8 pb-4" style={{ maxWidth:"1400px" }}>
           <div style={{
             position: "relative",
             overflow: "hidden",
