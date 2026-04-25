@@ -118,8 +118,11 @@ export default function Home() {
             {/* Grid background inside box */}
             <div style={{
               position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
-              backgroundImage: "linear-gradient(rgba(0,200,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,0.05) 1px,transparent 1px)",
+              backgroundImage: "linear-gradient(rgba(0,200,255,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,0.08) 1px,transparent 1px)",
               backgroundSize: "48px 48px",
+              filter: "blur(0.8px)",
+              maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%)",
+              WebkitMaskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%)",
             }} />
             {/* Top glow line */}
             <div style={{ position:"absolute",top:0,left:0,right:0,height:"2px",background:"linear-gradient(90deg,transparent,rgba(0,200,255,0.7),rgba(168,85,247,0.6),transparent)",zIndex:1 }} />
