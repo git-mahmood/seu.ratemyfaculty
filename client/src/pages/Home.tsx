@@ -231,7 +231,7 @@ export default function Home() {
         </div>
 
         {/* ===== SEARCH BAR ===== */}
-        <div className="container mx-auto px-4 pt-10 pb-4" style={{ maxWidth:"900px" }}>
+        <div className="container mx-auto px-4 pt-12 pb-4" style={{ maxWidth:"900px" }}>
           <div className="relative">
             <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color:"rgba(0,200,255,0.5)",zIndex:2 }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" /></svg>
             <input
@@ -248,7 +248,7 @@ export default function Home() {
                 fontFamily:"var(--font-mono)",fontSize:"0.85rem",
                 letterSpacing:"0.08em",color:"rgba(0,200,255,0.9)",
                 outline:"none",transition:"all 0.3s ease",
-                boxShadow:"0 0 30px rgba(0,200,255,0.35), inset 0 0 30px rgba(0,200,255,0.08)",
+                boxShadow:"0 0 30px rgba(0,200,255,0.20), inset 0 0 30px rgba(0,200,255,0.08)",
               }}
               onFocus={e => { e.currentTarget.style.borderColor="rgba(0,200,255,0.8)"; e.currentTarget.style.boxShadow="0 0 30px rgba(0,200,255,0.3), inset 0 0 20px rgba(0,200,255,0.05)"; }}
               onBlur={e => { e.currentTarget.style.borderColor="rgba(0,200,255,0.25)"; e.currentTarget.style.boxShadow="none"; }}
