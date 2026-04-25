@@ -64,7 +64,7 @@ export function Navbar({ search = "", onSearch }: NavbarProps) {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5" style={{ color:"rgba(0,200,255,0.5)",zIndex:2 }} />
             <input
               type="text"
-              placeholder="Search faculty, course, department..."
+              placeholder="SEARCH FACULTY NAME · FACULTY INITIAL · COURSE TITLE"
               value={search}
               onChange={e => onSearch(e.target.value)}
               onKeyDown={() => playKeyClick()}
