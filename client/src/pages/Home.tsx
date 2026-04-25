@@ -111,7 +111,7 @@ export default function Home() {
             overflow: "hidden",
             border: "1px solid rgba(0,200,255,0.2)",
             background: "rgba(2,10,25,0.85)",
-            backdropFilter: "blur(32px)",
+            backdropFilter: "blur(48px)",
             padding: "48px 40px 40px",
            boxShadow: "0 0 60px rgba(0,200,255,0.25), 0 0 120px rgba(0,200,255,0.1), inset 0 0 80px rgba(0,200,255,0.05)",
           }}>
