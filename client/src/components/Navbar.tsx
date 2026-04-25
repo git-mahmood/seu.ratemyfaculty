@@ -50,7 +50,7 @@ export function Navbar({ search = "", onSearch }: NavbarProps) {
               <div style={{ fontFamily:"var(--font-display)",fontSize:"0.95rem",fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"rgba(0,200,255,0.9)",lineHeight:1 }}>
                 Rate My Faculty
               </div>
-              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.58rem",letterSpacing:"0.12em",color:"rgba(0,200,255,0.5)",textTransform:"uppercase",marginTop:"3px" }}>
+              <div style={{ fontFamily:"var(--font-mono)",fontSize:"0.60rem",letterSpacing:"0.12em",color:"rgba(0,200,255,0.5)",textTransform:"uppercase",marginTop:"3px" }}>
                 Faculty Reviews & Previous Year Questions
               </div>
             </div>
