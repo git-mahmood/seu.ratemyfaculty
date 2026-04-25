@@ -111,9 +111,9 @@ export default function Home() {
             overflow: "hidden",
             border: "1px solid rgba(0,200,255,0.2)",
             background: "rgba(2,10,25,0.85)",
-            backdropFilter: "blur(16px)",
+            backdropFilter: "blur(32px)",
             padding: "48px 40px 40px",
-            boxShadow: "0 0 60px rgba(0,200,255,0.06), inset 0 0 60px rgba(0,200,255,0.02)",
+           boxShadow: "0 0 60px rgba(0,200,255,0.25), 0 0 120px rgba(0,200,255,0.1), inset 0 0 80px rgba(0,200,255,0.05)",
           }}>
             {/* Grid background inside box */}
             <div style={{
@@ -248,7 +248,7 @@ export default function Home() {
                 fontFamily:"var(--font-mono)",fontSize:"0.85rem",
                 letterSpacing:"0.08em",color:"rgba(0,200,255,0.9)",
                 outline:"none",transition:"all 0.3s ease",
-                boxShadow:"0 0 20px rgba(0,200,255,0.15), inset 0 0 20px rgba(0,200,255,0.03)",
+                boxShadow:"0 0 30px rgba(0,200,255,0.35), inset 0 0 30px rgba(0,200,255,0.08)",
               }}
               onFocus={e => { e.currentTarget.style.borderColor="rgba(0,200,255,0.8)"; e.currentTarget.style.boxShadow="0 0 30px rgba(0,200,255,0.3), inset 0 0 20px rgba(0,200,255,0.05)"; }}
               onBlur={e => { e.currentTarget.style.borderColor="rgba(0,200,255,0.25)"; e.currentTarget.style.boxShadow="none"; }}
