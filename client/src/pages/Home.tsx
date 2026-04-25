@@ -105,7 +105,7 @@ export default function Home() {
       <main className="flex-1 relative z-10">
 
         {/* ===== HERO BANNER ===== */}
-        <div className="container mx-auto px-4 pt-8 pb-4" style={{ maxWidth:"900px" }}>
+        <div className="container mx-auto px-4 pt-8 pb-4" style={{ maxWidth:"1000px" }}>
           <div style={{
             position: "relative",
             overflow: "hidden",
@@ -172,7 +172,7 @@ export default function Home() {
                     flex: "1 1 140px",
                     border: "1px solid rgba(0,200,255,0.25)",
                     background: "rgba(0,200,255,0.05)",
-                    padding: "12px 20px",
+                    padding: "10px 24px",
                     position: "relative",
                     boxShadow: "0 0 16px rgba(0,200,255,0.06)",
                   }}>
@@ -191,7 +191,7 @@ export default function Home() {
                     flex: "1 1 140px",
                     border: "1px solid rgba(168,85,247,0.25)",
                     background: "rgba(168,85,247,0.05)",
-                    padding: "12px 20px",
+                    padding: "10px 24px",
                     position: "relative",
                     boxShadow: "0 0 16px rgba(168,85,247,0.06)",
                   }}>
@@ -210,7 +210,7 @@ export default function Home() {
                     flex: "1 1 140px",
                     border: "1px solid rgba(0,255,150,0.25)",
                     background: "rgba(0,255,150,0.04)",
-                    padding: "12px 20px",
+                    padding: "10px 24px",
                     position: "relative",
                     boxShadow: "0 0 16px rgba(0,255,150,0.05)",
                   }}>
