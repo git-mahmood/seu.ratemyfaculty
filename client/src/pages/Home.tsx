@@ -170,45 +170,76 @@ export default function Home() {
                 {/* Three separate stat boxes */}
                 <div style={{ display:"flex", gap:"12px", flexWrap:"wrap", maxWidth:"520px" }}>
 
-                 {/* Reviews Box */}
-<div style={{
-  flex: "0 1 auto", // Box shrinks to fit content
-  border: "1px solid rgba(0,200,255,0.25)",
-  background: "rgba(0,200,255,0.05)",
-  padding: "4px 12px", // Reduced padding for a smaller box
-  position: "relative",
-  boxShadow: "0 0 16px rgba(0,200,255,0.06)",
-  display: "flex", // Added flex
-  alignItems: "baseline", // Aligns number and text on the bottom edge
-  gap: "8px" // Space between number and text
-}}>
-  {/* Corner Accents */}
-  <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"6px",height:"6px",borderTop:"1px solid rgba(0,200,255,0.7)",borderLeft:"1px solid rgba(0,200,255,0.7)" }} />
-  <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"6px",height:"6px",borderBottom:"1px solid rgba(0,200,255,0.7)",borderRight:"1px solid rgba(0,200,255,0.7)" }} />
+                 {/* Parent Container - Ensure this is present to keep them side-by-side */}
+<div style={{ display: "flex", flexWrap: "nowrap", gap: "12px", alignItems: "center" }}>
   
-  {/* Number */}
-  <div style={{ 
-    fontFamily:"var(--font-display)",
-    fontSize:"1.4rem", // Slightly smaller to fit single line
-    fontWeight:800,
-    color:"rgba(0,220,255,0.95)",
-    lineHeight: 1 
+  {/* Reviews */}
+  <div style={{
+    flex: "0 0 auto",
+    border: "1px solid rgba(0,200,255,0.3)",
+    background: "rgba(0,200,255,0.05)",
+    padding: "6px 16px",
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
   }}>
-    {totalReviews}
+    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,200,255,0.7)",borderLeft:"1px solid rgba(0,200,255,0.7)" }} />
+    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,200,255,0.7)",borderRight:"1px solid rgba(0,200,255,0.7)" }} />
+    
+    <div style={{ fontFamily:"var(--font-display)", fontSize:"1.5rem", fontWeight:800, color:"#00dcff", lineHeight:1 }}>
+      {totalReviews}
+    </div>
+    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1.5rem", fontWeight:800, color:"#00dcff", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
+      Reviews
+    </div>
   </div>
 
-  {/* Label */}
-  <div style={{ 
-    fontFamily:"var(--font-mono)",
-    fontSize:"0.55rem", // Scaled down for the small box
-    color:"rgba(0,180,220,0.55)",
-    letterSpacing:"0.1em",
-    textTransform:"uppercase",
-    whiteSpace: "nowrap" // Prevents text from wrapping to a new line
+  {/* PYQ */}
+  <div style={{
+    flex: "0 0 auto",
+    border: "1px solid rgba(168,85,247,0.3)",
+    background: "rgba(168,85,247,0.05)",
+    padding: "6px 16px",
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
   }}>
-    Reviews
+    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(168,85,247,0.7)",borderLeft:"1px solid rgba(168,85,247,0.7)" }} />
+    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(168,85,247,0.7)",borderRight:"1px solid rgba(168,85,247,0.7)" }} />
+    
+    <div style={{ fontFamily:"var(--font-display)", fontSize:"1.5rem", fontWeight:800, color:"#a855f7", lineHeight:1 }}>
+      {STATS.pyqUploaded}
+    </div>
+    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1.5rem", fontWeight:800, color:"#a855f7", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
+      PYQ Uploaded
+    </div>
   </div>
-</div> 
+
+  {/* Users */}
+  <div style={{
+    flex: "0 0 auto",
+    border: "1px solid rgba(0,255,150,0.3)",
+    background: "rgba(0,255,150,0.05)",
+    padding: "6px 16px",
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
+  }}>
+    <div style={{ position:"absolute",top:"-1px",left:"-1px",width:"8px",height:"8px",borderTop:"1px solid rgba(0,255,150,0.7)",borderLeft:"1px solid rgba(0,255,150,0.7)" }} />
+    <div style={{ position:"absolute",bottom:"-1px",right:"-1px",width:"8px",height:"8px",borderBottom:"1px solid rgba(0,255,150,0.7)",borderRight:"1px solid rgba(0,255,150,0.7)" }} />
+    
+    <div style={{ fontFamily:"var(--font-display)", fontSize:"1.5rem", fontWeight:800, color:"#00ff96", lineHeight:1 }}>
+      {STATS.usersJoined}
+    </div>
+    <div style={{ fontFamily:"var(--font-mono)", fontSize:"1.5rem", fontWeight:800, color:"#00ff96", textTransform:"uppercase", whiteSpace:"nowrap", lineHeight:1 }}>
+      Users Joined
+    </div>
+  </div>
+
+</div>
                 </div>
               </div>
             </div>
