@@ -22,7 +22,7 @@ export default function Favorites() {
         <div className="flex items-center gap-3 mb-8">
           <Heart className="h-6 w-6" style={{ color:"rgba(255,80,120,0.9)" }} />
           <div>
-            <div style={{ fontFamily:"var(--font-mono)",fontSize:"2rem",letterSpacing:"0.2em",color:"rgba(0,200,255,0.4)",textTransform:"uppercase",marginBottom:"4px" }}>
+            <div style={{ fontFamily:"var(--font-mono)",fontSize:"1.2rem",letterSpacing:"0.2em",color:"rgba(0,200,255,0.4)",textTransform:"uppercase",marginBottom:"4px" }}>
                Your Collection
             </div>
             <h1 style={{ fontFamily:"var(--font-display)",fontSize:"1.6rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(200,230,255,0.95)" }}>
