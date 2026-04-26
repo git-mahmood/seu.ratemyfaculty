@@ -7,10 +7,9 @@ import { ReviewForm } from "@/components/ReviewForm";
 import { PyqList, UploadPyqDialog } from "@/components/PyqList";
 import {
   Building2, MapPin, BookOpen, User, Smile, Frown, Meh,
-  GraduationCap, Pencil, Trash2, MessageSquarePlus, Heart,
+  GraduationCap, Pencil, Trash2, MessageSquarePlus,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useIsFavorite, useAddFavorite, useRemoveFavorite } from "@/hooks/use-favorites";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, buildUrl } from "@shared/routes";
 import { useToast } from "@/hooks/use-toast";
@@ -149,10 +148,6 @@ export default function TeacherProfile() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [pyqDialogOpen, setPyqDialogOpen] = useState(false);
-  const { data: favData } = useIsFavorite(teacherId);
-  const isFavorite = favData?.isFavorite ?? false;
-  const addFavorite = useAddFavorite();
-  const removeFavorite = useRemoveFavorite();
 
   const { data: teacher, isLoading: teacherLoading, error: teacherError } = useTeacher(teacherId);
   const { data: reviews, isLoading: reviewsLoading } = useReviews(teacherId);
@@ -280,11 +275,9 @@ export default function TeacherProfile() {
 </div>
             </div>
 
-           {/* ===== ACTION BUTTONS ===== */}
+            {/* ===== ACTION BUTTONS ===== */}
             <div className="flex items-center gap-3 shrink-0 mt-2 md:mt-0">
             </div>
-              </div>
-            </div> 
           </div>
         </div>
       </div>
