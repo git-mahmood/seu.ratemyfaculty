@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import TeacherProfile from "@/pages/TeacherProfile";
 import AuthPage from "@/pages/AuthPage";
 import AdminDashboard from "@/pages/AdminDashboard";
+import Favorites from "@/pages/Favorites";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/teacher/:id" component={TeacherProfile} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/favorites" component={Favorites} />
       <Route component={NotFound} />
     </Switch>
   );
