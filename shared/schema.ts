@@ -39,6 +39,13 @@ export const reviews = pgTable("reviews", {
   unq: unique().on(t.studentId, t.teacherId, t.courseTaken),
 }));
 
+export const favorites = pgTable("favorites", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  teacherId: integer("teacher_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const pyqs = pgTable("pyqs", {
   id: serial("id").primaryKey(),
   teacherId: integer("teacher_id").notNull(), // Foreign key to teachers
@@ -107,6 +114,9 @@ export type InsertReview = z.infer<typeof insertReviewSchema>;
 
 export type Pyq = typeof pyqs.$inferSelect;
 export type InsertPyq = z.infer<typeof insertPyqSchema>;
+
+export type Favorite = typeof favorites.$inferSelect;
+export type InsertFavorite = typeof favorites.$inferInfer;
 
 // Extended types for frontend
 export type TeacherWithReviewCount = Teacher & {
