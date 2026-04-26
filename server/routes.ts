@@ -257,5 +257,43 @@ export async function registerRoutes(
     }
   });
 
+  // === FAVORITES ===
+
+  app.get("/api/favorites", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    const userId = (req.user as any).id;
+    const favs = await storage.getFavoritesByUserId(userId);
+    res.json(favs);
+  });
+
+  app.post("/api/favorites/:teacherId", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    const userId = (req.user as any).id;
+    const teacherId = Number(req.params.teacherId);
+    try {
+      const fav = await storage.addFavorite(userId, teacherId);
+      res.status(201).json(fav);
+    } catch (err) {
+      res.status(500).json({ message: "Already in favorites or error" });
+    }
+  });
+
+  app.delete("/api/favorites/:teacherId", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    const userId = (req.user as any).id;
+    const teacherId = Number(req.params.teacherId);
+    const success = await storage.removeFavorite(userId, teacherId);
+    if (!success) return res.status(404).json({ message: "Favorite not found" });
+    res.status(204).send();
+  });
+
+  app.get("/api/favorites/:teacherId/check", async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(200).json({ isFavorite: false });
+    const userId = (req.user as any).id;
+    const teacherId = Number(req.params.teacherId);
+    const isFavorite = await storage.isFavorite(userId, teacherId);
+    res.json({ isFavorite });
+  });
+
   return httpServer;
 }
