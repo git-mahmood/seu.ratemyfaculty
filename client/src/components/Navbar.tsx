@@ -1,7 +1,7 @@
 import { playClick, playDropdown } from "@/lib/sounds";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
-import { GraduationCap, LogOut, ShieldCheck, LogIn, Menu } from "lucide-react";
+import { GraduationCap, LogOut, ShieldCheck, LogIn, Menu, Heart } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -108,6 +108,16 @@ export function Navbar({ search = "", onSearch }: NavbarProps) {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator style={{ background:"rgba(0,200,255,0.1)" }} />
+                <Link href="/favorites">
+                  <DropdownMenuItem
+                    className="cursor-pointer px-3 py-2"
+                    onClick={() => playClick()}
+                    style={{ fontFamily:"var(--font-mono)",fontSize:"0.75rem",color:"rgba(255,80,120,0.85)",letterSpacing:"0.05em" }}
+                  >
+                    <Heart className="mr-2 h-4 w-4" />
+                    My Favorites
+                  </DropdownMenuItem>
+                </Link>
                 {(user.role === "admin" || user.role === "moderator") && (
                   <Link href="/admin">
                     <DropdownMenuItem
