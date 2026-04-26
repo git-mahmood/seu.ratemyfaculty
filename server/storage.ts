@@ -1,9 +1,10 @@
 import { 
-  users, teachers, reviews, pyqs,
+  users, teachers, reviews, pyqs, favorites,
   type User, type InsertUser,
   type Teacher, type InsertTeacher, type TeacherWithReviewCount,
   type Review, type InsertReview,
-  type Pyq, type InsertPyq
+  type Pyq, type InsertPyq,
+  type Favorite
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, count, and } from "drizzle-orm";
@@ -35,6 +36,11 @@ export interface IStorage {
   createPyq(pyq: InsertPyq): Promise<Pyq>;
   updatePyq(id: number, updates: Partial<InsertPyq>): Promise<Pyq | undefined>;
 }
+
+getFavoritesByUserId(userId: number): Promise<Favorite[]>;
+  addFavorite(userId: number, teacherId: number): Promise<Favorite>;
+  removeFavorite(userId: number, teacherId: number): Promise<boolean>;
+  isFavorite(userId: number, teacherId: number): Promise<boolean>;
 
 export class DatabaseStorage implements IStorage {
   // Users
@@ -233,6 +239,28 @@ async updateUserGoogleId(id: number, googleId: string): Promise<User | undefined
       .where(eq(pyqs.id, id))
       .returning();
     return updated;
+  }
+
+  async getFavoritesByUserId(userId: number): Promise<Favorite[]> {
+    return await db.select().from(favorites).where(eq(favorites.userId, userId));
+  }
+
+  async addFavorite(userId: number, teacherId: number): Promise<Favorite> {
+    const [fav] = await db.insert(favorites).values({ userId, teacherId }).returning();
+    return fav;
+  }
+
+  async removeFavorite(userId: number, teacherId: number): Promise<boolean> {
+    const [deleted] = await db.delete(favorites)
+      .where(and(eq(favorites.userId, userId), eq(favorites.teacherId, teacherId)))
+      .returning();
+    return !!deleted;
+  }
+
+  async isFavorite(userId: number, teacherId: number): Promise<boolean> {
+    const [fav] = await db.select().from(favorites)
+      .where(and(eq(favorites.userId, userId), eq(favorites.teacherId, teacherId)));
+    return !!fav;
   }
 }
 
