@@ -35,12 +35,11 @@ export interface IStorage {
   getPyqsByTeacherId(teacherId: number): Promise<Pyq[]>;
   createPyq(pyq: InsertPyq): Promise<Pyq>;
   updatePyq(id: number, updates: Partial<InsertPyq>): Promise<Pyq | undefined>;
-}
-
-getFavoritesByUserId(userId: number): Promise<Favorite[]>;
+  getFavoritesByUserId(userId: number): Promise<Favorite[]>;
   addFavorite(userId: number, teacherId: number): Promise<Favorite>;
   removeFavorite(userId: number, teacherId: number): Promise<boolean>;
   isFavorite(userId: number, teacherId: number): Promise<boolean>;
+}
 
 export class DatabaseStorage implements IStorage {
   // Users
