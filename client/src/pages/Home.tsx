@@ -118,7 +118,7 @@ export default function Home() {
               <div className="slide-up stagger-3" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "14px", maxWidth: "520px" }}>
                 <StatPill icon={<MessageSquare className="h-4 w-4" />} value={totalReviews} label="Reviews" delay={0} />
                 <StatPill icon={<FileText className="h-4 w-4" />} value={STATS.pyqUploaded} label="PYQ Uploaded" delay={1} />
-                <StatPill icon={<Users className="h-4 w-4" />} value={STATS.usersJoined} label="SEU-ians Joined" delay={2} />
+                <StatPill icon={<Users className="h-4 w-4" />} value={STATS.usersJoined} label="Users Joined" delay={2} />
               </div>
             </div>
           </div>
