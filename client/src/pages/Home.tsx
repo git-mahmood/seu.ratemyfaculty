@@ -15,6 +15,75 @@ const STATS = {
 const PAGE_SIZE = 6;
 const INITIAL_SIZE = 12;
 
+function MobileNotice() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    const dismissed = sessionStorage.getItem("mobile_notice_dismissed");
+    if (isMobile && !dismissed) setShow(true);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 9999,
+      background: "rgba(0,0,0,0.6)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: "24px",
+    }}>
+      <div style={{
+        background: "hsl(var(--card))",
+        border: "1px solid hsl(var(--border))",
+        borderRadius: "20px",
+        padding: "32px 24px",
+        maxWidth: "320px",
+        width: "100%",
+        textAlign: "center",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+      }}>
+        <div style={{ fontSize: "2.5rem", marginBottom: "16px" }}>💻</div>
+        <h2 style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "1.2rem",
+          fontWeight: 800,
+          color: "hsl(var(--foreground))",
+          marginBottom: "10px",
+        }}>
+          Better on Desktop
+        </h2>
+        <p style={{
+          fontFamily: "var(--font-sans)",
+          fontSize: "0.85rem",
+          color: "hsl(var(--muted-foreground))",
+          lineHeight: 1.6,
+          marginBottom: "24px",
+        }}>
+          For the best experience, open this site on a laptop or PC.
+        </p>
+        <button
+          onClick={() => { sessionStorage.setItem("mobile_notice_dismissed", "true"); setShow(false); }}
+          style={{
+            width: "100%",
+            padding: "12px",
+            borderRadius: "12px",
+            border: "none",
+            background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))",
+            color: "white",
+            fontFamily: "var(--font-sans)",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          Got it, continue anyway
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const { data: teachers, isLoading, error } = useTeachers();
   const [search, setSearch] = useState("");
@@ -38,19 +107,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <MobileNotice />
       <Navbar search={search} onSearch={(v) => { setSearch(v); setVisibleCount(INITIAL_SIZE); }} />
-
-      <div className="md:hidden" style={{
-        background: "hsl(var(--primary) / 0.1)",
-        border: "1px solid hsl(var(--primary) / 0.2)",
-        padding: "10px 16px",
-        textAlign: "center",
-        fontSize: "0.78rem",
-        color: "hsl(var(--muted-foreground))",
-        fontFamily: "var(--font-sans)",
-      }}>
-        For the best experience, visit on a <strong style={{ color: "hsl(var(--foreground))" }}>laptop or PC</strong>
-      </div>
 
       <main className="flex-1 relative z-10">
 
@@ -243,6 +301,32 @@ export default function Home() {
 }
 
 function StatPill({ icon, value, label, delay = 0 }: { icon: React.ReactNode; value: number; label: string; delay?: number }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const startDelay = (0.25 + delay * 0.08) * 1000;
+    const duration = 1500;
+    const startTime = performance.now() + startDelay;
+    let frame: number;
+
+    const animate = (now: number) => {
+      if (now < startTime) {
+        frame = requestAnimationFrame(animate);
+        return;
+      }
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * value));
+      if (progress < 1) frame = requestAnimationFrame(animate);
+      else setCount(value);
+    };
+
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [value, delay]);
+
   return (
     <div className="scale-in" style={{
       display: "flex",
@@ -264,7 +348,7 @@ function StatPill({ icon, value, label, delay = 0 }: { icon: React.ReactNode; va
       </div>
       <div>
         <div style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 800, color: "hsl(var(--hero-text))", lineHeight: 1 }}>
-          {value}
+          {count}
         </div>
         <div style={{ fontSize: "0.7rem", color: "hsl(var(--hero-subtext))", fontWeight: 500, marginTop: "2px" }}>
           {label}
