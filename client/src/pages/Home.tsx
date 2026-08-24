@@ -40,6 +40,18 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Navbar search={search} onSearch={(v) => { setSearch(v); setVisibleCount(INITIAL_SIZE); }} />
 
+      <div className="md:hidden" style={{
+        background: "hsl(var(--primary) / 0.1)",
+        border: "1px solid hsl(var(--primary) / 0.2)",
+        padding: "10px 16px",
+        textAlign: "center",
+        fontSize: "0.78rem",
+        color: "hsl(var(--muted-foreground))",
+        fontFamily: "var(--font-sans)",
+      }}>
+        For the best experience, visit on a <strong style={{ color: "hsl(var(--foreground))" }}>laptop or PC</strong>
+      </div>
+
       <main className="flex-1 relative z-10">
 
         {/* ===== HERO BANNER ===== */}
